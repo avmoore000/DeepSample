@@ -19,7 +19,11 @@ using namespace std;
  * 
  */
 int main(int argc, char** argv) {
-    cout << "Hello World";
+
+    for (int i = 0; i < 10; i++)
+    {
+        cout << "Hello World";
+    }
     return 0;
 }
 
