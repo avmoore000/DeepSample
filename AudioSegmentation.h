@@ -17,7 +17,7 @@
 #ifndef AudioSegmentation
 #define AudioSegmentation
 
-void zeroCrossing(float*[],float[],int,bool);
+void zeroCrossing(float*,float*,int,bool);
 bool getSign(float,bool);
 
 #endif

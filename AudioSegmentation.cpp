@@ -35,7 +35,7 @@ using namespace std;
 // Purpose:  The zeroCrossing function is an implementation of the zero crossing signal
 // analysis algorithm.  It counts the positive and negative changes within the signal
 // and records the results in an array of zeros and ones that is passed by the user.
-void zeroCrossing (float *data[], float zeroCross[], int nx, bool debug)
+void zeroCrossing (float *data, float *zeroCross, int nx, bool debug)
 {
     // Keep track of the current and next data point.
     bool sign1, sign2;
@@ -44,7 +44,10 @@ void zeroCrossing (float *data[], float zeroCross[], int nx, bool debug)
     memset(zeroCross, 0, nx*sizeof(float));
 
     if (debug)
+    {
         cout << "ZeroCross Algorithm" << endl << endl;
+        cout << "NX = " << nx << endl;
+    }
 
     // Loop through the data
     for (int i = 0; i < nx-1; i++)

@@ -18,3 +18,6 @@ receive a response from the author of the research paper, so we decided to proce
 without the original source.  Hue recommended looking at cepstrum signal analysis, and I 
 found several papers using this algorithm and algorithms related to it.  We are planning to 
 use these as the basis of our research.
+
+Week of Feb 15 2020
+Created a working implementation of the zero-crossing algorithm.  Added a file describing the algorithms we are targeting, and began a works cited list for use in the final paper.
