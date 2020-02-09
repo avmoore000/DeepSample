@@ -11,19 +11,27 @@
  * Created on February 1, 2020, 2:55 PM
  */
 
+/**************************************Change Log *******************************/
+
+// Added a change log and to do list section - A.M. Feb 09 2020
+// Added the portaudio library for handling the audio file inputs - A.M. Feb 09 2020
+
+/**************************************End Change Log ***************************/
+
+/**************************************To Do List ******************************/
+/**************************************End To Do List **************************/
+
 #include <cstdlib>
 #include <iostream>
+#include "portaudio/include/portaudio.h"
 using namespace std;
 
 /*
  * 
  */
-int main(int argc, char** argv) {
+int main(int argc, char** argv) 
+{
 
-    for (int i = 0; i < 10; i++)
-    {
-        cout << "Hello World" << endl;
-    }
     return 0;
 }
 
