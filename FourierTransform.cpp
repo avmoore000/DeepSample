@@ -10,12 +10,12 @@
 #include <iostream>
 #include <cmath>
 #include <vector>
-#include "fastFourierTransform.h"
+#include "FourierTransform.h"
 using std::vector;
 typedef std::complex<double> Complex;
 typedef std::vector<Complex> list;
 
-void FourierTransform(vector<complex<double>>& x)
+void fastFourierTransform(vector<complex<double>> x)
 {
 //void FourierTransform(list& x){ //Implemented in a recursive format
     std::cout << "FUNCTION CALLED" << std::endl;

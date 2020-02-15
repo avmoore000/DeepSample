@@ -22,6 +22,8 @@
 /**************************************End To Do List **************************/
 #include <iostream>
 #include <stdio.h>
+#include <vector>
+#include <complex>
 #include "AudioSegmentation.h"
 
 using namespace std;
@@ -36,7 +38,7 @@ using namespace std;
 // Purpose:  The zeroCrossing function is an implementation of the zero crossing signal
 // analysis algorithm.  It counts the positive and negative changes within the signal
 // and records the results in an array of zeros and ones that is passed by the user.
-void zeroCrossing (float *data, float *zeroCross, int nx, bool debug)
+void zeroCrossing (vector<complex<double>>data, float *zeroCross, int nx, bool debug)
 {
     // Keep track of the current and next data point.
     bool sign1, sign2;
@@ -79,11 +81,11 @@ void zeroCrossing (float *data, float *zeroCross, int nx, bool debug)
 // Outputs:
 //    sign - A boolean stating whether the signal has changed from positive to negative or vice versa.
 // Purpose: Determines if a sign change has occured.
-bool getSign(float data, bool debug)
+bool getSign(complex<double> data, bool debug)
 {
     bool sign = 0;
 
-    if (data > 0)
+    if (real(data) > 0)
         sign = 1;
     else
         sign = 0;

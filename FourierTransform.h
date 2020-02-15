@@ -1,5 +1,5 @@
 /* 
- * File:   fastFourierTransform.h
+ * File:   FourierTransform.h
  * Author: Hue Truong & Andrew Moore
  *
  * Created on February 15, 2020, 12:19 PM
@@ -14,13 +14,14 @@
 /**************************************To Do List ******************************/
 /**************************************End To Do List **************************/
 
-#include <list>
+#include <vector>
+#include <complex>
 using namespace std;
 
-#ifndef fastFourierTransform
-#define fastFourierTransform
+#ifndef FourierTransform
+#define FourierTransform
 
-void FourierTransform(vector<complex<double>>&);
+void fastFourierTransform(vector<complex<double> >);
 
 #endif
 

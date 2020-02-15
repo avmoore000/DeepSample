@@ -14,11 +14,14 @@
 /**************************************To Do List ******************************/
 /**************************************End To Do List **************************/
 
+#include <vector>
+#include <complex>
+using namespace std;
 #ifndef AudioSegmentation
 #define AudioSegmentation
 
-void zeroCrossing(float*,float*,int,bool);
-bool getSign(float,bool);
+void zeroCrossing(vector<complex<double>>,float*,int,bool);
+bool getSign(complex<double>,bool);
 
 #endif
 
