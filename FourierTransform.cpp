@@ -59,6 +59,7 @@ void fastFourierTransform(vector<complex<double>> x)
     }
 }
 
+
 void inverseFT(vector<complex<double>>& x){
     //Loops through and conjoins complex numbers
     for(int i = 0; i < x.size(); i++){

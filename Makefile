@@ -12,7 +12,7 @@ main.o: main.cpp
 AudioSegmentation.o: AudioSegmentation.cpp AudioSegmentation.h
 	$(CC) $(CFLAGS) -c AudioSegmentation.cpp
 
-fastFourierTransform.o: FourierTransform.cpp FourierTransform.h
+FourierTransform.o: FourierTransform.cpp FourierTransform.h
 	$(CC) $(CFLAGS) -c FourierTransform.cpp
 
 clean:

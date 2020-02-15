@@ -47,11 +47,11 @@ void zeroCrossingTest(vector<complex<double>>, bool);
 int main(int argc, char** argv) 
 {
     // Get filename for data location
-    string fileName = argv[1];
+//    string fileName = argv[1];
     // Store data location from user input
-    ifstream audioFile;
+  //  ifstream audioFile;
 
-    audioFile.open(fileName, ios::in);
+//    audioFile.open(fileName, ios::in);
 
 
     // Generate files for testing
