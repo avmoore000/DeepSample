@@ -55,7 +55,8 @@ void FourierTransform(list& x){ //Implemented in a recursive format
 int main(){
     const Complex i(1.0, 2.0);
     const Complex j(0.0, 1.0);
-
+    
+    
     list data;
     data.push_back(i);
     data.push_back(j);
