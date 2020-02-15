@@ -32,14 +32,14 @@ void FourierTransform(list& x){ //Implemented in a recursive format
     for(int i = 0; i < (N / 2); i = i + 2){
         even.push_back(i);
         odd.push_back(i + 1);
-        std::cout << "Split Loop ran (" << i << ") times!" << std::endl;
+        std::cout << "Split Loop ran (" << i + 1 << ") times!" << std::endl;
     }
     
     //Divide and conquer recursion
     FourierTransform(even); 
     FourierTransform(odd);
     
-    for (int i = 0; i < (N/2); ++i){
+    for (size_t i = 0; i < (N/2); ++i){
         //t is a complex number calculated from polar coord of (magnitude, phase angle)
         Complex t = std::polar(1.0, -2 * PI * i / N) * odd.at(i); 
         
@@ -48,16 +48,19 @@ void FourierTransform(list& x){ //Implemented in a recursive format
         x.at(i + N/2) = even.at(i) - t;
         //x[k    ] = even[k] + t;
         //x[k+N/2] = even[k] - t;
-        std::cout << "Merging Loop ran (" << i << ") times!" << std::endl;
+        std::cout << "Merging Loop ran (" << i + 1 << ") times!" << std::endl;
     }
 }
 
 int main(){
     const Complex i(1.0, 2.0);
+    const Complex j(0.0, 1.0);
+
     list data;
     data.push_back(i);
-    data.push_back(2);
+    data.push_back(j);
     FourierTransform(data);
+   
     return 0;
 }
 
