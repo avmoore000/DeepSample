@@ -56,10 +56,16 @@ int main(int argc, char** argv)
 
     // Generate files for testing
     const complex<double> i(1.0, 2.0);
-    vector<complex<double> > data;
 
-    data.push_back(i);
-    data.push_back(2);
+    vector <complex<double>> data;
+    // Generate sample data
+    for (int i = 0; i < 100; i++)
+    {
+	    complex<double> num(i,i+1);
+	    data.push_back(i);
+    }
+
+    cout << "Vector size:  " << data.size() << endl;
     fastFourierTransform(data);
 
     zeroCrossingTest(data,1);
