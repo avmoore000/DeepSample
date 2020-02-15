@@ -58,3 +58,24 @@ void FourierTransform(vector<complex<double>>& x)
         std::cout << "Merging Loop ran (" << i << ") times!" << std::endl;
     }
 }
+
+void inverseFT(vector<complex<double>>& x){
+    //Loops through and conjoins complex numbers
+    for(int i = 0; i < x.size(); i++){
+       x.at(i) = std::conj(x.at(i));
+    }
+
+    //Pushes conjoined vector to fourier
+    FourierTransform(x);
+
+    //Loops through and conjoins complex numbers again
+    for(int i = 0; i < x.size(); i++){
+       x.at(i) = std::conj(x.at(i));
+    }
+
+    //scales number to (element / ectorsize)th its original size
+    double size = x.size();
+    for(int i = 0; i < x.size(); i++){
+        x.at(i) /= size;
+    }
+}
