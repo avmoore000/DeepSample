@@ -57,8 +57,8 @@ void zeroCrossing (vector<complex<double>>data, float *zeroCross, int nx, bool d
     // Loop through the data
     for (int i = 0; i < nx-1; i++)
     {
-        sign1 = getSign(data[i],debug);
-        sign2 = getSign(data[i+1],debug);;
+        sign1 = getSign(real(data[i]),debug);
+        sign2 = getSign(real(data[i+1]),debug);;
 
         // If the signs are not equal, there has been a change in signal.
         if (sign1 != sign2)
