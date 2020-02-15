@@ -21,6 +21,7 @@
 
 /**************************************End To Do List **************************/
 #include <iostream>
+#include <stdio.h>
 #include "AudioSegmentation.h"
 
 using namespace std;
@@ -41,7 +42,9 @@ void zeroCrossing (float *data, float *zeroCross, int nx, bool debug)
     bool sign1, sign2;
 
     // Allocate space in memory based on the size of the data points.
-    memset(zeroCross, 0, nx*sizeof(float));
+//    memset(zeroCross, 0, nx*sizeof(float));
+
+    zeroCross = (float*) malloc(nx*sizeof(float));
 
     if (debug)
     {

@@ -26,8 +26,13 @@
 
 #include <cstdlib>
 #include <iostream>
+#include <fstream>
+#include <complex>
+#include <vector>
+#include <list>
 #include "portaudio/include/portaudio.h"
 #include "AudioSegmentation.h"
+#include "fastFourierTransform.h"
 using namespace std;
 
 void zeroCrossingTest(bool debug);
@@ -38,6 +43,24 @@ void zeroCrossingTest(bool debug);
  */
 int main(int argc, char** argv) 
 {
+    // Get filename for data location
+    string fileName = argv[1];
+    // Store data location from user input
+    ifstream audioFile;
+
+    audioFile.open(fileName, ios::in);
+
+
+    // Generate files for testing
+    const complex<float> i(1.0, 2.0);
+    vector<complex<float>> test;
+/*    list <float> data;
+    data.push_back(i);
+    data.push_back(2);
+    FourierTransform(data);*/
+
+    test.push_back(i);
+
     zeroCrossingTest(1);
     
     return 0;
