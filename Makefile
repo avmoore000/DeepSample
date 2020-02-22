@@ -7,7 +7,7 @@ CFLAGS = -g -Wall
 
 default: DeepSample
 
-DeepSample: main.o AudioSegmentation.o
+DeepSample: main.o AudioSegmentation.o FourierTransform.o
 	$(CC) $(CFLAGS) -o DeepSample main.o AudioSegmentation.o
 
 main.o: main.cpp
@@ -16,5 +16,8 @@ main.o: main.cpp
 AudioSegmentation.o: AudioSegmentation.cpp AudioSegmentation.h
 	$(CC) $(CFLAGS) -c AudioSegmentation.cpp
 
+FourierTransform.o: FourierTransform.cpp FourierTransform.h
+	$(CC) $(CFLAGS) -c FourierTransform.cpp
+
 clean:
-	$(RM) DeepSample *.o *.~
+	$(RM) DeepSample *.o *.~ *.out

@@ -24,7 +24,7 @@ CLEAN_SUBPROJECTS=${CLEAN_SUBPROJECTS_${SUBPROJECTS}}
 
 
 # Project Name
-PROJECTNAME=CppImplementation
+PROJECTNAME=fast_fourier_transform
 
 # Active Configuration
 DEFAULTCONF=Debug

@@ -15,6 +15,9 @@
 
 // Added a change log and to do list section - A.M. Feb 09 2020
 // Added the portaudio library for handling the audio file inputs - A.M. Feb 09 2020
+// Added in the code for generating the waves, and sedning to the fourier transform function.  - H.T. & A.M. Feb 15 2020
+// Converted complex numbers from float to double template - A.M. Feb 15 2020
+// Edited zerocrossing test to accept vector data - A.M. - Feb 15 2020
 
 /**************************************End Change Log ***************************/
 
@@ -26,11 +29,16 @@
 
 #include <cstdlib>
 #include <iostream>
+#include <fstream>
+#include <complex>
+#include <vector>
+#include <list>
 #include "portaudio/include/portaudio.h"
 #include "AudioSegmentation.h"
+#include "FourierTransform.h"
 using namespace std;
 
-void zeroCrossingTest(bool debug);
+void zeroCrossingTest(vector<complex<double>>, bool);
 
 
 /*
@@ -38,31 +46,59 @@ void zeroCrossingTest(bool debug);
  */
 int main(int argc, char** argv) 
 {
-    zeroCrossingTest(1);
+    // Get filename for data location
+//    string fileName = argv[1];
+    // Store data location from user input
+  //  ifstream audioFile;
+
+//    audioFile.open(fileName, ios::in);
+
+
+    // Generate files for testing
+    const complex<double> i(1.0, 2.0);
+
+    vector <complex<double>> data;
+    // Generate sample data
+    for (int i = 0; i < 100; i++)
+    {
+	    complex<double> num(i,i+1);
+	    data.push_back(i);
+    }
+
+    cout << "Vector size:  " << data.size() << endl;
+    fastFourierTransform(data);
+
+    zeroCrossingTest(data,1);
     
     return 0;
 }
 
-void zeroCrossingTest(bool debug)
+void zeroCrossingTest(vector<complex<double>> data, bool debug)
 {
-    float testArray[9] = {1,2,3,0,-1,-2,-3,0,1};
-    float f1[9] = {-5,-5,-5,-5,-5,-5,-5,-5,-5};;
-    int bx = 9;
+    // f1 array will hold the results of zero-crossing tests
+    float f1[data.size()];
+    int bx = data.size();
+
+    // Initialize the f1 array
+    for (int i = 0; i < bx; i++)
+    {
+	    f1[i] = -5;
+    }
 
     if (debug)
     {
         cout << "Signal Array:  " << endl;
         cout << "[";
 
-        for (int i = 0; i < 9; i++)
+        for (int i = 0; i < bx; i++)
         {
-            cout << testArray[i] << " ";
+            cout << data[i] << " ";
         }
         
         cout << "]" << endl;
     }
 
-    zeroCrossing(testArray,f1,bx,1);
+    zeroCrossing(data,f1,bx,1);
 
     if (debug)
     {
@@ -70,16 +106,16 @@ void zeroCrossingTest(bool debug)
         cout << "Signal Array:  " << endl;
         cout << "[";
    
-        for (int i = 0; i < 9; i++)
+        for (int i = 0; i < bx; i++)
         {
-            cout << testArray[i] << " ";
+            cout << data[i] << " ";
         }
         cout << "]" << endl;
 
         cout << "F array:  " << endl;
         cout << "[";
 
-        for (int i = 0; i < 9; i++)
+        for (int i = 0; i < bx; i++)
         {
             cout << f1[i] << " ";
         }

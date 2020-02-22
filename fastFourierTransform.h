@@ -1,27 +1,26 @@
 /* 
- * File:   audioSegmentation.h
- * Author: Andrew Moore
+ * File:   fastFourierTransform.h
+ * Author: Hue Truong & Andrew Moore
  *
- * Created on February 9, 2020, 3:06 PM
+ * Created on February 15, 2020, 12:19 PM
  */
 
 /**************************************Change Log *******************************************/
 
-// Created this header file, will contain prototypes for all algorithms. - A.M. Feb 09 2020
+// Created this header file, will contain prototypes for all algorithms. - A.M. Feb 15 2020
 
 /**************************************End Change Log ***************************************/
 
 /**************************************To Do List ******************************/
 /**************************************End To Do List **************************/
 
-#include <vector>
-#include <complex>
+#include <list>
 using namespace std;
-#ifndef AudioSegmentation
-#define AudioSegmentation
 
-void zeroCrossing(vector<complex<double>>,float*,int,bool);
-bool getSign(complex<double>,bool);
+#ifndef fastFourierTransform
+#define fastFourierTransform
 
+void FourierTransform(vector<complex<double>>&);
+void inverseFT(vector<complex<double>>&);
 #endif
 
