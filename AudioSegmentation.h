@@ -20,7 +20,7 @@ using namespace std;
 #ifndef AudioSegmentation
 #define AudioSegmentation
 
-void zeroCrossing(vector<complex<double>>,float*,int,bool);
+void zeroCrossing(vector<complex<double>>,float[],int,bool);
 bool getSign(complex<double>,bool);
 
 #endif

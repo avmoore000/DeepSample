@@ -84,8 +84,10 @@ void zeroCrossingTest(vector<complex<double>> data, bool debug)
 {
     // f1 array will hold the results of zero-crossing tests
     float f1[data.size()];
+    float zeroCross[data.size()];
     int bx = data.size();
 
+    float test[5];
     // Initialize the f1 array
     for (int i = 0; i < bx; i++)
     {
@@ -106,17 +108,16 @@ void zeroCrossingTest(vector<complex<double>> data, bool debug)
         cout << "]" << endl;
     }
 
-    zeroCrossing(data,&f1,bx,1);
+    zeroCrossing(data,f1,bx,1);
 
     if (debug)
     {
         cout << "Zero Crossing Results:  " <<endl<<endl;
         cout << "Signal Array:  " << endl;
         cout << "[";
-   
-        for (int i = 0; i < bx; i++)
+        for (int i = 0; i < bx-1; i++)
         {
-            cout << data[i] << " ";
+            //cout << data[i] << " ";
         }
         cout << "]" << endl;
 
