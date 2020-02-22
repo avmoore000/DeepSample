@@ -6,16 +6,29 @@
 
 #include <cmath>
 #include <complex>
+#include <vector>
 #include "FourierTransform.h"
 #include "cepstrum.h"
 
-//Raw implementation of the cepstrum equation
-//Need to preprocess with Hamming window
-void cepstrum(vector<complex<double>>& x){
+//Hamming Window
+vector<complex<double>> windowHamming(vector<complex<double>> n){
+       vector<complex<double>> newn;
+       //arbitrary N; fixed window size;
+        double N = 200;
 
-//HAMMING WINDOW
-for(int i = 0; i < x.size();i++){
-    timeDomain[i] = (float) (( 0.53836 - ( 0.46164 * Math.cos( TWOPI * (double)i  / (double)( SEGMENTATION_LENGTH - 1 ) ) ) ) * frameBuffer[i]);
-}//Not sure if .53836 & 0.46164 are constants
+    //Applies the hamming window to every element in the vector list
+    for(int i = 0; i <= n.size(); i++){
+        newn.at(i) = 0.54 - 0.46 * cos((2 * M_PI * n.at(i)) / N - 1.0); //Formula
+    }
+    return newn;
+}
 
+void cepstrum(vector<complex<double>> x){
+
+    vector<complex<double>> absfft = abs(FourierTransform(x)); //absolute value of fft
+    vector<complex<double>> log = log(absfft); //log of the absolute value
+
+    vector<complex<double>> final = inverseFT(log); //applies inverse Fourier Transform
+
+    return final;
 }
