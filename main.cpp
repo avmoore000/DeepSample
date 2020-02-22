@@ -56,13 +56,20 @@ int main(int argc, char** argv)
 
     // Generate files for testing
     const complex<double> i(1.0, 2.0);
-
+    
     vector <complex<double>> data;
     // Generate sample data
     for (int i = 0; i < 100; i++)
     {
-	    complex<double> num(i,i+1);
-	    data.push_back(i);
+	    complex<double> num;
+	    if ((i % 3) == 0)
+	    {
+                num = polar(-static_cast<double>(i), 0.0);
+            }
+	    else
+	        num = polar(static_cast<double>(i),0.0);
+	    
+	    data.push_back(num);
     }
 
     cout << "Vector size:  " << data.size() << endl;
@@ -77,8 +84,10 @@ void zeroCrossingTest(vector<complex<double>> data, bool debug)
 {
     // f1 array will hold the results of zero-crossing tests
     float f1[data.size()];
+    float zeroCross[data.size()];
     int bx = data.size();
 
+    float test[5];
     // Initialize the f1 array
     for (int i = 0; i < bx; i++)
     {
@@ -90,7 +99,8 @@ void zeroCrossingTest(vector<complex<double>> data, bool debug)
         cout << "Signal Array:  " << endl;
         cout << "[";
 
-        for (int i = 0; i < bx; i++)
+        
+	for (int i = 0; i < bx; i++)
         {
             cout << data[i] << " ";
         }
@@ -105,10 +115,9 @@ void zeroCrossingTest(vector<complex<double>> data, bool debug)
         cout << "Zero Crossing Results:  " <<endl<<endl;
         cout << "Signal Array:  " << endl;
         cout << "[";
-   
-        for (int i = 0; i < bx; i++)
+        for (int i = 0; i < bx-1; i++)
         {
-            cout << data[i] << " ";
+            //cout << data[i] << " ";
         }
         cout << "]" << endl;
 

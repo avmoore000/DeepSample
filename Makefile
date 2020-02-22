@@ -1,3 +1,7 @@
+# Created 2-9-2020
+# Author Andrew Moore
+# Modified 2-9-2020
+
 CC = g++
 CFLAGS = -g -Wall
 
