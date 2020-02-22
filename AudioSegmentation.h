@@ -16,12 +16,13 @@
 
 #include <vector>
 #include <complex>
+#include <string>
 using namespace std;
 #ifndef AudioSegmentation
 #define AudioSegmentation
 
-void zeroCrossing(vector<complex<double>>,float[],int,bool);
-bool getSign(complex<double>,bool);
+void zeroCrossing(vector<complex<double>>,float[],int,bool, string);
+bool getSign(complex<double>,bool,string);
 
 #endif
 

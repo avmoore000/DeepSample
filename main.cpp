@@ -38,7 +38,7 @@
 #include "FourierTransform.h"
 using namespace std;
 
-void zeroCrossingTest(vector<complex<double>>, bool);
+void zeroCrossingTest(vector<complex<double>>, bool, string);
 
 
 /*
@@ -52,7 +52,48 @@ int main(int argc, char** argv)
   //  ifstream audioFile;
 
 //    audioFile.open(fileName, ios::in);
+//
+    string inputFile;
+    string outputFile;
+    bool debug;
 
+    if (argc <= 1)
+    {
+        cout << "Program Use:  " << endl;
+	cout << "./DeepSample [inputFile] [outputFile] [debugMode {0,1}]" << endl;
+	return 0;
+    }
+    else
+    {
+        for (int i = 1; i < argc; i++)
+        {
+            switch (i)
+            {
+                case 1:
+		{
+		    inputFile = argv[i];
+		    break;
+		}
+		case 2:
+		{
+		    outputFile = argv[i];
+		    break;
+		}
+		case 3:
+		{
+		    debug = atoi(argv[i]);
+		    break;
+		}
+		default:
+		    cout << "Error with arguments." << endl;
+            }
+        }
+    }
+
+    cout << "output name:  " << outputFile << endl;
+    ofstream output;
+
+    output.open(outputFile,ios::out);
 
     // Generate files for testing
     const complex<double> i(1.0, 2.0);
@@ -72,20 +113,25 @@ int main(int argc, char** argv)
 	    data.push_back(num);
     }
 
-    cout << "Vector size:  " << data.size() << endl;
-    fastFourierTransform(data);
+    output << "Vector size:  " << data.size() << endl << endl;
 
-    zeroCrossingTest(data,1);
-    
+    output.close();
+
+    fft(data,debug,outputFile);
+
+    zeroCrossingTest(data,debug,outputFile);
+
     return 0;
 }
 
-void zeroCrossingTest(vector<complex<double>> data, bool debug)
+void zeroCrossingTest(vector<complex<double>> data, bool debug, string fileName)
 {
     // f1 array will hold the results of zero-crossing tests
     float f1[data.size()];
     float zeroCross[data.size()];
     int bx = data.size();
+    ofstream output;
+    output.open(fileName, ios::app);
 
     float test[5];
     // Initialize the f1 array
@@ -94,42 +140,41 @@ void zeroCrossingTest(vector<complex<double>> data, bool debug)
 	    f1[i] = -5;
     }
 
+    zeroCrossing(data,f1,bx,debug,fileName);
+
+    output << "Zero Crossing Results" << endl << endl;
     if (debug)
     {
-        cout << "Signal Array:  " << endl;
-        cout << "[";
+        output << "Signal Array:  " << endl;
+        output << "[" << endl;
 
-        
-	for (int i = 0; i < bx; i++)
-        {
-            cout << data[i] << " ";
-        }
-        
-        cout << "]" << endl;
-    }
-
-    zeroCrossing(data,f1,bx,1);
-
-    if (debug)
-    {
-        cout << "Zero Crossing Results:  " <<endl<<endl;
-        cout << "Signal Array:  " << endl;
-        cout << "[";
         for (int i = 0; i < bx-1; i++)
         {
-            //cout << data[i] << " ";
-        }
-        cout << "]" << endl;
+            output << data[i] << " ";
 
-        cout << "F array:  " << endl;
-        cout << "[";
-
-        for (int i = 0; i < bx; i++)
-        {
-            cout << f1[i] << " ";
+	    if ((i != 0) && ((i%10) == 0))
+	        output << endl;
         }
-        cout << "]" << endl;
+        output << endl << "]" << endl << endl;
     }
+    
+    output << "ZeroCrossTest array:  " << endl;
+    output << "[" << endl;
 
+    for (int i = 0; i < bx; i++)
+    {
+        output << f1[i] << " ";
+
+	if ((i != 0) && ((i % 10) == 0))
+	{
+	    output << endl;
+	}
+
+    }
+    
+    output << endl << "]" << endl;
+
+    output.close();
+    
     return;
 }

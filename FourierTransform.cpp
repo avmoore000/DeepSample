@@ -10,22 +10,38 @@
 #include <iostream>
 #include <cmath>
 #include <vector>
+#include <string>
+#include <fstream>
 #include "FourierTransform.h"
 using std::vector;
+using std::ofstream;
 typedef std::complex<double> Complex;
 typedef std::vector<Complex> list;
 
-void fastFourierTransform(vector<complex<double>> x)
+void fft(vector<complex<double>> x, bool debug, string fileName)
 {
 //void FourierTransform(list& x){ //Implemented in a recursive format
-    std::cout << "FUNCTION CALLED" << std::endl;
+//
+    ofstream outFile;
+    outFile.open(fileName, ios::app);
+
+    if (debug)
+    {
+//        std::cout << "FAST FOURIER FUNCTION CALLED" << std::endl;
+	outFile << "FAST FOURIER FUNCTION CALLED" << std::endl;
+    }
+
     const double PI = 3.141592653589793238460;
     const int N = x.size();
     
     //Recursive basis step
     if(N <= 1) return; 
     
-    std::cout << "BASE STEP COMPLETE" << std::endl;
+    if (debug)
+    {
+  //      std::cout << "BASE STEP COMPLETE" << std::endl;
+        outFile << "BASE STEP COMPLETE" << std:: endl;
+    }
 
     /*
     list even;
@@ -39,12 +55,17 @@ void fastFourierTransform(vector<complex<double>> x)
     for(int i = 0; i < (x.size() / 2); i = i + 2){
         even.push_back(i);
         odd.push_back(i + 1);
-        std::cout << "Split Loop ran (" << i << ") times!" << std::endl;
+
+	if (debug)
+        {
+    //        std::cout << "Split Loop ran (" << i << ") times!" << std::endl;
+	    outFile << "Split Loop ran ( " << i << " ) times!" << std::endl;
+        }
     }
     
     //Divide and conquer recursion
-    fastFourierTransform(even); 
-    fastFourierTransform(odd);
+    fft(even, debug, fileName); 
+    fft(odd, debug, fileName);
 
     for (int i = 0; i < (x.size() / 2); ++i){
         //t is a complex number calculated from polar coord of (magnitude, phase angle)
@@ -52,7 +73,13 @@ void fastFourierTransform(vector<complex<double>> x)
 	if (i < odd.size())
 	{
 	    Complex t = std::polar(1.0, -2 * PI * i / N) * odd.at(i);
-            std::cout << "Calculated t" << endl;
+
+	    if (debug)
+            {
+      //          std::cout << "Calculated t" << std::endl;
+		outFile << "Calculated t" << std::endl;
+            }
+
 	}
 
         if (i < even.size())
@@ -62,11 +89,20 @@ void fastFourierTransform(vector<complex<double>> x)
             x.at(i + N/2) = even.at(i);
 	}
 
-	std::cout<<"Replaced element in x " << endl;
+	if (debug)
+        {
+	//    std::cout<<"Replaced element in x " << endl;
+	    outFile << "Replaced element in x " << std::endl;
+        }
 
         //x[k    ] = even[k] + t;
         //x[k+N/2] = even[k] - t;
-        std::cout << "Merging Loop ran (" << i << ") times!" << std::endl;
+	//
+	if (debug)
+	{
+          //  std::cout << "Merging Loop ran (" << i << ") times!" << std::endl;
+	    outFile << "Merging Loop ran ( " << i << " ) times!" << std:: endl;
+        }
     }
 }
 

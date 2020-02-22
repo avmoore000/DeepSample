@@ -15,13 +15,14 @@
 /**************************************End To Do List **************************/
 
 #include <vector>
+#include <string>
 #include <complex>
 using namespace std;
 
 #ifndef FourierTransform
 #define FourierTransform
 
-void fastFourierTransform(vector<complex<double> >);
+void fft(vector<complex<double>>, bool, string);
 
 #endif
 
