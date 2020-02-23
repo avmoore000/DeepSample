@@ -1,14 +1,9 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 /* 
- * File:   main.cpp
- * Author: huetruong and Andrew Moore
+ *  File:   main.cpp
+ *  Author: Hue Truong and Andrew Moore
  *
- * Created on February 1, 2020, 2:55 PM
+ *  Created February 1, 2020, 2:55 PM
+ *
  */
 
 /**************************************Change Log *******************************/
@@ -33,12 +28,12 @@
 #include <complex>
 #include <vector>
 #include <list>
-#include "portaudio/include/portaudio.h"
-#include "AudioSegmentation.h"
-#include "FourierTransform.h"
+#include "../portaudio/include/portaudio.h"
+#include "../include/AudioSegmentation.h"
+#include "../include/FourierTransform.h"
 using namespace std;
 
-void zeroCrossingTest(vector<complex<double>>, bool, string);
+void zeroCrossingTest(vector<complex<double> >, bool, string);
 
 
 /*
@@ -56,7 +51,7 @@ int main(int argc, char** argv)
 
     const complex<double> i(1.0,2.0); // Generate waves for testing
 
-    vector <complex<double>> data; // Container to hold the wave representations.
+    vector <complex<double> > data; // Container to hold the wave representations.
 
     if (argc <= 1)
     {
@@ -119,7 +114,7 @@ int main(int argc, char** argv)
     return 0;
 }
 
-void zeroCrossingTest(vector<complex<double>> data, bool debug, string fileName)
+void zeroCrossingTest(vector<complex<double> > data, bool debug, string fileName)
 {
     // f1 array will hold the results of zero-crossing tests
     float f1[data.size()];
