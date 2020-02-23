@@ -46,16 +46,17 @@ void zeroCrossingTest(vector<complex<double>>, bool, string);
  */
 int main(int argc, char** argv) 
 {
-    // Get filename for data location
-//    string fileName = argv[1];
-    // Store data location from user input
-  //  ifstream audioFile;
+    string inputFile;  // Will hold the location of user input file.
+    string outputFile; // Will hold the location to output file
 
-//    audioFile.open(fileName, ios::in);
-//
-    string inputFile;
-    string outputFile;
-    bool debug;
+    ofstream outFile;  // Pointer to the output file
+    ifstream inFile; // Pointer to the user input file.
+
+    bool debug; // Toggles debug mode.
+
+    const complex<double> i(1.0,2.0); // Generate waves for testing
+
+    vector <complex<double>> data; // Container to hold the wave representations.
 
     if (argc <= 1)
     {
@@ -90,15 +91,9 @@ int main(int argc, char** argv)
         }
     }
 
-    cout << "output name:  " << outputFile << endl;
-    ofstream output;
+    outFile.open(outputFile,ios::out);
 
-    output.open(outputFile,ios::out);
-
-    // Generate files for testing
-    const complex<double> i(1.0, 2.0);
     
-    vector <complex<double>> data;
     // Generate sample data
     for (int i = 0; i < 100; i++)
     {
@@ -113,9 +108,9 @@ int main(int argc, char** argv)
 	    data.push_back(num);
     }
 
-    output << "Vector size:  " << data.size() << endl << endl;
+    outFile << "Vector size:  " << data.size() << endl << endl;
 
-    output.close();
+    outFile.close();
 
     fft(data,debug,outputFile);
 
@@ -134,6 +129,7 @@ void zeroCrossingTest(vector<complex<double>> data, bool debug, string fileName)
     output.open(fileName, ios::app);
 
     float test[5];
+
     // Initialize the f1 array
     for (int i = 0; i < bx; i++)
     {
