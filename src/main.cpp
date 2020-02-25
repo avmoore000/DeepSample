@@ -28,9 +28,9 @@
 #include <complex>
 #include <vector>
 #include <list>
-#include "../portaudio/include/portaudio.h"
 #include "../include/AudioSegmentation.h"
 #include "../include/FourierTransform.h"
+#include "../include/audioHandler.h"
 using namespace std;
 
 void zeroCrossingTest(vector<complex<double> >, bool, string);
@@ -90,6 +90,9 @@ int main(int argc, char** argv)
 
     
     // Generate sample data
+
+    loadAudio(inputFile, "testFile");
+
     for (int i = 0; i < 100; i++)
     {
 	    complex<double> num;

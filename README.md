@@ -35,4 +35,5 @@ Week of Feb 22 2020
 Began the implementation of the spectrum flux and cepstrum algorithms.  Created a skeleton for the ANN to be completed this week. 
 
 Week of Feb 29 2020
-Implemented printing of results for both debugging purposes and for sending to the neural network. 
+Implemented printing of results for both debugging purposes and for sending to the neural network.
+Generated text file of audio wave using the libsnd library. 
