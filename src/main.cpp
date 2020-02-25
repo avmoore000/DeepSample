@@ -28,12 +28,14 @@
 #include <complex>
 #include <vector>
 #include <list>
+#include <string>
+#include <sys/stat.h>
 #include "../include/AudioSegmentation.h"
 #include "../include/FourierTransform.h"
 #include "../include/audioHandler.h"
 using namespace std;
 
-void zeroCrossingTest(vector<complex<double> >, bool, string);
+void zeroCrossingTest(vector<complex<double> >, bool, string, string);;
 
 
 /*
@@ -43,6 +45,7 @@ int main(int argc, char** argv)
 {
     string inputFile;  // Will hold the location of user input file.
     string outputFile; // Will hold the location to output file
+    string outfilePath; // Will hold the name of the path for the algorithm outputs.
 
     ofstream outFile;  // Pointer to the output file
     ifstream inFile; // Pointer to the user input file.
@@ -56,7 +59,7 @@ int main(int argc, char** argv)
     if (argc <= 1)
     {
         cout << "Program Use:  " << endl;
-	cout << "./DeepSample [inputFile] [outputFile] [debugMode {0,1}]" << endl;
+	cout << "./DeepSample [resultsDirectory] [inputFile] [outputFile] [debugMode {0,1}]" << endl;
 	return 0;
     }
     else
@@ -66,16 +69,21 @@ int main(int argc, char** argv)
             switch (i)
             {
                 case 1:
+                {
+                    outfilePath = argv[i];
+                    break;
+                }
+                case 2:
 		{
 		    inputFile = argv[i];
 		    break;
 		}
-		case 2:
+		case 3:
 		{
 		    outputFile = argv[i];
 		    break;
 		}
-		case 3:
+		case 4:
 		{
 		    debug = atoi(argv[i]);
 		    break;
@@ -86,45 +94,36 @@ int main(int argc, char** argv)
         }
     }
 
-    outFile.open(outputFile,ios::out);
+    // Create a directory for results
+    if(mkdir(outfilePath.c_str(), 0777) == -1)
+        cout << "Error creating directory." << endl;
+    else
+        cout << "Results directory created." << endl;
 
+    outFile.open((outfilePath + "/" + outputFile).c_str(),ios::out);
     
-    // Generate sample data
-
-    loadAudio(inputFile, "testFile");
-
-    for (int i = 0; i < 100; i++)
-    {
-	    complex<double> num;
-	    if ((i % 3) == 0)
-	    {
-                num = polar(-static_cast<double>(i), 0.0);
-            }
-	    else
-	        num = polar(static_cast<double>(i),0.0);
-	    
-	    data.push_back(num);
-    }
+    // Load audio file
+    loadAudio(inputFile,data,debug);
 
     outFile << "Vector size:  " << data.size() << endl << endl;
 
     outFile.close();
 
-    fft(data,debug,outputFile);
+    fft(data,debug,outfilePath);
 
-    zeroCrossingTest(data,debug,outputFile);
+    zeroCrossingTest(data,debug,outputFile, outfilePath);
 
     return 0;
 }
 
-void zeroCrossingTest(vector<complex<double> > data, bool debug, string fileName)
+void zeroCrossingTest(vector<complex<double> > data, bool debug, string fileName, string filePath)
 {
     // f1 array will hold the results of zero-crossing tests
     float f1[data.size()];
     float zeroCross[data.size()];
     int bx = data.size();
     ofstream output;
-    output.open(fileName, ios::app);
+    output.open((filePath + "/" + fileName).c_str(), ios::app);
 
     float test[5];
 
@@ -134,7 +133,7 @@ void zeroCrossingTest(vector<complex<double> > data, bool debug, string fileName
 	    f1[i] = -5;
     }
 
-    zeroCrossing(data,f1,bx,debug,fileName);
+    zeroCrossing(data,f1,bx,debug);
 
     output << "Zero Crossing Results" << endl << endl;
     if (debug)

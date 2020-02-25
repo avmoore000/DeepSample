@@ -30,7 +30,7 @@ using namespace std;
 #define AudioSegmentation
 
 // Audio segmentation algorithms
-void zeroCrossing(vector<complex<double> >,float[],int,bool, string);
+void zeroCrossing(vector<complex<double> >,float[],int,bool);
 vector<complex<double> > cepstrum(vector<complex<double> >);
 
 // Helper utilities

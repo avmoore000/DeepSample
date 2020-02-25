@@ -36,7 +36,7 @@ void printer (string fileName, string value[], int algo, int lineNumber, int beg
 
     stringstream stringBuilder;  // This will be used to create the output string
 
-    string line[end];
+    string line[bound];
 
     outFile.open(fileName, ios::app);
 

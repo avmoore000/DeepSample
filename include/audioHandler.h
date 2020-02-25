@@ -19,6 +19,8 @@
 #include <sstream>
 #include <fstream>
 #include <string>
+#include <complex>
+#include <vector>
 #include <ctype.h>
 #include <float.h>
 #include <sndfile.h>
@@ -27,8 +29,8 @@ using namespace std;
 #ifndef audioHandler
 #define audioHandler
 
-int loadAudio(string, string);
-static void convertToText(SNDFILE*, string, int, int);
+void loadAudio(string, vector<complex<double> >&,  bool);
+static void convertSound(string,vector<complex<double> >&, int, bool, bool);
 
 #endif
 

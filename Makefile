@@ -28,4 +28,4 @@ audioHandler.o: src/audioHandler.cpp include/audioHandler.h
 	$(CC) $(CFLAGS) -c src/audioHandler.cpp
 
 clean:
-	$(RM) DeepSample *.o *.~ *.out src/*.o
+	$(RM) DeepSample *.o *.~ *.out src/*.o *.txt

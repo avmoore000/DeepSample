@@ -31,10 +31,11 @@ typedef std::vector<Complex> list;
 //           Transform (FFT) algorithm.  Fourier transformations are used
 //           primarily in signal processing to indicate the frequency in 
 //           a signal, and its proportion throughout said signal.
-void fft(vector<complex<double> > x, bool debug, string fileName)
+void fft(vector<complex<double> > x, bool debug, string resultDirectory)
 {
+    string fileName = resultDirectory + "/fastFourierTransform.txt";
     ofstream outFile;
-    outFile.open(fileName, ios::app);
+    outFile.open(fileName.c_str(), ios::out);;
 
     if (debug)
     {
