@@ -35,7 +35,9 @@ void fft(vector<complex<double> > x, bool debug, string resultDirectory)
 {
     string fileName = resultDirectory + "/fastFourierTransform.txt";
     ofstream outFile;
-    outFile.open(fileName.c_str(), ios::out);;
+  
+    if (debug)
+        outFile.open(fileName.c_str(), ios::out);;
 
     if (debug)
     {
@@ -100,6 +102,11 @@ void fft(vector<complex<double> > x, bool debug, string resultDirectory)
             outFile << "Merging Loop ran ( " << i << " ) times!" << endl;
         }
     }
+   
+    if (debug)
+        outFile.close();
+
+    return;
 }
 
 // Function inverseFT

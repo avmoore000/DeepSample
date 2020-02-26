@@ -46,7 +46,9 @@ void zeroCrossing (vector<complex<double> >data, float zeroCross[], int nx, bool
     // Output data
     string outputName = "Results/zeroCrossing.txt";
     ofstream outFile;
-    outFile.open(outputName, ios::out);
+
+    if (debug)
+        outFile.open(outputName, ios::out);
 
     int j = 0;
     int bound = 6;
@@ -77,7 +79,8 @@ void zeroCrossing (vector<complex<double> >data, float zeroCross[], int nx, bool
         outFile << "Zero Crossing calculations:  " << endl << endl;
     }
 
-    outFile.close();
+    if (debug)
+        outFile.close();
 
     // Loop through the data
     for (int i = 0; i < nx-1; i++)
@@ -134,18 +137,35 @@ void zeroCrossing (vector<complex<double> >data, float zeroCross[], int nx, bool
 
     cout << endl << endl; 
 
-    outFile.open(outputName, ios::app);
+    if (debug)
+    {
+        outFile.open(outputName, ios::app);
 
-    cout << "ZeroCross Algorithm Complete." << endl << endl;
-    outFile << "ZeroCross Algorithm Complete. " << endl << endl;
+        cout << "ZeroCross Algorithm Complete." << endl << endl;
+        outFile << "ZeroCross Algorithm Complete. " << endl << endl;
     
-    for (int i = 0; i < 100; i++)
-        outFile << "*";
-    outFile << endl << endl;
+        for (int i = 0; i < 100; i++)
+            outFile << "*";
+        outFile << endl << endl;
 
-    outFile.close();
+        outFile.close();
+    }
 
 }
+
+// Function spectrumFlux
+// Inputs:
+//        data - A vector of complex doubles describing the audio wave.
+//        fluxResults - A floating point array that will hold the results of the calculations
+//        waveSize - An integer describing the size of the data vector.
+// Outputs: None
+// Purpose:  spectrumFlux calculate the spectral flux between each frame of a given wave.
+void spectrumFlux(vector<complex<double> > data, float fluxResults[], int waveSize,  bool debug)
+{
+    
+    return;
+}
+
 
 /*
 // Function cepstrum

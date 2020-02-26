@@ -13,6 +13,7 @@
 // Added in the code for generating the waves, and sedning to the fourier transform function.  - H.T. & A.M. Feb 15 2020
 // Converted complex numbers from float to double template - A.M. Feb 15 2020
 // Edited zerocrossing test to accept vector data - A.M. - Feb 15 2020
+// Added in the chrono library for tracking completion time of algorithms - A.M. - Feb 26 2020
 
 /**************************************End Change Log ***************************/
 
@@ -22,18 +23,19 @@
 
 /**************************************End To Do List **************************/
 
-#include <cstdlib>
+//#include <cstdlib>
 #include <iostream>
 #include <fstream>
 #include <complex>
 #include <vector>
-#include <list>
 #include <string>
+#include <chrono>
 #include <sys/stat.h>
 #include "../include/AudioSegmentation.h"
 #include "../include/FourierTransform.h"
 #include "../include/audioHandler.h"
 using namespace std;
+using namespace std::chrono;
 
 void zeroCrossingTest(vector<complex<double> >, bool, string, string);;
 
@@ -43,18 +45,16 @@ void zeroCrossingTest(vector<complex<double> >, bool, string, string);;
  */
 int main(int argc, char** argv) 
 {
-    string inputFile;  // Will hold the location of user input file.
-    string outputFile; // Will hold the location to output file
-    string outfilePath; // Will hold the name of the path for the algorithm outputs.
+    string inputFile;                  // Location of user input file
+    string outputFile;                 // Location to output file
+    string filePath;                   // Path for the algorithm outputs
 
-    ofstream outFile;  // Pointer to the output file
-    ifstream inFile; // Pointer to the user input file.
+    ofstream outFile;                  // Pointer to the output file
+    ifstream inFile;                   // Pointer to the user input file
 
-    bool debug; // Toggles debug mode.
+    bool debug;                        // Toggles debug mode
 
-    const complex<double> i(1.0,2.0); // Generate waves for testing
-
-    vector <complex<double> > data; // Container to hold the wave representations.
+    vector <complex<double> > data;    // Container to hold the wave representations
 
     if (argc <= 1)
     {
@@ -70,7 +70,7 @@ int main(int argc, char** argv)
             {
                 case 1:
                 {
-                    outfilePath = argv[i];
+                    filePath = argv[i];
                     break;
                 }
                 case 2:
@@ -95,12 +95,13 @@ int main(int argc, char** argv)
     }
 
     // Create a directory for results
-    if(mkdir(outfilePath.c_str(), 0777) == -1)
+    if(mkdir(filePath.c_str(), 0777) == -1)
         cout << "Error creating directory." << endl;
     else
         cout << "Results directory created." << endl;
 
-    outFile.open((outfilePath + "/" + outputFile).c_str(),ios::out);
+    // Open the file for output
+    outFile.open((filePath + "/" + outputFile).c_str(),ios::out);
     
     // Load audio file
     loadAudio(inputFile,data,debug);
@@ -109,39 +110,47 @@ int main(int argc, char** argv)
 
     outFile.close();
 
-    fft(data,debug,outfilePath);
+    auto start = high_resolution_clock::now(); 
+    fft(data,debug,filePath);
+    auto stop = high_resolution_clock::now();
+    auto duration = duration_cast<microseconds>(stop - start);
 
-    zeroCrossingTest(data,debug,outputFile, outfilePath);
+    outFile << "FFT completed in " << duration.count() << " ms." << endl << endl;
+
+    zeroCrossingTest(data,debug,outputFile,filePath);
 
     return 0;
 }
 
 void zeroCrossingTest(vector<complex<double> > data, bool debug, string fileName, string filePath)
 {
-    // f1 array will hold the results of zero-crossing tests
-    float f1[data.size()];
-    float zeroCross[data.size()];
-    int bx = data.size();
-    ofstream output;
+    float zeroCross[data.size()];      // Hold the results of the zero-crossing test
+    ofstream output;                   // Points to the file to output results
+   
     output.open((filePath + "/" + fileName).c_str(), ios::app);
 
-    float test[5];
-
-    // Initialize the f1 array
-    for (int i = 0; i < bx; i++)
+    // Initialize the zeroCrossing array
+    for (int i = 0; i < data.size(); i++)
     {
-	    f1[i] = -5;
+	    zeroCross[i] = 0;
     }
 
-    zeroCrossing(data,f1,bx,debug);
+    auto start = high_resolution_clock::now();
+    zeroCrossing(data,zeroCross,data.size(),debug);
+    auto stop = high_resolution_clock::now();
+    auto duration = duration_cast<milliseconds>(stop - start);
 
-    output << "Zero Crossing Results" << endl << endl;
+    cout << "Zero Crossing Algorithm completed in " << duration.count() << " ms." << endl;
+    output << "Zero Crossing Algorithm completed in " << duration.count() << " ms." << endl << endl;
+
     if (debug)
     {
+        output << "Zero Crossing Results" << endl << endl;
+
         output << "Signal Array:  " << endl;
         output << "[" << endl;
 
-        for (int i = 0; i < bx-1; i++)
+        for (int i = 0; i < data.size()-1; i++)
         {
             output << data[i] << " ";
 
@@ -149,23 +158,23 @@ void zeroCrossingTest(vector<complex<double> > data, bool debug, string fileName
 	        output << endl;
         }
         output << endl << "]" << endl << endl;
-    }
     
-    output << "ZeroCrossTest array:  " << endl;
-    output << "[" << endl;
+        output << "ZeroCrossTest array:  " << endl;
+        output << "[" << endl;
 
-    for (int i = 0; i < bx; i++)
-    {
-        output << f1[i] << " ";
+        for (int i = 0; i < data.size(); i++)
+        {
+            output << zeroCross[i] << " ";
 
-	if ((i != 0) && ((i % 10) == 0))
-	{
-	    output << endl;
-	}
+            if ((i > 0) && ((i % 50) == 0))
+	    {
+	        output << endl;
+	    }
 
-    }
+        }
     
-    output << endl << "]" << endl;
+        output << endl << "]" << endl;
+    }
 
     output.close();
     
