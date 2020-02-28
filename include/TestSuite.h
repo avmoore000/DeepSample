@@ -27,6 +27,7 @@ using namespace std::chrono;
 #define TestSuite
 
 void zeroCrossingTest(vector<complex<double> >,vector<complex<double> >,int,bool,string,string);
+void spectrumFluxTest(vector<complex<double> >,vector<complex<double> >,int,bool,string,string);
 
 #endif
 

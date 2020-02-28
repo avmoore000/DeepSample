@@ -1,0 +1,8 @@
+Left Channel Size:  268237
+Right Channel Size:  268237
+
+FFT of left channel completed in 1425801 ms.
+FFT of the right channel completed in 1968721 ms.
+Spectrum Flux Algorithm completed in 74 ms.
+
+Left Channel Spectral Flux:  2.33854Right Channel Spectral Flux:  2.86439

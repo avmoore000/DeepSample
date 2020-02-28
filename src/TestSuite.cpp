@@ -119,3 +119,47 @@ void zeroCrossingTest(vector<complex<double> > leftChannel,vector<complex<double
     
     return;
 }
+
+// Function spectrumFluxTest
+// Inputs:
+//       leftChannel - A vector of complex doubles describing the left channel of an audio wave.
+//       rightChannel - A vector of complex doubles describing the right channel of an audio wave.
+//       channels - An integer describing the number of channels in the audio file.
+//       debug - A flag that controls the debug output.
+//       outputFile - A string describing the file to output results
+//       path - A string describing the path for the output file directory
+// Outputs: None
+// Purpose:  This function tests the spectrum flux algorithm.
+void spectrumFluxTest(vector<complex<double> > leftChannel,vector<complex<double> > rightChannel,int channels,bool debug,string fileName,string path)
+{
+    string outputFileName;      // Contains the name of the output file
+    ofstream outputFile;        // A stream pointer for data output.
+    double spectralFlux[2];     // Will hold the results of the spectrum flux algorithm.
+
+    outputFileName = path + "/" + fileName;
+
+    outputFile.open(outputFileName.c_str(), ios::app);
+
+    auto start = high_resolution_clock::now();
+    spectrumFlux(leftChannel,rightChannel,spectralFlux,channels,debug,path);
+    auto stop = high_resolution_clock::now();
+    auto duration = duration_cast<milliseconds>(stop - start);
+
+    cout << "Spectrum Flux Algorithm completed in " << duration.count() << " ms." << endl;
+    outputFile << "Spectrum Flux Algorithm completed in " << duration.count() << " ms." << endl << endl;    
+    
+    if (debug)
+    {
+        outputFile << "Left Channel Spectral Flux:  " << spectralFlux[0] << endl;
+
+        if (channels == 2)
+        {
+            outputFile << "Right Channel Spectral Flux:  " << spectralFlux[1] << endl;
+        }
+    }
+
+    outputFile << endl;
+
+    outputFile.close();
+    return;
+}

@@ -37,4 +37,6 @@ Began the implementation of the spectrum flux and cepstrum algorithms.  Created 
 Week of Feb 29 2020
 Implemented printing of results for both debugging purposes and for sending to the neural network.
 Generated text file of audio wave using the libsnd library.
-Split the audio signal to left and right channels, stored them in vector for use by algorithms. 
+Split the audio signal to left and right channels, stored them in vector for use by algorithms.
+Added working implementation of spectrum flux algorithm.
+Created utility library to abstract away some of the workflow from the driver programs. 

@@ -20,6 +20,7 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <complex>
 using namespace std;
 
 #ifndef Utilities
@@ -29,6 +30,7 @@ void printer(string,vector<string>,int,int,int);;
 string createString(int,int);
 string createString(bool,int);
 string createString(double,int);
+void normalize(vector<complex<double > >,vector<double>&,int,int,bool,string);
 
 #endif
 

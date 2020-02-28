@@ -20,7 +20,6 @@
 
 /**************************************To Do List ******************************/
 
-// Enable the main function to pass on multiple size arrays, eliminate hard coded test.
 
 /**************************************End To Do List **************************/
 
@@ -98,7 +97,7 @@ int main(int argc, char** argv)
 
     // Create a directory for results
     if(mkdir(filePath.c_str(), 0777) == -1)
-        cout << "Error creating directory.  " << filePath << " already exists."" << endl;
+        cout << "Error creating directory.  " << filePath << " already exists." << endl;
     else
         cout << "Results directory created at " << filePath << endl;
 
@@ -138,7 +137,8 @@ int main(int argc, char** argv)
 
     outFile.close();
 
-    zeroCrossingTest(leftChannel,rightChannel,channels,debug,outputFile,filePath);
+    //zeroCrossingTest(leftChannel,rightChannel,channels,debug,outputFile,filePath);
+    spectrumFluxTest(leftChannel,rightChannel,channels,debug,outputFile,filePath);
     
     return 0;
 }

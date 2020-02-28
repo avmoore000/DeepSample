@@ -34,7 +34,7 @@ typedef std::vector<Complex> list;
 void fft(vector<complex<double> > x, bool debug, string resultDirectory)
 {
     string fileName;                             // Contains the results directory path
-    ofstream outfile;                            // Used for outputting results
+    ofstream outFile;                            // Used for outputting results
     vector <complex<double> > even;              // Holds the even elements of the wave
     vector <complex<double> > odd;               // Holds the odd elements of the wave
     const double PI = 3.1459265358793238460;     // Used in calculations
