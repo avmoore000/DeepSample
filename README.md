@@ -30,11 +30,13 @@ use these as the basis of our research.
 
 Week of Feb 15 2020
 
-Created a working implementation of the zero-crossing algorithm.  Added a file describing the algorithms we are targeting, and began a works cited list for use in the final paper.
+- Created a working implementation of the zero-crossing algorithm.  
+- Added a file describing the algorithms we are targeting, and began a works cited list for use in the final paper.
 
 Week of Feb 22 2020
 
-Began the implementation of the spectrum flux and cepstrum algorithms.  Created a skeleton for the ANN to be completed this week. 
+- Began the implementation of the spectrum flux and cepstrum algorithms.  
+- Created a skeleton for the ANN to be completed this week. 
 
 Week of Feb 29 2020
 
