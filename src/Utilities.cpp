@@ -1,6 +1,6 @@
 /* 
  *  File:    Utilities.cpp
- *  Author:  Andrew Moore
+ *  Author:  Hue Truong and Andrew Moore
  *
  *  Created: February 23, 2020, 3:25 PM
  */
@@ -22,21 +22,17 @@ using namespace std;
 // Function printer
 // Inputs:  
 //        fileName - A string containing the name of the output file.
-//        value - A string to be added to the output file.
+//        value - A string to be addd to the output file.
 //        algo - An integer specifying the algorithm that called the printer.
-//        lineNumber - The line number being written
 //        begin - An integer describing the beginning of the printed range.
 //        end - An integer describing the end of the printed range.
-//        bound - An integer used to control the end of the loop.
 // Outputs:  None
 // Purpose:  Formats and outputs text to a file.
-void printer (string fileName, string value[], int algo, int lineNumber, int begin, int end, int bound)
+void printer (string fileName, vector<string> value, int algo, int begin, int end)
 {
-    ofstream outFile;  // Points to user specified output file
-
-    stringstream stringBuilder;  // This will be used to create the output string
-
-    string line[bound];
+    ofstream outFile;                // Points to user specified output file
+    stringstream stringBuilder;      // This will be used to create the output string
+    string line;                     // Stores the line as the string is built
 
     outFile.open(fileName, ios::app);
 
@@ -44,22 +40,22 @@ void printer (string fileName, string value[], int algo, int lineNumber, int beg
     {
         case 0:  // ZeroShift algorithm
         {
-            for (int i = 0; i < bound; i++)
+            for (int i = 0; i < value.size() - 1; i++)
             {
                 if (i == 0)
-                    line[i] = "Iteration:";
+                    line = "Iteration:";
                 if (i == 1)
-                    line[i] = "Real I [" + to_string(begin) + " - " + to_string(end) + "]:";
+                    line = "Real I [" + to_string(begin) + " - " + to_string(end) + "]:";
                 if (i == 2)
-                    line[i] = "Real I+1 [" + to_string(begin) + " - " + to_string(end) + "]:";
+                    line = "Real I+1 [" + to_string(begin) + " - " + to_string(end) + "]:";
                 if (i == 3)
-                    line[i] = "Sign 1 [" + to_string(begin) + " - " + to_string(end) + "]:";
+                    line = "Sign 1 [" + to_string(begin) + " - " + to_string(end) + "]:";
                 if (i == 4)
-                    line[i] = "Sign 2 [" + to_string(begin) + " - " + to_string(end) + "]:";
+                    line = "Sign 2 [" + to_string(begin) + " - " + to_string(end) + "]:";
                 if (i == 5)
-                    line[i] = "ZeroCross [" + to_string(begin) + " - " + to_string(end) + "]:";
+                    line = "ZeroCross [" + to_string(begin) + " - " + to_string(end) + "]:";
 
-                outFile << line[i] << setiosflags(ios_base::left) << setw(30-line[i].length()) << " "
+                outFile << line << setiosflags(ios_base::left) << setw(30-line.length()) << " "
                         << resetiosflags(ios_base::left) << setiosflags(ios_base::right) << value[i]
                         << resetiosflags(ios_base::right) << endl << endl;
 
@@ -93,4 +89,52 @@ void printer (string fileName, string value[], int algo, int lineNumber, int beg
     }
 
     outFile.close();
+}
+
+// Function createString (int version)
+// Inputs:
+//       data - An integer to be converted to a string.
+//       fieldWidth - An integer specifying the width of the data field.
+// Outputs:  
+//       newString - The string version of the input
+// Purpose:  Generate strings from given input
+string createString(int data, int fieldWidth)
+{
+    stringstream stringBuilder;
+            
+    stringBuilder << setiosflags(ios_base::left) << setw(fieldWidth) << to_string(data) + "  " << resetiosflags(ios_base::left);
+
+    return stringBuilder.str();
+}
+
+// Function createString (double version)
+// Inputs:
+//       data - A double to be converted to a string.
+//       fieldWidth - An integer specifying the width of the data field.
+// Outputs:
+//       newString - The string version of the input
+// Purpose:  Generate strings from given input
+string createString(double data, int fieldWidth)
+{
+    stringstream stringBuilder;
+
+    stringBuilder << setiosflags(ios_base::left) << setw(fieldWidth) << to_string(data) + " " << resetiosflags(ios_base::left);
+
+    return stringBuilder.str();
+}
+
+// Function createString (boolean version)
+// Inputs:
+//       data - A boolean to be converted to a string.
+//       fieldWidth - An integer specifying the width of the data field.
+// Outputs:
+//       newString - The string version of the input.
+// Purpose:  Generate strings from given input
+string createString(bool data, int fieldWidth)
+{
+    stringstream stringBuilder;
+ 
+    stringBuilder << setiosflags(ios_base::left) << setw(fieldWidth) << to_string(data) + " " << resetiosflags(ios_base::left);
+
+    return stringBuilder.str();
 }

@@ -13,6 +13,7 @@
 // Updated debug mode to use a print function - A.M. Feb 23 2020
 // Added in the function definition for windowHamming - A.M. and H.T. Feb 23 2020
 // Added in the function definition for cepstrum - A.M. and H.T. Feb 23 2020
+// Edited zeroCrossing algorithm to work on both mono and stereo waves. - A.M. Feb 27 2020
 
 /**************************************End Change Log ***************************/
 
@@ -23,6 +24,7 @@
 // Create function implementation for complex cepstra analysis
 
 /**************************************End To Do List **************************/
+
 #include "../include/AudioSegmentation.h"
 #include "../include/Utilities.h"
 
@@ -30,112 +32,138 @@ using namespace std;
 
 // Function zeroCrossing
 // Inputs:  
-//        *data - A pointer to the user generated waves
-//        zeroCross - A pointer to the array that will store the zero cross results.
-//        nx - the size of each data point in the dataset
-//        debug - a flag to enable or disable debug messages.
+//        leftChannel - A vector of complex doubles describing the left half of the audio signal.
+//        rightChannel - A vector of complex doubles describing the right half of the audio signal.
+//        zeroCross - A 2D vector of floating points describing the results of the zero crossing algorithm.
+//        channels - An integer describing the number of channels in the audio wave.
+//        debug - A flag to enable or disable debug messages.
+//        path - A string containing the path for file output.
 // Outputs:  None
 // Purpose:  The zeroCrossing function is an implementation of the zero crossing signal
 // analysis algorithm.  It counts the positive and negative changes within the signal
-// and records the results in an array of zeros and ones that is passed by the user.
-void zeroCrossing (vector<complex<double> >data, float zeroCross[], int nx, bool debug)
+// and records the results in a 2D vector that is passed by the user.
+void zeroCrossing (vector<complex<double> > leftChannel,vector<complex<double> > rightChannel,vector<vector<float> > &zeroCross,int channels,bool debug,string path)
 {
-    // Keep track of the current and next data point.
-    bool sign1, sign2;
+    bool sign[2];           // Keep track of sign changes
+    int lower;              // Mark the current lower bound of printed data
+    int upper;              // Mark the current upper bound of printed data
+    int fieldWidth;         // Specify the width of the data fields in output.
 
-    // Output data
-    string outputName = "Results/zeroCrossing.txt";
-    ofstream outFile;
+    string outputName;      // Name of file to store zeroCrossing results
+    vector<string> values;  // Store the values of current data points
+    ofstream outFile;       // File pointer for outputting results
+   
+    outputName = path + "/zeroCrossing.txt";
+
+    fieldWidth = 10;
+    lower = 0;
+    upper = 0;
+
+    // Initialize the values vector
+    for (int i = 0; i < 6; i++)
+        values.push_back("");
 
     if (debug)
-        outFile.open(outputName, ios::out);
+        outFile.open((path + "/zeroCrossing.txt").c_str(), ios::app);
 
-    int j = 0;
-    int bound = 6;
-    int lower = 0;
-    int upper = 0;
-    int percent = 0;  // Keep track of completion percentage
-
-    // Strings used to build output file.
-    stringstream stringBuilder;
-    string values[6];
+    outFile << endl << endl << "ZeroCross Algorithm" << endl << endl;
+    cout << "Zero Cross Algorithm Started" << endl;
 
     for (int i = 0; i < 100; i++)
         outFile << "*";
 
-    for (int i = 0; i < 6; i++)
-        values[i] = "";
-
-    cout << "Data.size() = " << data.size() << endl;
-
-    percent = (5*data.size()) / 100;
-
-    outFile << endl << endl << "ZeroCross Algorithm" << endl << endl;
-    cout << "ZeroCross Algorithm Running" << endl << endl;
+    outFile << endl << endl;
 
     if (debug)
     {
-        outFile << "NX = " << nx << endl << endl;
-        outFile << "Zero Crossing calculations:  " << endl << endl;
+        outFile << "Left Channel:" << endl << endl;
+         
+        for (int i = 0; i < 100; i++)
+            outFile << "*";
+
+        outFile << endl << endl;
+
+        outFile.close();
     }
 
-    if (debug)
-        outFile.close();
-
-    // Loop through the data
-    for (int i = 0; i < nx-1; i++)
+    // Always perform zero crossing on the left channel
+    for (int i = 0; i < leftChannel.size() - 1; i++)
     {
         upper = i;
-        sign1 = getSign(real(data[i]),debug, outputName);
-        sign2 = getSign(real(data[i+1]),debug, outputName);
+   
+        sign[0] = getSign(real(leftChannel[i]), debug, outputName);
+        sign[1] = getSign(real(leftChannel[i+1]), debug, outputName);
 
-        // If the signs are not equal, there has been a change in signal.
-        if (sign1 != sign2)
-            zeroCross[i+1] = 1;
+        // If signs are not equal, a signal change has occured.
+        if (sign[0] != sign[1])
+            zeroCross[0][i+1] = 1;
 
-        if (debug)
+        values[0] += createString(i,fieldWidth);
+        values[1] += createString(real(leftChannel[i]),fieldWidth);
+        values[2] += createString(real(leftChannel[i+1]),fieldWidth);
+        values[3] += createString(sign[0],fieldWidth);
+        values[4] += createString(sign[1],fieldWidth);
+        values[5] += createString(zeroCross[0][i+1],fieldWidth);
+
+        if ( ((i != 0) && ((i % 4) == 0)) || i == (leftChannel.size() - 2) )
         {
-	    stringBuilder << setiosflags(ios_base::left) << setw(10) << to_string(i+1) + "  ";
-	    values[0] += stringBuilder.str();
-	    stringBuilder.str("");
-	    stringBuilder << setiosflags(ios_base::left) << setw(10) << to_string(real(data[i])) + "  ";
-	    values[1] += stringBuilder.str();
-            stringBuilder.str("");
-	    stringBuilder << setiosflags(ios_base::left) << setw(10) << to_string(real(data[i+1])) + "  ";
-	    values[2] += stringBuilder.str();
-	    stringBuilder.str("");
-	    stringBuilder << setiosflags(ios_base::left) << setw(10) << to_string(sign1) + "  ";
-	    values[3] += stringBuilder.str();
-	    stringBuilder.str("");
-	    stringBuilder << setiosflags(ios_base::left) << setw(10) << to_string(sign2) + "  ";
-	    values[4] += stringBuilder.str();
-	    stringBuilder.str("");
-	    stringBuilder << setiosflags(ios_base::left) << setw(10) << to_string(zeroCross[i+1]) + "  ";
-	    values[5] += stringBuilder.str();
-	    stringBuilder.str("");
+            printer(outputName, values, 0, lower, upper);
 
-            if ((i != 0) && ((i%4) == 0))
-            {
-                printer(outputName, values, 0, 1, lower, upper, bound);
-            
-                lower = i + 1;   
+            lower = i + 1;
 
-                for (int j = 0; j < 6; j++)
-                    values[j] = "";
-	    }
-	    else
-            {
-                j += 1;
-	    }
-        }
-
-        if ((i%percent) == 0)
-        {
-            cout << "#";
+            for (int j = 0; j < values.size() - 1; j++)
+                values[j] = "";
         }
     }
 
-    cout << endl << endl; 
+    if (channels == 2)
+    {
+        if (debug)
+        {
+
+            outFile.open((path + "/zeroCrossing.txt").c_str(), ios::app);
+
+            outFile << endl << endl << "Right Channel:" << endl << endl;
+       
+            for (int i = 0; i < 100; i++)
+                outFile << "*";
+
+            outFile << endl << endl;
+           
+            outFile.close();
+        }
+
+        lower = 0;
+
+        for (int i = 0; i <= rightChannel.size() - 1; i++)
+        {
+            upper = i;
+ 
+            sign[0] = getSign(real(rightChannel[i]), debug, outputName);
+            sign[1] = getSign(real(rightChannel[i]), debug, outputName);
+
+            //If signs are not equal, a signal change has occured.
+            if (sign[0] != sign[1])
+                zeroCross[1][i+1] = 1;
+
+            values[0] += createString(i,fieldWidth);
+            values[1] += createString(real(rightChannel[i]),fieldWidth);
+            values[2] += createString(real(rightChannel[i+1]),fieldWidth);
+            values[3] += createString(sign[0],fieldWidth);
+            values[4] += createString(sign[1],fieldWidth);
+            values[5] += createString(zeroCross[1][i+1],fieldWidth);
+           
+            if ( ((i != 0) && ((i % 4) == 0)) || (i == rightChannel.size() - 1) )
+            {
+                printer(outputName, values, 0, lower, upper);
+
+                lower = i + 1;
+
+                for (int j = 0; j < values.size() - 1; j++)
+                    values[j] = "";
+            }
+        }
+    }
 
     if (debug)
     {
@@ -150,7 +178,6 @@ void zeroCrossing (vector<complex<double> >data, float zeroCross[], int nx, bool
 
         outFile.close();
     }
-
 }
 
 // Function spectrumFlux

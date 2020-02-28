@@ -1,13 +1,13 @@
 /* 
- *  File:    audioHandler.h
+ *  File:    TestSuite.h
  *  Author:  Hue Truong and Andrew Moore
  *
- *  Created: February 23, 2020, 7:16 PM
+ *  Created: February 27, 2020, 12:33 PM
  */
 
 /**************************************Change Log *******************************************/
 
-// Created this header file, will contain prototypes for all algorithms. - A.M. Feb 23 2020
+// Created this header file, will contain prototypes for the test suite functions - A.M. Feb 27 2020
 
 /**************************************End Change Log ***************************************/
 
@@ -15,22 +15,18 @@
 /**************************************End To Do List **************************/
 
 #include <iostream>
-#include <iomanip>
-#include <sstream>
 #include <fstream>
 #include <string>
-#include <complex>
+#include <chrono>
 #include <vector>
-#include <ctype.h>
-#include <float.h>
-#include <sndfile.h>
+#include "AudioSegmentation.h"
 using namespace std;
+using namespace std::chrono;
 
-#ifndef audioHandler
-#define audioHandler
+#ifndef TestSuite
+#define TestSuite
 
-void loadAudio(string,vector<complex<double> >&,vector<complex<double> >&,int,bool);
-static void convertSound(string,vector<complex<double> >&,vector<complex<double> >&,int,bool,bool);
+void zeroCrossingTest(vector<complex<double> >,vector<complex<double> >,int,bool,string,string);
 
 #endif
 

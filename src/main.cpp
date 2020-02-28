@@ -14,6 +14,7 @@
 // Converted complex numbers from float to double template - A.M. Feb 15 2020
 // Edited zerocrossing test to accept vector data - A.M. - Feb 15 2020
 // Added in the chrono library for tracking completion time of algorithms - A.M. - Feb 26 2020
+// Added seperate vectors for left and right waves - A.M. - Feb 27 2020
 
 /**************************************End Change Log ***************************/
 
@@ -23,7 +24,6 @@
 
 /**************************************End To Do List **************************/
 
-//#include <cstdlib>
 #include <iostream>
 #include <fstream>
 #include <complex>
@@ -34,32 +34,29 @@
 #include "../include/AudioSegmentation.h"
 #include "../include/FourierTransform.h"
 #include "../include/audioHandler.h"
+#include "../include/TestSuite.h"
 using namespace std;
 using namespace std::chrono;
 
-void zeroCrossingTest(vector<complex<double> >, bool, string, string);;
-
-
-/*
- * 
- */
 int main(int argc, char** argv) 
 {
-    string inputFile;                  // Location of user input file
-    string outputFile;                 // Location to output file
-    string filePath;                   // Path for the algorithm outputs
+    string inputFile;                          // Location of user input file
+    string outputFile;                         // Location to output file
+    string filePath;                           // Path for the algorithm outputs
 
-    ofstream outFile;                  // Pointer to the output file
-    ifstream inFile;                   // Pointer to the user input file
+    ofstream outFile;                          // Pointer to the output file
+    ifstream inFile;                           // Pointer to the user input file
 
-    bool debug;                        // Toggles debug mode
+    bool debug;                                // Toggles debug mode
+    int channels;		               // Number of channels in sound file.
 
-    vector <complex<double> > data;    // Container to hold the wave representations
+    vector <complex<double> > leftChannel;     // Container to hold the left side of the wave.
+    vector<complex<double> > rightChannel;     // Container to hold the right side of the wave.
 
     if (argc <= 1)
     {
         cout << "Program Use:  " << endl;
-	cout << "./DeepSample [resultsDirectory] [inputFile] [outputFile] [debugMode {0,1}]" << endl;
+	cout << "./DeepSample [resultsDirectory] [inputFile] [outputFile] [channels {1,2}] [debugMode {0,1}]" << endl;
 	return 0;
     }
     else
@@ -83,7 +80,12 @@ int main(int argc, char** argv)
 		    outputFile = argv[i];
 		    break;
 		}
-		case 4:
+                case 4:
+                {
+                    channels = atoi(argv[i]);
+                    break;
+                }
+		case 5:
 		{
 		    debug = atoi(argv[i]);
 		    break;
@@ -96,87 +98,47 @@ int main(int argc, char** argv)
 
     // Create a directory for results
     if(mkdir(filePath.c_str(), 0777) == -1)
-        cout << "Error creating directory." << endl;
+        cout << "Error creating directory.  " << filePath << " already exists."" << endl;
     else
-        cout << "Results directory created." << endl;
+        cout << "Results directory created at " << filePath << endl;
 
     // Open the file for output
     outFile.open((filePath + "/" + outputFile).c_str(),ios::out);
-    
-    // Load audio file
-    loadAudio(inputFile,data,debug);
 
-    outFile << "Vector size:  " << data.size() << endl << endl;
+    // Load the audio file.
+    loadAudio(inputFile,leftChannel,rightChannel,channels,debug);
+
+    outFile << "Left Channel Size:  " << leftChannel.size() << endl;
+    outFile << "Right Channel Size:  " << rightChannel.size() << endl << endl;
 
     outFile.close();
 
-    auto start = high_resolution_clock::now(); 
-    fft(data,debug,filePath);
-    auto stop = high_resolution_clock::now();
-    auto duration = duration_cast<microseconds>(stop - start);
+    // Get FFT of the left channel
+    auto startL = high_resolution_clock::now(); 
+    fft(leftChannel,debug,filePath);
+    auto stopL = high_resolution_clock::now();
+    auto durationL = duration_cast<microseconds>(stopL - startL);
 
-    outFile << "FFT completed in " << duration.count() << " ms." << endl << endl;
+    outFile.open((filePath + "/" + outputFile).c_str(), ios::app);
 
-    zeroCrossingTest(data,debug,outputFile,filePath);
+    outFile << "FFT of left channel completed in " << durationL.count() << " ms." << endl;
 
+    // Get the FFT of the right channel if working with stereo
+    if (channels == 2)
+    {
+        auto startR = high_resolution_clock::now();
+        fft(rightChannel,debug,filePath);
+        auto stopR = high_resolution_clock::now();
+        auto durationR = duration_cast<microseconds>(stopR - startR);
+
+        outFile << "FFT of the right channel completed in " << durationR.count() << " ms." << endl;
+    }
+
+    cout << endl;
+
+    outFile.close();
+
+    zeroCrossingTest(leftChannel,rightChannel,channels,debug,outputFile,filePath);
+    
     return 0;
-}
-
-void zeroCrossingTest(vector<complex<double> > data, bool debug, string fileName, string filePath)
-{
-    float zeroCross[data.size()];      // Hold the results of the zero-crossing test
-    ofstream output;                   // Points to the file to output results
-   
-    output.open((filePath + "/" + fileName).c_str(), ios::app);
-
-    // Initialize the zeroCrossing array
-    for (int i = 0; i < data.size(); i++)
-    {
-	    zeroCross[i] = 0;
-    }
-
-    auto start = high_resolution_clock::now();
-    zeroCrossing(data,zeroCross,data.size(),debug);
-    auto stop = high_resolution_clock::now();
-    auto duration = duration_cast<milliseconds>(stop - start);
-
-    cout << "Zero Crossing Algorithm completed in " << duration.count() << " ms." << endl;
-    output << "Zero Crossing Algorithm completed in " << duration.count() << " ms." << endl << endl;
-
-    if (debug)
-    {
-        output << "Zero Crossing Results" << endl << endl;
-
-        output << "Signal Array:  " << endl;
-        output << "[" << endl;
-
-        for (int i = 0; i < data.size()-1; i++)
-        {
-            output << data[i] << " ";
-
-	    if ((i != 0) && ((i%10) == 0))
-	        output << endl;
-        }
-        output << endl << "]" << endl << endl;
-    
-        output << "ZeroCrossTest array:  " << endl;
-        output << "[" << endl;
-
-        for (int i = 0; i < data.size(); i++)
-        {
-            output << zeroCross[i] << " ";
-
-            if ((i > 0) && ((i % 50) == 0))
-	    {
-	        output << endl;
-	    }
-
-        }
-    
-        output << endl << "]" << endl;
-    }
-
-    output.close();
-    
-    return;
 }

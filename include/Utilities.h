@@ -1,6 +1,6 @@
 /* 
  *  File:    Utilities.h
- *  Author:  Andrew Moore
+ *  Author:  Hue Truong and Andrew Moore
  *
  *  Created: February 9, 2020, 3:06 PM
  */
@@ -19,12 +19,16 @@
 #include <sstream>
 #include <fstream>
 #include <string>
+#include <vector>
 using namespace std;
 
 #ifndef Utilities
 #define Utilities
 
-void printer(string, string[], int, int, int, int, int);
+void printer(string,vector<string>,int,int,int);;
+string createString(int,int);
+string createString(bool,int);
+string createString(double,int);
 
 #endif
 

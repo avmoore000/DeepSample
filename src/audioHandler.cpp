@@ -37,7 +37,7 @@
 //    fullPrecision - A boolean flag that controls to precision of the output, defaults to full precision.
 // Outputs:  None
 // Purpose:  convertSound takes an audio file and converts it to a numerical representation.
-static void convertSound (string fileName, vector<complex<double> > &data, int channels, bool fullPrecision, bool debug)
+static void convertSound (string fileName,vector<complex<double> > &leftChannel,vector<complex<double> > &rightChannel,int channels,bool fullPrecision,bool debug)
 {
     SNDFILE *infile = NULL;       // This will point to the audio file for conversion  
     SF_INFO sfinfo;               // Will contain the details of the audio file, such as frame rate, sample rate etc.
@@ -88,7 +88,7 @@ static void convertSound (string fileName, vector<complex<double> > &data, int c
                 else
                     tempSig = polar(dataPoint[0], 0.0);
 
-               data.push_back(tempSig);
+               leftChannel.push_back(tempSig);
             }
             else  // Stereo, going to be twice the size
             {
@@ -97,14 +97,14 @@ static void convertSound (string fileName, vector<complex<double> > &data, int c
                 else 
                     tempSig = polar(abs(dataPoint[0]), 0.0);
 
-                data.push_back(tempSig);  // First channel
+                leftChannel.push_back(tempSig);  // First channel
 
                 if (dataPoint[1] < 0)
                     tempSig = -polar(abs(dataPoint[0]), 0.0);
                 else
                     tempSig = polar(abs(dataPoint[0]), 0.0);
 
-                data.push_back(tempSig); // Second channel
+                rightChannel.push_back(tempSig); // Second channel
             }
 
             if (debug)
@@ -124,14 +124,14 @@ static void convertSound (string fileName, vector<complex<double> > &data, int c
 //    debug - A boolean flag that controls debug output
 // Outputs: None
 // Purpose:  loadAudio is wrapper function for the convertSound function
-void loadAudio(string fileName, vector<complex<double> > &data,  bool debug)
+void loadAudio(string fileName, vector<complex<double> > &leftChannel, vector<complex<double> > &rightChannel, int channels,  bool debug)
 {
     if (debug)
     {
         cout << "Audio loader called." << endl;
     }
 
-    convertSound(fileName,data,2,1,debug);
+    convertSound(fileName,leftChannel,rightChannel,channels,1,debug);
 
     return;
 

@@ -8,8 +8,8 @@ LIBS = -lsndfile -logg
 
 default: DeepSample
 
-DeepSample: src/main.o src/AudioSegmentation.o src/FourierTransform.o src/Utilities.o  src/audioHandler.o  
-	$(CC) $(CFLAGS) -o DeepSample src/main.o src/AudioSegmentation.o src/FourierTransform.o src/Utilities.o src/audioHandler.o $(LIBS)
+DeepSample: src/main.o src/AudioSegmentation.o src/FourierTransform.o src/Utilities.o  src/audioHandler.o src/TestSuite.o 
+	$(CC) $(CFLAGS) -o DeepSample src/main.o src/AudioSegmentation.o src/FourierTransform.o src/Utilities.o src/audioHandler.o src/TestSuite.o $(LIBS)
 	$(RM) src/*.o
 
 main.o: src/main.cpp
@@ -26,6 +26,9 @@ Utilities.o: src/Utilities.cpp include/Utilities.h
 
 audioHandler.o: src/audioHandler.cpp include/audioHandler.h
 	$(CC) $(CFLAGS) -c src/audioHandler.cpp
+
+TestSuite.o: src/TestSuite.cpp include/TestSuite.h
+	$(CC) $(CFLAGS) -c src/TestSuite.cpp
 
 clean:
 	$(RM) DeepSample *.o *.~ *.out src/*.o *.txt

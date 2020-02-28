@@ -33,19 +33,22 @@ typedef std::vector<Complex> list;
 //           a signal, and its proportion throughout said signal.
 void fft(vector<complex<double> > x, bool debug, string resultDirectory)
 {
-    string fileName = resultDirectory + "/fastFourierTransform.txt";
-    ofstream outFile;
+    string fileName;                             // Contains the results directory path
+    ofstream outfile;                            // Used for outputting results
+    vector <complex<double> > even;              // Holds the even elements of the wave
+    vector <complex<double> > odd;               // Holds the odd elements of the wave
+    const double PI = 3.1459265358793238460;     // Used in calculations
+    const int N = x.size();                      // Used for recursion
+
+    fileName = resultDirectory + "/fastFourierTransform.txt";
   
     if (debug)
-        outFile.open(fileName.c_str(), ios::out);;
+        outFile.open(fileName.c_str(), ios::out);
 
     if (debug)
     {
 	outFile << "FAST FOURIER FUNCTION CALLED" << endl;
     }
-
-    const double PI = 3.141592653589793238460;
-    const int N = x.size();
     
     //Recursive basis step
     if(N <= 1) return; 
@@ -55,9 +58,6 @@ void fft(vector<complex<double> > x, bool debug, string resultDirectory)
         outFile << "BASE STEP COMPLETE" << endl;
     }
 
-    vector <complex<double> > even;
-    vector <complex<double> > odd;
-    
     //Split complex set between even and odd elements;
     for(int i = 0; i < (x.size() / 2); i = i + 2)
     {
