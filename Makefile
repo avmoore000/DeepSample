@@ -1,6 +1,6 @@
 # Created 2-9-2020
 # Author Andrew Moore
-# Modified 2-9-2020
+# Modified 2-29-2020
 
 CC = g++
 CFLAGS = -g -Wall
@@ -8,8 +8,8 @@ LIBS = -lsndfile -logg
 
 default: DeepSample
 
-DeepSample: src/main.o src/AudioSegmentation.o src/FourierTransform.o src/Utilities.o  src/audioHandler.o src/TestSuite.o 
-	$(CC) $(CFLAGS) -o DeepSample src/main.o src/AudioSegmentation.o src/FourierTransform.o src/Utilities.o src/audioHandler.o src/TestSuite.o $(LIBS)
+DeepSample: src/main.o src/FourierTransform.o src/zeroCrossing.o src/spectrumFlux.o src/cepstrum.o src/audioHandler.o src/Utilities.o src/TestSuite.o 
+	$(CC) $(CFLAGS) -o DeepSample src/main.o src/FourierTransform.o src/zeroCrossing.o src/spectrumFlux.o src/cepstrum.o src/audioHandler.o src/Utilities.o src/TestSuite.o $(LIBS)
 	$(RM) src/*.o
 
 main.o: src/main.cpp
@@ -24,8 +24,14 @@ FourierTransform.o: src/FourierTransform.cpp include/FourierTransform.h
 Utilities.o: src/Utilities.cpp include/Utilities.h
 	$(CC) $(CFLAGS) -c src/Utilities.cpp
 
-audioHandler.o: src/audioHandler.cpp include/audioHandler.h
-	$(CC) $(CFLAGS) -c src/audioHandler.cpp
+zeroCrossing.o: src/zeroCrossing.cpp include/zeroCrossing.h
+	$(CC) $(CFLAGS) -c src/zeroCrossing.cpp
+
+spectrumFlux.o: src/spectrumFlux.cpp include/spectrumFlux.h
+	$(CC) $(CFLAGS) -c src/spectrumFlux.cpp
+
+cepstrum.o: src/cepstrum.cpp include/cepstrum.h
+	$(CC) $(CFLAGS) -c src/cepstrum.cpp
 
 TestSuite.o: src/TestSuite.cpp include/TestSuite.h
 	$(CC) $(CFLAGS) -c src/TestSuite.cpp

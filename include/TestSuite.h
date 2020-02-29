@@ -19,7 +19,9 @@
 #include <string>
 #include <chrono>
 #include <vector>
-#include "AudioSegmentation.h"
+#include "zeroCrossing.h"
+#include "spectrumFlux.h"
+
 using namespace std;
 using namespace std::chrono;
 

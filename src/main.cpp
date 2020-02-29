@@ -137,7 +137,7 @@ int main(int argc, char** argv)
 
     outFile.close();
 
-    //zeroCrossingTest(leftChannel,rightChannel,channels,debug,outputFile,filePath);
+    zeroCrossingTest(leftChannel,rightChannel,channels,debug,outputFile,filePath);
     spectrumFluxTest(leftChannel,rightChannel,channels,debug,outputFile,filePath);
     
     return 0;
