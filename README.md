@@ -35,7 +35,7 @@ Week of Feb 15 2020
 
 Week of Feb 22 2020
 
-- Began the implementation of the spectrum flux and cepstrum algorithms.  
+- Began the implementation of the spectrum flux and cepstrum algorithms.   
 - Created a skeleton for the ANN to be completed this week. 
 
 Week of Feb 29 2020
@@ -46,4 +46,10 @@ Week of Feb 29 2020
 - Added working implementation of spectrum flux algorithm.
 - Created utility library to abstract away some of the workflow from the driver programs. 
 - Implemented cepstrum and complex cepstrum algorithms
+- 
+
+Week of March 7 2020
 - TO DO:  Update ANN to process data from the audio segmentation algorithms
+	  Research graph design
+	  Look into 2D FFT
+	  Create one build where all algorithms compile
