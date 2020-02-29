@@ -315,8 +315,7 @@ void spectrumFlux(vector<complex<double> > leftChannel,vector<complex<double> > 
 
     return;
 }
-
-
+/*
 // Function cepstrum
 // Inputs:
 //    x - A vector of complex numbers describing the audio waveform.
@@ -335,18 +334,18 @@ vector<complex<double>> cepstrum(vector<complex<double>> x)
 
 vector<double> realCepstrum(vector<complex<double>> x)
 { //filters only real numbers to a new vector
-    vector<complex<double>> complex = cepstrum(x);
+    vector<complex<double>> complexCepstrum = cepstrum(x);
     vector<double> realnum;
 
     for(int i = 0; i < complex.size(); ++i){
-        if(complex.at(i) != isnan){ //If element in complex set is a real number, then push the element into a new set
+        if(complexCepstrum.at(i) != isnan){ //If element in complex set is a real number, then push the element into a new set
             realnum.push_back(real(x.at(i)));
         }
     }
 
     return realnum;
 }
-
+*/
 // Function getSign
 // Inputs:
 //    data - A float containing the current data point.
@@ -365,7 +364,7 @@ bool getSign(complex<double> data, bool debug, string outputName)
 
     return sign;
 }
-
+/*
 // Function windowHamming
 // Inputs:
 //    n - A vector of complex numbers to be used to create the hamming window.
@@ -380,8 +379,8 @@ vector<complex<double>> windowHamming(vector<complex<double>> n)
 
     //Applies the hamming window to every element in the vector list
     for(int i = 0; i <= n.size(); i++){
-        newn.at(i) = 0.54 - 0.46 * cos((2 * M_PI * windowed_signal.at(i)) / N - 1.0); //Raw interpretation of Hamming Window equation
+        windowed_signal.at(i) = 0.54 - 0.46 * cos((2 * M_PI * windowed_signal.at(i)) / N - 1.0); //Raw interpretation of Hamming Window equation
     }
     return windowed_signal;
 }
-
+*/
