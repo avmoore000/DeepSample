@@ -45,3 +45,5 @@ Week of Feb 29 2020
 - Split the audio signal to left and right channels, stored them in vector for use by algorithms.
 - Added working implementation of spectrum flux algorithm.
 - Created utility library to abstract away some of the workflow from the driver programs. 
+- Implemented cepstrum and complex cepstrum algorithms
+- TO DO:  Update ANN to process data from the audio segmentation algorithms
