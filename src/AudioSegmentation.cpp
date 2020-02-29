@@ -317,23 +317,35 @@ void spectrumFlux(vector<complex<double> > leftChannel,vector<complex<double> > 
 }
 
 
-/*
 // Function cepstrum
 // Inputs:
 //    x - A vector of complex numbers describing the audio waveform.
 // Outputs:
 //    cep - Returns the inverse fourier transform of the wave in the form of a vector of complex numbers.
 // Purpose:  Perform the cepstrum segmentation algorithm on the given audio sample.
-vector<complex<double> > cepstrum(vector<complex<double> > x)
+vector<complex<double>> cepstrum(vector<complex<double>> x)
 {
-    vector<complex<double> > absfft = abs(FourierTransform(x)); // Absolute left value of fft
-    vector<complex<double> > log = log(absfft);  // Log of the absolute value
-    vector<complex<double> > cep = inverseFT(log);  // Applies inverse fourier transform to the wave.
+    //Raw interpretation of complex cepstrum equation
+    vector<complex<double>> absfft = abs(FourierTransform(x)); //absolute value of fft
+    vector<complex<double>> log = log(absfft); //log of the absolute value
 
-    return cep;
-    
+    vector<complex<double>> Ccepstrum = inverseFT(log); //applies inverse Fourier Transform
+    return Ccepstrum;
 }
-*/
+
+vector<double> realCepstrum(vector<complex<double>> x)
+{ //filters only real numbers to a new vector
+    vector<complex<double>> complex = cepstrum(x);
+    vector<double> realnum;
+
+    for(int i = 0; i < complex.size(); ++i){
+        if(complex.at(i) != isnan){ //If element in complex set is a real number, then push the element into a new set
+            realnum.push_back(real(x.at(i)));
+        }
+    }
+
+    return realnum;
+}
 
 // Function getSign
 // Inputs:
@@ -360,17 +372,16 @@ bool getSign(complex<double> data, bool debug, string outputName)
 // Outputs:
 //    newn - A vector of complex numbers describing the hamming window.
 // Purpose:  Create the hamming window for use in the cepstrum algorithm.
-vector<complex<double> > windowHamming(vector<complex<double> > n)
+vector<complex<double>> windowHamming(vector<complex<double>> n)
 {
-    vector<complex<double> > newn;
+       vector<complex<double>> windowed_signal;
+       //arbitrary integer N == fixed window size;
+        double N = 200;
 
-    double N = 200;  // Arbitrary N; fixed window size
-
-    // Apply the hamming window to every element in the vector list.
-    for (int i = 0; i < n.size(); i++)
-    {
-        newn.at(i) = 0.54 - 0.46 * cos((2 * M_PI * n.at(i)) / N - 1.0);  // Formula 
+    //Applies the hamming window to every element in the vector list
+    for(int i = 0; i <= n.size(); i++){
+        newn.at(i) = 0.54 - 0.46 * cos((2 * M_PI * windowed_signal.at(i)) / N - 1.0); //Raw interpretation of Hamming Window equation
     }
-
-    return newn;
+    return windowed_signal;
 }
+

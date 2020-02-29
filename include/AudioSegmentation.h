@@ -33,6 +33,7 @@ using namespace std;
 void zeroCrossing(vector<complex<double> >,vector<complex<double> >,vector<vector<float> >&,int,bool,string);
 void spectrumFlux(vector<complex<double> >,vector<complex<double> >,double[],int,bool,string);
 vector<complex<double> > cepstrum(vector<complex<double> >);
+vector<double> realCepstrum(vector<complex<double> >);
 
 // Helper utilities
 vector<complex <double> > windowHamming(vector<complex<double> >);
