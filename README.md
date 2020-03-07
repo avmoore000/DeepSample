@@ -49,7 +49,8 @@ Week of Feb 29 2020
 - 
 
 Week of March 7 2020
-- TO DO:  Update ANN to process data from the audio segmentation algorithms
-	  Research graph design
-	  Look into 2D FFT
-	  Create one build where all algorithms compile
+TO DO:  
+- Update ANN to process data from the audio segmentation algorithms
+- Research graph design
+- Look into 2D FFT
+- Create one build where all algorithms compile
