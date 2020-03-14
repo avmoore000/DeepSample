@@ -209,7 +209,7 @@ void anniTest(string path,string fileName,string audioName,int channels,bool deb
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<milliseconds>(stop-start);
 
-    cout << "ANNI complted in " << duration.count() << " ms." << endl;
+    cout << "ANNI completed in " << duration.count() << " ms." << endl;
     outputFile << "ANNI completed running with " << audioName << " as input in " 
                << duration.count() << " ms." << endl << endl;
 

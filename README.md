@@ -54,3 +54,10 @@ TO DO:
 - Research graph design
 - Look into 2D FFT
 - Create one build where all algorithms compile
+
+Week of March 14 2020
+-  Started implementation of ANN, using a naive bayesian algorithm
+-  Changed audio input to allow vorbis format
+-  Worked on improving efficiency of Fourier transforms
+-  Worked on implementation of cepstrum algorithm.
+

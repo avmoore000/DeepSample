@@ -149,7 +149,10 @@ bool fileExists(string fileName)
 {
     ifstream infile(fileName.c_str());
 
-    return infile;
+    if (infile)
+        return true;
+    else
+	return false;
 }
 
 // Function sortDist
