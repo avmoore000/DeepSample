@@ -1,6 +1,6 @@
 /* 
  *  File:     cepstrum.cpp
- *  Author:   Andrew Moore and Hue Truong
+ *  Author:   Andrew Moore, Hue Truong, and Alex Reno
  *
  *  Created:  February 29, 2020, 2:12 PM
  */

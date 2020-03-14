@@ -1,6 +1,6 @@
 /* 
  *  File:    audioHandler.cpp
- *  Author:  Andrew Moore  and Hue Truong
+ *  Author:  Andrew Moore, Hue Truong, and Alex Reno
  *
  *  Created: February 9, 2020, 1:46 PM
  */
@@ -132,6 +132,11 @@ void loadAudio(string fileName, vector<complex<double> > &leftChannel, vector<co
     }
 
     convertSound(fileName,leftChannel,rightChannel,channels,1,debug);
+
+    if (debug)
+    {
+        cout << "Audio loader returned." << endl;
+    }
 
     return;
 

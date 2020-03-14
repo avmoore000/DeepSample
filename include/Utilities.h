@@ -1,6 +1,6 @@
 /* 
  *  File:    Utilities.h
- *  Author:  Hue Truong and Andrew Moore
+ *  Author:  Hue Truong, Andrew Moore, and Alex Reno
  *
  *  Created: February 9, 2020, 3:06 PM
  */
@@ -30,6 +30,8 @@ void printer(string,vector<string>,int,int,int);;
 string createString(int,int);
 string createString(bool,int);
 string createString(double,int);
+bool fileExists(string);
+bool sortDist(const vector<double>&, const vector<double>&);
 void normalize(vector<complex<double > >,vector<double>&,int,int,bool,string);
 
 #endif

@@ -1,15 +1,15 @@
 # Created 2-9-2020
 # Author Andrew Moore
-# Modified 2-29-2020
+# Modified 3-8-2020
 
 CC = g++
 CFLAGS = -g -Wall
-LIBS = -lsndfile -logg
+LIBS = -lsndfile -lvorbis
 
 default: DeepSample
 
-DeepSample: src/main.o src/FourierTransform.o src/zeroCrossing.o src/spectrumFlux.o src/cepstrum.o src/audioHandler.o src/Utilities.o src/TestSuite.o 
-	$(CC) $(CFLAGS) -o DeepSample src/main.o src/FourierTransform.o src/zeroCrossing.o src/spectrumFlux.o src/cepstrum.o src/audioHandler.o src/Utilities.o src/TestSuite.o $(LIBS)
+DeepSample: src/main.o src/FourierTransform.o src/zeroCrossing.o src/spectrumFlux.o src/cepstrum.o src/audioHandler.o src/Utilities.o src/ANN.o src/TestSuite.o 
+	$(CC) $(CFLAGS) -o DeepSample src/main.o src/FourierTransform.o src/zeroCrossing.o src/spectrumFlux.o src/cepstrum.o src/audioHandler.o src/Utilities.o src/ANN.o src/TestSuite.o $(LIBS)
 	$(RM) src/*.o
 
 main.o: src/main.cpp
@@ -32,6 +32,9 @@ spectrumFlux.o: src/spectrumFlux.cpp include/spectrumFlux.h
 
 cepstrum.o: src/cepstrum.cpp include/cepstrum.h
 	$(CC) $(CFLAGS) -c src/cepstrum.cpp
+
+ANN.o: src/ANN.cpp include/ANN.h
+	$(CC) $(CFLAGS) -c src/ANN.cpp
 
 TestSuite.o: src/TestSuite.cpp include/TestSuite.h
 	$(CC) $(CFLAGS) -c src/TestSuite.cpp

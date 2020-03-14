@@ -1,6 +1,6 @@
 /* 
  *  File:    TestSuite.h
- *  Author:  Hue Truong and Andrew Moore
+ *  Author:  Hue Truong, Andrew Moore, and Alex Reno
  *
  *  Created: February 27, 2020, 12:33 PM
  */
@@ -21,6 +21,8 @@
 #include <vector>
 #include "zeroCrossing.h"
 #include "spectrumFlux.h"
+#include "ANN.h"
+#include "audioHandler.h"
 
 using namespace std;
 using namespace std::chrono;
@@ -30,6 +32,7 @@ using namespace std::chrono;
 
 void zeroCrossingTest(vector<complex<double> >,vector<complex<double> >,int,bool,string,string);
 void spectrumFluxTest(vector<complex<double> >,vector<complex<double> >,int,bool,string,string);
+void anniTest(string,string,string,int,bool);
 
 #endif
 

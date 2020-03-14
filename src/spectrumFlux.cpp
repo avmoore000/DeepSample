@@ -1,6 +1,6 @@
 /* 
  *  File:     spectrumFlux.cpp
- *  Author:   Andrew Moore and Hue Truong
+ *  Author:   Andrew Moore, Hue Truong, and Alex Reno
  *
  *  Created:  February 9, 2020, 3:17 PM
  */

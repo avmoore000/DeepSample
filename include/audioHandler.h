@@ -1,6 +1,6 @@
 /* 
  *  File:    audioHandler.h
- *  Author:  Hue Truong and Andrew Moore
+ *  Author:  Hue Truong, Andrew Moore, and Alex Reno
  *
  *  Created: February 23, 2020, 7:16 PM
  */

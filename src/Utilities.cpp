@@ -1,6 +1,6 @@
 /* 
  *  File:    Utilities.cpp
- *  Author:  Hue Truong and Andrew Moore
+ *  Author:  Hue Truong, Andrew Moore, and Alex Reno
  *
  *  Created: February 23, 2020, 3:25 PM
  */
@@ -137,6 +137,31 @@ string createString(bool data, int fieldWidth)
     stringBuilder << setiosflags(ios_base::left) << setw(fieldWidth) << to_string(data) + " " << resetiosflags(ios_base::left);
 
     return stringBuilder.str();
+}
+
+// Function fileExists
+// Inputs:
+//       fileName - A string containing the name of the file to check
+// Outputs:
+//       file - A filestream object cast to a boolean representing the results of the check.
+// Purpose: Determine the existance of a file
+bool fileExists(string fileName)
+{
+    ifstream infile(fileName.c_str());
+
+    return infile;
+}
+
+// Function sortDist
+// Inputs:
+//       v1 - The first vector to sort
+//       v2 - The second vector to sort
+// Outputs:
+//       isSorted - A boolean value describing if v1[x] < v2[x]
+// Purpose:  To sort a list of vectors from greatest to least euclidean distance
+bool sortDist (const vector<double>& v1, const vector<double>& v2)
+{
+    return v1[v1.size()-1] < v2[v2.size()-1];
 }
 
 // Function normalize

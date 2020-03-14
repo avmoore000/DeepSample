@@ -1,6 +1,6 @@
 /* 
  *  File:   main.cpp
- *  Author: Hue Truong and Andrew Moore
+ *  Author: Hue Truong, Andrew Moore, and Alex Reno
  *
  *  Created February 1, 2020, 2:55 PM
  *
@@ -139,6 +139,7 @@ int main(int argc, char** argv)
 
     zeroCrossingTest(leftChannel,rightChannel,channels,debug,outputFile,filePath);
     spectrumFluxTest(leftChannel,rightChannel,channels,debug,outputFile,filePath);
+    anniTest(filePath,outputFile,inputFile,channels,debug);
     
     return 0;
 }

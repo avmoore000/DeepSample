@@ -1,6 +1,6 @@
 /* 
- *  File:     AudioSegmentation.cpp
- *  Author:   Andrew Moore and Hue Truong
+ *  File:     zeroCrossing.cpp
+ *  Author:   Andrew Moore, Hue Truong, and Alex Reno
  *
  *  Created:  February 29, 2020 2:09 PM
  */
@@ -88,21 +88,24 @@ void zeroCross (vector<complex<double> > leftChannel,vector<complex<double> > ri
         if (sign[0] != sign[1])
             zeroCross[0][i+1] = 1;
 
-        values[0] += createString(i,fieldWidth);
-        values[1] += createString(real(leftChannel[i]),fieldWidth);
-        values[2] += createString(real(leftChannel[i+1]),fieldWidth);
-        values[3] += createString(sign[0],fieldWidth);
-        values[4] += createString(sign[1],fieldWidth);
-        values[5] += createString(zeroCross[0][i+1],fieldWidth);
-
-        if ( ((i != 0) && ((i % 4) == 0)) || i == (leftChannel.size() - 2) )
+        if (debug)
         {
-            printer(outputName, values, 0, lower, upper);
+            values[0] += createString(i,fieldWidth);
+            values[1] += createString(real(leftChannel[i]),fieldWidth);
+            values[2] += createString(real(leftChannel[i+1]),fieldWidth);
+            values[3] += createString(sign[0],fieldWidth);
+            values[4] += createString(sign[1],fieldWidth);
+            values[5] += createString(zeroCross[0][i+1],fieldWidth);
 
-            lower = i + 1;
+            if ( ((i != 0) && ((i % 4) == 0)) || i == (leftChannel.size() - 2) )
+            {
+                printer(outputName, values, 0, lower, upper);
 
-            for (int j = 0; j < values.size() - 1; j++)
-                values[j] = "";
+                lower = i + 1;
+
+                for (int j = 0; j < values.size() - 1; j++)
+                    values[j] = "";
+            }
         }
     }
 
@@ -136,21 +139,24 @@ void zeroCross (vector<complex<double> > leftChannel,vector<complex<double> > ri
             if (sign[0] != sign[1])
                 zeroCross[1][i+1] = 1;
 
-            values[0] += createString(i,fieldWidth);
-            values[1] += createString(real(rightChannel[i]),fieldWidth);
-            values[2] += createString(real(rightChannel[i+1]),fieldWidth);
-            values[3] += createString(sign[0],fieldWidth);
-            values[4] += createString(sign[1],fieldWidth);
-            values[5] += createString(zeroCross[1][i+1],fieldWidth);
-           
-            if ( ((i != 0) && ((i % 4) == 0)) || (i == rightChannel.size() - 1) )
+            if (debug)
             {
-                printer(outputName, values, 0, lower, upper);
+                values[0] += createString(i,fieldWidth);
+                values[1] += createString(real(rightChannel[i]),fieldWidth);
+                values[2] += createString(real(rightChannel[i+1]),fieldWidth);
+                values[3] += createString(sign[0],fieldWidth);
+                values[4] += createString(sign[1],fieldWidth);
+                values[5] += createString(zeroCross[1][i+1],fieldWidth);
+           
+                if ( ((i != 0) && ((i % 4) == 0)) || (i == rightChannel.size() - 1) )
+                {
+                    printer(outputName, values, 0, lower, upper);
 
-                lower = i + 1;
+                    lower = i + 1;
 
-                for (int j = 0; j < values.size() - 1; j++)
-                    values[j] = "";
+                    for (int j = 0; j < values.size() - 1; j++)
+                        values[j] = "";
+                }
             }
         }
     }

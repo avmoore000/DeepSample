@@ -1,6 +1,6 @@
 /*
  *  File:     FourierTransform.cpp
- *  Author:   Hue Truong and Andrew Moore
+ *  Author:   Hue Truong, Andrew Moore, and Alex Reno
  *  Created:  February 10, 2020  12:00 AM
  *
  */

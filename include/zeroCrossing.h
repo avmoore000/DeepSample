@@ -1,6 +1,6 @@
 /* 
  *  File:    zeroCrossing.h
- *  Author:  Andrew Moore and Hue Truong
+ *  Author:  Andrew Moore, Hue Truong, and Alex Reno
  *
  *  Created: February 29, 2020, 3:06 PM
  */
