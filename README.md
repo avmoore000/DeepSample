@@ -61,3 +61,6 @@ Week of March 14 2020
 -  Worked on improving efficiency of Fourier transforms
 -  Worked on implementation of cepstrum algorithm.
 
+Week of March 21 2020
+- Finished initial implementation of ANN
+
