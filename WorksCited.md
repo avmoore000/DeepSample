@@ -4,4 +4,7 @@ Zahid, S., Hussain, F., Rashid, M., Yousaf, M. H., & Habib, H. A. (2015). Optimi
 
 https://github.com/erikd/libsndfile/
 
+
 Steeb, W.-H., & Steeb, W.-H. (2005). Mathematical tools in signal processing with C & Java simulations. Hackensack, NJ: World Scientific. doi: 3-8-2020
+
+Brownie, J. (2016 Nov 4). How to Implement Learning Vector Quanitization (LVQ) From Scratch with Python. machinelearningmastery. https://machinelearningmastery.com/implement-learning-vector-quantization-scratch-python/
