@@ -36,8 +36,9 @@ void ANNI(vector<vector<float> >,double[],string,string,int,bool);
 // Helper utilities
 double euclideanDistance(vector<double>,vector<double>,string,bool);
 int getBestMatch(vector<vector<float> >, vector<float>,string,int, bool);
-int getBestMatch(vector<vector<double> >,double[],string,int,bool);
+int getBestMatch(vector<vector<double> >,vector<double>,string,int,bool);
 void randomDatabase(vector<vector<double> >,vector<vector<double> >&,string,bool);
+void trainCodeBooks(vector<vector<double> >,vector<vector<double> >&,int,double,int,int,string,bool);
 
 #endif
 

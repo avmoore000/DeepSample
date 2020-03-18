@@ -113,7 +113,7 @@ int getBestMatch(vector<vector<float> > knownData, vector<float> testRow, string
 // Output:
 //       category - An integer describing the category the audio belongs to
 // Purpose:  Finds the best match of a piece of audio by comparing its spectral flux to known data.
-int getBestMatch(vector<vector<double> > knownData, double testRow[], string path,int channels, bool debug)
+int getBestMatch(vector<vector<double> > knownData, vector<double> testRow, string path,int channels, bool debug)
 {
     int match;                             // Will have the value of the match
     double tempDist;                       // Used to hold the calculated distance
@@ -133,6 +133,7 @@ int getBestMatch(vector<vector<double> > knownData, double testRow[], string pat
     if (channels == 2)
         tempRow.push_back(testRow[1]);
 
+    // Get the euclidean distances between the knownData and the testRow
     for (int i = 0; i < knownData.size(); i++)
     {
         tempDist = euclideanDistance(knownData[i],tempRow,path,debug);
@@ -208,7 +209,7 @@ int getBestMatch(vector<vector<double> > knownData, double testRow[], string pat
 //       debug - A flag controlling the debug output.
 // Outputs:  None
 // Purpose: This creates a random database consisting of a subset of known data for use by ANNI.
-void randomDatabase(vector<vector<double> > database, vector<vector<double> > trainSet,string path, bool debug)
+void randomDatabase(vector<vector<double> > database, vector<vector<double> > &trainSet,string path, bool debug)
 {
 
     int records;       // Contains the total number of records in the database
@@ -225,5 +226,65 @@ void randomDatabase(vector<vector<double> > database, vector<vector<double> > tr
         trainSet.push_back(database[i]);
     }
 
+    return;
+}
+
+// Function trainCodeBooks
+// Inputs:
+//       database - A vector containing known data points for generating the training set
+//       trainSet - A vector that will contain the subset of training data for comparisons
+//       nBooks - An integer describing the number of codebooks to generate
+//       lRate - A double describing the learning rate
+//       epochs - An integer describing the number of learning epochs
+//       channels - An integer describing the number of channels in the audio file
+//       path - A string containing the path to the output directory
+//       debug - A flag controlling the debug output.
+// Output: None
+// Purpose:  This function is used to generate the number of specified codebooks for running the algorithm.
+void trainCodeBooks(vector<vector<double> > database, vector<vector<double> > trainSet,int nBooks, double lRate, int epochs, int channels,string path, bool debug)
+{
+    double rate;        // The learning rate of the current epoch
+    double error;       // Used to calculate the error rate in the learning
+    double sumError;    // The summation of the total errors in the predictions
+    int bmu;            // The index of the best matching codebook entry for the current database line
+
+
+    // Initialize variables   
+    rate = 0;
+    error = 0;
+    sumError = 0;
+    bmu = 0;
+
+    // Generate the codebooks
+    for (int i = 0; i < nBooks; i++)
+    {
+        randomDatabase(database, trainSet, path, debug);
+    }
+
+    // Train the codebooks over the specified number of epochs
+    for (int i = 1; i < (epochs+1); i++)
+    {
+        rate = lRate * (1.0/(i/epochs));        
+
+        for (int j = 0; j < database.size(); j++)
+        {
+            bmu = getBestMatch(trainSet,database[j], path, channels, debug);
+
+            for (int k = 0; k < database[j].size(); j++)
+            {
+                error = database[j][k] - trainSet[bmu][k];
+
+                sumError += error * error;
+
+                if (trainSet[bmu][trainSet[bmu].size()-1] == database[j][database[j].size()-1])
+                    trainSet[bmu][k] += rate * error;
+                else
+                    trainSet[bmu][k] -= rate * error;
+            }
+        }
+
+        cout << "Epoch: " << i << " LRate:  " << rate << "  Error:  " << sumError << endl;
+    }
+         
     return;
 }

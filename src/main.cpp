@@ -30,7 +30,7 @@
 #include <string>
 #include <chrono>
 #include <sys/stat.h>
-#include "../include/AudioSegmentation.h"
+//#include "../include/AudioSegmentation.h"
 #include "../include/FourierTransform.h"
 #include "../include/audioHandler.h"
 #include "../include/TestSuite.h"
@@ -137,8 +137,8 @@ int main(int argc, char** argv)
 
     outFile.close();
 
-    zeroCrossingTest(leftChannel,rightChannel,channels,debug,outputFile,filePath);
-    spectrumFluxTest(leftChannel,rightChannel,channels,debug,outputFile,filePath);
+    //zeroCrossingTest(leftChannel,rightChannel,channels,debug,outputFile,filePath);
+    //spectrumFluxTest(leftChannel,rightChannel,channels,debug,outputFile,filePath);
     anniTest(filePath,outputFile,inputFile,channels,debug);
     
     return 0;
