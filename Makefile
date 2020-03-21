@@ -3,8 +3,8 @@
 # Modified 3-8-2020
 
 CC = g++
-CFLAGS = -g -Wall
-LIBS = -lsndfile -lvorbis
+CFLAGS = -g -Wall -std=gnu++17
+LIBS = -lsndfile -lvorbis -lboost_system -lboost_filesystem
 
 default: DeepSample
 
@@ -12,8 +12,15 @@ DeepSample: src/main.o src/FourierTransform.o src/zeroCrossing.o src/spectrumFlu
 	$(CC) $(CFLAGS) -o DeepSample src/main.o src/FourierTransform.o src/zeroCrossing.o src/spectrumFlux.o src/cepstrum.o src/audioHandler.o src/Utilities.o src/ANN.o src/TestSuite.o $(LIBS)
 	$(RM) src/*.o
 
+SampleGenerator: src/sampleGenerator.o src/FourierTransform.o src/zeroCrossing.o src/spectrumFlux.o src/cepstrum.o src/audioHandler.o src/Utilities.o 
+	$(CC) $(CFLAGS) -o SampleGenerator src/sampleGenerator.o src/FourierTransform.o src/zeroCrossing.o src/spectrumFlux.o src/cepstrum.o src/audioHandler.o src/Utilities.o $(LIBS)
+	$(RM) src/*.o
+
 main.o: src/main.cpp
 	$(CC) $(CFLAGS) -c src/main.cpp $(LIBS)
+
+sampleGenerator.o: src/sampleGenerator.cpp
+	$(CC) $(CFLAGS) -c src/sampleGenerator.cpp $(LIBS)
 
 AudioSegmentation.o: src/AudioSegmentation.cpp include/AudioSegmentation.h
 	$(CC) $(CFLAGS) -c src/AudioSegmentation.cpp $(LIBS)
@@ -40,4 +47,4 @@ TestSuite.o: src/TestSuite.cpp include/TestSuite.h
 	$(CC) $(CFLAGS) -c src/TestSuite.cpp
 
 clean:
-	$(RM) DeepSample *.o *.~ *.out src/*.o *.txt
+	$(RM) DeepSample SampleGenerator *.o *.~ *.out src/*.o *.txt

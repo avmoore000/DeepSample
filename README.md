@@ -63,4 +63,7 @@ Week of March 14 2020
 
 Week of March 21 2020
 - Finished initial implementation of ANN
+- Changed help to reflect how to run the program.  Just type ./DeepSample without any arguments
+- Started downloading public domain music for training ANNI.
+- Fixed problem with spectral flux with zero magnitude distances.
 

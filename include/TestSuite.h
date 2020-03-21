@@ -32,6 +32,7 @@ using namespace std::chrono;
 
 void zeroCrossingTest(vector<complex<double> >,vector<complex<double> >,int,bool,string,string);
 void spectrumFluxTest(vector<complex<double> >,vector<complex<double> >,int,bool,string,string);
+void cepstrumTest(vector<complex<double> >, vector<complex<double> >, int, bool, string, string);
 void anniTest(string,string,string,int,bool);
 
 #endif

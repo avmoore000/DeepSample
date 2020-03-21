@@ -129,7 +129,7 @@ void spectralFlux(vector<complex<double> > leftChannel,vector<complex<double> > 
                 if (i == 0) 
                     outFile << "(" << normT[i] << " * " << normT[i] << ") ";
                 else 
-                    outFile << "( (" << normT[i] << " * " << normT[i] << ") * (" << normT[i] << " - " << normT[i-1] << ") )";
+                    outFile << "( (" << normT[i] << " - " << normT[i-1] << ") * (" << normT[i] << " - " << normT[i-1] << ") )";
             
                 if (i != normT.size() - 1)
                     outFile << " + ";
@@ -147,7 +147,6 @@ void spectralFlux(vector<complex<double> > leftChannel,vector<complex<double> > 
 
             outFile << endl << endl;
         }
-
     }
     
     outFile << "End of Spectrum Flux" << endl;

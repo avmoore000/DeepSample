@@ -37,7 +37,7 @@
 //    fullPrecision - A boolean flag that controls to precision of the output, defaults to full precision.
 // Outputs:  None
 // Purpose:  convertSound takes an audio file and converts it to a numerical representation.
-static void convertSound (string fileName,vector<complex<double> > &leftChannel,vector<complex<double> > &rightChannel,int channels,bool fullPrecision,bool debug)
+static void convertSound (string fileName,vector<complex<double> > &leftChannel,vector<complex<double> > &rightChannel,int channels,bool fullPrecision,bool debug, string path)
 {
     SNDFILE *infile = NULL;       // This will point to the audio file for conversion  
     SF_INFO sfinfo;               // Will contain the details of the audio file, such as frame rate, sample rate etc.
@@ -124,14 +124,14 @@ static void convertSound (string fileName,vector<complex<double> > &leftChannel,
 //    debug - A boolean flag that controls debug output
 // Outputs: None
 // Purpose:  loadAudio is wrapper function for the convertSound function
-void loadAudio(string fileName, vector<complex<double> > &leftChannel, vector<complex<double> > &rightChannel, int channels,  bool debug)
+void loadAudio(string fileName, vector<complex<double> > &leftChannel, vector<complex<double> > &rightChannel, int channels,  bool debug, string path)
 {
     if (debug)
     {
         cout << "Audio loader called." << endl;
     }
 
-    convertSound(fileName,leftChannel,rightChannel,channels,1,debug);
+    convertSound(fileName,leftChannel,rightChannel,channels,1,debug,path);
 
     if (debug)
     {

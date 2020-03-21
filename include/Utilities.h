@@ -21,6 +21,8 @@
 #include <string>
 #include <vector>
 #include <complex>
+#include <chrono>
+#include <ctime>
 using namespace std;
 
 #ifndef Utilities
@@ -31,6 +33,7 @@ string createString(int,int);
 string createString(bool,int);
 string createString(double,int);
 bool fileExists(string);
+string timestamp();
 bool sortDist(const vector<double>&, const vector<double>&);
 void normalize(vector<complex<double > >,vector<double>&,int,int,bool,string);
 

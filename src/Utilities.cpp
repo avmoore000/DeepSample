@@ -155,6 +155,29 @@ bool fileExists(string fileName)
 	return false;
 }
 
+// Function timestamp
+// Inputs: None
+// Ouputs: 
+//       currentTime - A string containing the current system timestamp
+// Purpose: The timestamp function returns a string reflecting the current system timestamp.
+string timestamp()
+{
+    string currentTime;
+    string temp;
+
+    currentTime = "";
+    temp = "";
+
+    auto timeNow = chrono::system_clock::to_time_t(chrono::system_clock::now());
+
+    temp = ctime(&timeNow);
+
+    for (std::string::size_type i = 0; i < temp.size()-1; i++)
+        currentTime += temp[i];
+
+    return currentTime;
+}
+
 // Function sortDist
 // Inputs:
 //       v1 - The first vector to sort
@@ -180,6 +203,7 @@ bool sortDist (const vector<double>& v1, const vector<double>& v2)
 void normalize(vector<complex<double> > data,vector<double> &normals,int frames,int channel, bool debug,string path)
 {
     double mag;           // Will hold the magnitude of the vector
+    double tempMag;       // Will hold the intermediate calculation of the magnitude.
     int step;             // Used to calculate beginning of next frame.
     string fileName;      // Will contain the file and path for debug output
     ofstream outfile;     // Stream pointer for debug output
@@ -206,24 +230,31 @@ void normalize(vector<complex<double> > data,vector<double> &normals,int frames,
 
     for (int i = 0; i <= data.size() - 1; i += step)
     {
-        double tempMag = 0;
+        tempMag = 0;
+        int bound = 0;
 
         if ((i+step) >= data.size())
-            step = (i + step) - data.size();
-    
+            bound = (i + step) - data.size();
+        else 
+            bound = i+step;
+
         // Calculate the inside of the magnitude
-        for (int j = i; j <= step; j++)
+        for (int j = i; j <= bound; j++)
         {
             tempMag += real(data[j]) * real(data[j]);
         }
 
         // Calculate the magnitude
-        mag = sqrt(tempMag);
+        mag = sqrt(abs(tempMag));
 
         // Calculate normals of the window
-        for (int j = i; j <= step; j++)
+        for (int j = i; j <= bound; j++)
         {
-            normals.push_back((real(data[j]) / mag));
+            double norm = real(data[j]) / mag;
+
+            if (isnan(norm))
+                norm = 0;
+            normals.push_back(norm);
         }
 
         if ( (step >= 1) && ((i + frames-1) < data.size() -1))

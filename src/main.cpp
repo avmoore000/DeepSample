@@ -48,14 +48,27 @@ int main(int argc, char** argv)
 
     bool debug;                                // Toggles debug mode
     int channels;		               // Number of channels in sound file.
+    int test;                                  // Specifies which tests are being run.
 
     vector <complex<double> > leftChannel;     // Container to hold the left side of the wave.
     vector<complex<double> > rightChannel;     // Container to hold the right side of the wave.
 
     if (argc <= 1)
     {
-        cout << "Program Use:  " << endl;
-	cout << "./DeepSample [resultsDirectory] [inputFile] [outputFile] [channels {1,2}] [debugMode {0,1}]" << endl;
+        cout << endl << endl << "Program Use:  " << endl << endl;
+	cout << "./DeepSample [resultsDirectory] [inputFile] [outputFile] [channels {1,2}] [debugMode {0,1}] tests{0,1,2,3,4}" << endl << endl;
+        cout << "resultsDirectory: User specified directory where results will be stored.  If directory does not exist it will be created." << endl;
+        cout << "inputFile:  Audio file for analysis." << endl;
+        cout << "outputFile: File name for main output file." << endl;
+        cout << "channels:  1 = Mono 2 = Stereo" << endl;
+        cout << "debugMode:  Toggles debug output.  Warning: Debug mode causes output of large files and slows down execution." << endl << endl;
+        cout << "tests:" << endl << endl;
+        cout << "0: Run all tests." << endl;
+        cout << "1: Run only zero-cross test." << endl;
+        cout << "2: Run only spectrum flux test." << endl;
+        cout << "3: Run only cepstrum test." << endl;
+        cout << "4: Run only ANNI test." << endl;
+        cout << endl;
 	return 0;
     }
     else
@@ -89,6 +102,11 @@ int main(int argc, char** argv)
 		    debug = atoi(argv[i]);
 		    break;
 		}
+                case 6:
+                {
+                    test = atoi(argv[i]);
+                    break;
+                }
 		default:
 		    cout << "Error with arguments." << endl;
             }
@@ -104,42 +122,80 @@ int main(int argc, char** argv)
     // Open the file for output
     outFile.open((filePath + "/" + outputFile).c_str(),ios::out);
 
-    // Load the audio file.
-    loadAudio(inputFile,leftChannel,rightChannel,channels,debug);
-
-    outFile << "Left Channel Size:  " << leftChannel.size() << endl;
-    outFile << "Right Channel Size:  " << rightChannel.size() << endl << endl;
-
-    outFile.close();
-
-    // Get FFT of the left channel
-    auto startL = high_resolution_clock::now(); 
-    fft(leftChannel,debug,filePath);
-    auto stopL = high_resolution_clock::now();
-    auto durationL = duration_cast<microseconds>(stopL - startL);
-
-    outFile.open((filePath + "/" + outputFile).c_str(), ios::app);
-
-    outFile << "FFT of left channel completed in " << durationL.count() << " ms." << endl;
-
-    // Get the FFT of the right channel if working with stereo
-    if (channels == 2)
+    if ((test == 0) || (test == 1) || (test == 2) || (test == 3))
     {
-        auto startR = high_resolution_clock::now();
-        fft(rightChannel,debug,filePath);
-        auto stopR = high_resolution_clock::now();
-        auto durationR = duration_cast<microseconds>(stopR - startR);
+        // Load the audio file.
+        loadAudio(inputFile,leftChannel,rightChannel,channels,debug);
 
-        outFile << "FFT of the right channel completed in " << durationR.count() << " ms." << endl;
+        outFile << "Left Channel Size:  " << leftChannel.size() << endl;
+        outFile << "Right Channel Size:  " << rightChannel.size() << endl << endl;
+
+        outFile.close();
+
+        // Get FFT of the left channel
+        auto startL = high_resolution_clock::now(); 
+        fft(leftChannel,debug,filePath);
+        auto stopL = high_resolution_clock::now();
+        auto durationL = duration_cast<microseconds>(stopL - startL);
+
+        outFile.open((filePath + "/" + outputFile).c_str(), ios::app);
+
+        outFile << "FFT of left channel completed in " << durationL.count() << " ms." << endl;
+
+        // Get the FFT of the right channel if working with stereo
+        if (channels == 2)
+        {
+            auto startR = high_resolution_clock::now();
+            fft(rightChannel,debug,filePath);
+            auto stopR = high_resolution_clock::now();
+            auto durationR = duration_cast<microseconds>(stopR - startR);
+
+            outFile << "FFT of the right channel completed in " << durationR.count() << " ms." << endl;
+        }
+
+        cout << endl;
+
+        outFile.close();
+
+        switch(test)
+        {
+            case 0:
+            {
+                zeroCrossingTest(leftChannel,rightChannel,channels,debug,outputFile,filePath);
+                spectrumFluxTest(leftChannel,rightChannel,channels,debug,outputFile,filePath);
+                cepstrumTest(leftChannel,rightChannel,channels,debug,outputFile,filePath);
+                anniTest(filePath,outputFile,inputFile,channels,debug);
+
+                break;
+            }
+            case 1:
+            {
+                zeroCrossingTest(leftChannel,rightChannel,channels,debug,outputFile,filePath);
+
+                break;
+            }
+            case 2:
+            {
+                spectrumFluxTest(leftChannel,rightChannel,channels,debug,outputFile,filePath);
+
+                break;
+            }
+            case 3:
+            {
+                cepstrumTest(leftChannel,rightChannel,channels,debug,outputFile,filePath);
+
+                break;
+            }
+            default:
+            {
+                cout << "Error, unsupported test." << endl << endl;
+
+                break;
+            }
+        }
     }
+    else if (test == 4)
+        anniTest(filePath,outputFile,inputFile,channels,debug);
 
-    cout << endl;
-
-    outFile.close();
-
-    //zeroCrossingTest(leftChannel,rightChannel,channels,debug,outputFile,filePath);
-    //spectrumFluxTest(leftChannel,rightChannel,channels,debug,outputFile,filePath);
-    anniTest(filePath,outputFile,inputFile,channels,debug);
-    
     return 0;
 }

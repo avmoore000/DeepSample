@@ -29,8 +29,8 @@ using namespace std;
 #ifndef audioHandler
 #define audioHandler
 
-void loadAudio(string,vector<complex<double> >&,vector<complex<double> >&,int,bool);
-static void convertSound(string,vector<complex<double> >&,vector<complex<double> >&,int,bool,bool);
+void loadAudio(string,vector<complex<double> >&,vector<complex<double> >&,int,bool,string);
+static void convertSound(string,vector<complex<double> >&,vector<complex<double> >&,int,bool,bool,string);
 
 #endif
 

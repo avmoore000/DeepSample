@@ -161,6 +161,21 @@ void spectrumFluxTest(vector<complex<double> > leftChannel,vector<complex<double
     return;
 }
 
+// Function cepstrumTest
+// Inputs:
+//       leftChannel - A vector of complex doubles describing the left channel of an audio wave.
+//       rightChannel - A vector of complex doubles describing the right channel of an audio wave.
+//       channels - An integer describing the number of channels in an audio file
+//       debug - A flag that controls debug output
+//       outputFile - A string descibing the file to output results
+//       path - A string describing the path for the output file directory
+// Outputs: None
+// Purpose:  This function tests the cepstrum algorithm
+void cepstrumTest(vector<complex<double> > leftChannel, vector<complex<double> > rightChannel, int channels, bool debug, string fileName, string path)
+{
+    return;
+}
+
 // Function anniTest
 // Inputs:
 //       path - A string describing the path for the output directory
