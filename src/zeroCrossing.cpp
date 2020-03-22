@@ -24,8 +24,9 @@ using namespace std;
 // Inputs:  
 //        leftChannel - A vector of complex doubles describing the left half of the audio signal.
 //        rightChannel - A vector of complex doubles describing the right half of the audio signal.
-//        zeroCross - A 2D vector of floating points describing the results of the zero crossing algorithm.
+//        zeroCross - An 2D vector of doubles describing the results of the zero crossing algorithm.
 //        channels - An integer describing the number of channels in the audio wave.
+//        frames - The number of frames in the audio file.
 //        debug - A flag to enable or disable debug messages.
 //        path - A string containing the path for file output.
 // Outputs:  None
@@ -34,10 +35,10 @@ using namespace std;
 // and records the results in a 2D vector that is passed by the user.
 void zeroCross (vector<complex<double> > leftChannel,vector<complex<double> > rightChannel,vector<vector<float> > &zeroCross,int channels,bool debug,string path)
 {
-    bool sign[2];           // Keep track of sign changes
     int lower;              // Mark the current lower bound of printed data
     int upper;              // Mark the current upper bound of printed data
-    int fieldWidth;         // Specify the width of the data fields in output.
+    int fieldWidth;         // Specify the width of the data fields in output
+    double sum;             // Will hold the sum of the signal changes for the current frame.
 
     string outputName;      // Name of file to store zeroCrossing results
     vector<string> values;  // Store the values of current data points
@@ -48,6 +49,7 @@ void zeroCross (vector<complex<double> > leftChannel,vector<complex<double> > ri
     fieldWidth = 10;
     lower = 0;
     upper = 0;
+    sum = 0;
 
     // Initialize the values vector
     for (int i = 0; i < 6; i++)
@@ -77,40 +79,12 @@ void zeroCross (vector<complex<double> > leftChannel,vector<complex<double> > ri
     }
 
     // Always perform zero crossing on the left channel
-    for (int i = 0; i < leftChannel.size() - 1; i++)
-    {
-        upper = i;
-   
-        sign[0] = getSign(real(leftChannel[i]), debug, outputName);
-        sign[1] = getSign(real(leftChannel[i+1]), debug, outputName);
-
-        // If signs are not equal, a signal change has occured.
-        if (sign[0] != sign[1])
-            zeroCross[0][i+1] = 1;
-
-        if (debug)
-        {
-            values[0] += createString(i,fieldWidth);
-            values[1] += createString(real(leftChannel[i]),fieldWidth);
-            values[2] += createString(real(leftChannel[i+1]),fieldWidth);
-            values[3] += createString(sign[0],fieldWidth);
-            values[4] += createString(sign[1],fieldWidth);
-            values[5] += createString(zeroCross[0][i+1],fieldWidth);
-
-            if ( ((i != 0) && ((i % 4) == 0)) || i == (leftChannel.size() - 2) )
-            {
-                printer(outputName, values, 0, lower, upper);
-
-                lower = i + 1;
-
-                for (int j = 0; j < values.size() - 1; j++)
-                    values[j] = "";
-            }
-        }
-    }
+    summation(leftChannel, zeroCross, channels, 1, debug, path);
 
     if (channels == 2)
     {
+        summation(rightChannel, zeroCross, channels, 2, debug, path);
+
         if (debug)
         {
 
@@ -124,40 +98,6 @@ void zeroCross (vector<complex<double> > leftChannel,vector<complex<double> > ri
             outFile << endl << endl;
            
             outFile.close();
-        }
-
-        lower = 0;
-
-        for (int i = 0; i <= rightChannel.size() - 1; i++)
-        {
-            upper = i;
- 
-            sign[0] = getSign(real(rightChannel[i]), debug, outputName);
-            sign[1] = getSign(real(rightChannel[i]), debug, outputName);
-
-            //If signs are not equal, a signal change has occured.
-            if (sign[0] != sign[1])
-                zeroCross[1][i+1] = 1;
-
-            if (debug)
-            {
-                values[0] += createString(i,fieldWidth);
-                values[1] += createString(real(rightChannel[i]),fieldWidth);
-                values[2] += createString(real(rightChannel[i+1]),fieldWidth);
-                values[3] += createString(sign[0],fieldWidth);
-                values[4] += createString(sign[1],fieldWidth);
-                values[5] += createString(zeroCross[1][i+1],fieldWidth);
-           
-                if ( ((i != 0) && ((i % 4) == 0)) || (i == rightChannel.size() - 1) )
-                {
-                    printer(outputName, values, 0, lower, upper);
-
-                    lower = i + 1;
-
-                    for (int j = 0; j < values.size() - 1; j++)
-                        values[j] = "";
-                }
-            }
         }
     }
 
@@ -177,21 +117,47 @@ void zeroCross (vector<complex<double> > leftChannel,vector<complex<double> > ri
 
 }
 
-// Function getSign
+// Function summation
 // Inputs:
-//    data - A float containing the current data point.
-//    debug - A flag to enable or disable debug messages.
-// Outputs:
-//    sign - A boolean stating whether the signal has changed from positive to negative or vice versa.
-// Purpose: Determines if a sign change has occured.
-bool getSign(complex<double> data, bool debug, string outputName)
+//       data - A vector of complex doubles describing an audio wave
+//       zeroCrossResults - A 2D vector of floats that will contain the zero cross results for each frame of the wave.
+//       frames - An integer describing the number of frames in the audio file.
+//       channel - An integer describing the current channel
+//       debug - A boolean flag that controls debug output
+//       path - A string describing the path for debug output.
+// Outputs: None
+// Purpose:  To calculate the spectral flux of a particular frame.
+void summation(vector<complex<double> > data, vector<vector<float> > &zeroCrossResults,int channels, int currentChannel, bool debug, string path)
 {
-    bool sign = 0;
+    const int BLOCKSIZE = 4096;
 
-    if (real(data) > 0)
-        sign = 1;
-    else
-        sign = 0;
+    double summedSigns;    // Will hold the summation of the signs for the current frame.
+    int step;              // Used to calculate the beginning of the next frame.
 
-    return sign;
+    step = BLOCKSIZE / channels;
+    summedSigns = 0;
+    
+    for (int i = 1; i < data.size() - 1; i += step)
+    {
+        int bound = 0;
+
+        if ((i+step) >= data.size())
+            bound = (i + step) - data.size();
+        else
+            bound = i + step;
+
+        for (int j = i; j <= bound; j++)
+            summedSigns += abs(sign(real(data[j])) - sign(real(data[j-1])));
+
+        summedSigns = summedSigns / 2;
+
+        if (currentChannel == 1)
+            zeroCrossResults[0].push_back(summedSigns);
+        else if (currentChannel == 2)
+            zeroCrossResults[1].push_back(summedSigns);
+
+        summedSigns = 0;
+    }
+
+    return;
 }

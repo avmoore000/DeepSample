@@ -66,4 +66,12 @@ Week of March 21 2020
 - Changed help to reflect how to run the program.  Just type ./DeepSample without any arguments
 - Started downloading public domain music for training ANNI.
 - Fixed problem with spectral flux with zero magnitude distances.
+- Wrote a small driver program for creating training databases for ANNI.
 
+Week of March 28 2020
+TO DO
+- Add a working version of cepstrum algorithm to DeepSample
+- Download files for training ANNI
+- Start training ANNI
+- Make a powerpoint deck explaining the process for use in presentations
+- Start rough draft of paper for project

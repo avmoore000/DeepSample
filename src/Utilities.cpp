@@ -190,6 +190,22 @@ bool sortDist (const vector<double>& v1, const vector<double>& v2)
     return v1[v1.size()-1] < v2[v2.size()-1];
 }
 
+// Function sign
+// Inputs:
+//       test - A double containing the number to test
+// Outputs: 
+//       result - An integer describing the sign of the test number
+// Purpose: The sign function determines the sign of a given number
+int sign(double test)
+{
+    int result = 0;
+
+    if (test > 0)
+        result = 1;
+
+    return result;
+}
+
 // Function normalize
 // Inputs:
 //       data - A vector of complex doubles describing an audiowave.

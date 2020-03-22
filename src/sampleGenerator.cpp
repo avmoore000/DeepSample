@@ -66,6 +66,7 @@ int main(int argc, char** argv)
 
     vector <complex<double> > leftChannel;     // Container to hold the left side of the wave.
     vector<complex<double> > rightChannel;     // Container to hold the right side of the wave.
+    //vector<vector<float> > zeroCrossResults;   // Will contain the results of the zerocross algorithm
     vector<string> fileNames;                  // Will contain the names of the audio files for the current dataset.
 
     if (argc <= 1)
@@ -177,11 +178,6 @@ int main(int argc, char** argv)
 
         outFile << timestamp() << ": Audio file loaded." << endl;
 
-        outFile << "\tLeft channel size:  " << leftChannel.size() << endl;
-
-        if (channels == 2)
-            outFile << "\tRight channel size:  " << rightChannel.size() << endl;
-
         outFile << timestamp() << ": Performing FFT of left channel..." << endl;
 
         auto start = high_resolution_clock::now();
@@ -228,7 +224,7 @@ int main(int argc, char** argv)
         // Get the zero cross of the current file
 
         // Do the prep work for the algorithm
-        vector<float> dataPoints(leftChannel.size(),0);                  // Will contain the data points for each channel.
+        vector<float> dataPoints;                                        // Will contain the data points for each channel.
         vector<vector<float> > zeroCrossResults(2,dataPoints);           // Will contain the results of the zero cross algorithm.
 
         outFile << timestamp() << ": Beginning zero cross algorithm..." << endl;

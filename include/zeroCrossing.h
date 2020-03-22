@@ -33,7 +33,7 @@ using namespace std;
 void zeroCross(vector<complex<double> >,vector<complex<double> >,vector<vector<float> >&,int,bool,string);
 
 // Helper utilities
-bool getSign(complex<double>,bool,string);
+void summation(vector<complex<double> >, vector<vector<float> >&, int, int, bool, string);
 
 #endif
 

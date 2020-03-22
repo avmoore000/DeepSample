@@ -36,6 +36,6 @@ bool fileExists(string);
 string timestamp();
 bool sortDist(const vector<double>&, const vector<double>&);
 void normalize(vector<complex<double > >,vector<double>&,int,int,bool,string);
-
+int sign(double);
 #endif
 
