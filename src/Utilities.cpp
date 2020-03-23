@@ -10,6 +10,7 @@
 // Created source file for utilities - A.M. Feb 23 2020
 // Added in the printer function definition - A.M. Feb 23 2020
 // Added vector normalization function - A.M. Feb 28 2020
+// Added functions for genereating plots with gnuplot - A.M. Mar 22 2020
 
 /**************************************End Change Log ***************************/
 
@@ -154,6 +155,120 @@ bool fileExists(string fileName)
     else
 	return false;
 }
+
+// Function plotter
+// Inputs:
+//       sourceFile - A string containing the name of the file to plot
+//       path - A path to the directory for outputting the plot
+//       graphType - An integer denoting the type of graph to create.
+//       channel - An integer describing which channel is being plotted.
+//       alg - An integer describing which audio algorithm is being worked with.
+// Outputs: None
+// Purpose:  To graph a given data file.
+void plotter(string sourceFile, string path, int graphType, int channels, int alg)
+{
+    ifstream infile;          // Will be used to edit the sourceFile if needed.
+    string plotCommand;       // Will contain the command for gnuplot
+    string outFileName;       // Will hold the name of the output file
+    string tempOutFile;       // Will hold a modified name for the output file.
+    string xlabel;            // Will hold the label for the x-axis
+    string ylabel;            // Will hold the label for the y-axis
+    string title;             // Will hold the title of the plot
+    string mode;              // Holds the mode of the gnuplot terminal
+    
+    mode = "set terminal png";
+
+    switch(graphType)
+    {
+        case 0:
+        {
+            outFileName = sourceFile + "_boxGraph";
+            break;
+        }
+        default:
+        {
+            cout << "Unsupported graph type." << endl;
+            break;
+        }
+    }
+
+    switch(alg)
+    { 
+        case 0: // Zero crossing algorithm
+        {
+        
+            break;
+        }
+        case 1: // Spectrum flux algorithm
+        {
+            // Graph the left channels of the spectral flux
+
+            title = "Left Channel Spectral Flux";
+            xlabel = "Left Channel";
+            ylabel = "Spectral Flux";
+            tempOutFile = outFileName + "_leftSpectralFlux.png";
+
+            generateScript(title, xlabel, ylabel, tempOutFile, sourceFile, 1);
+
+            plotCommand = "gnuplot -c 'gnuScript.txt'";
+
+            cout << "Calling gnuplot" << endl;
+            system(plotCommand.c_str()); 
+
+            if (channels == 2)
+            {
+                title = "Right Channel Spectral Flux";
+                xlabel = "Right Channel";
+                ylabel = "Spectral Flux";
+                tempOutFile = outFileName + "_rightSpectralFlux.png";
+
+                generateScript(title, xlabel, ylabel, tempOutFile, sourceFile, 2);
+
+                plotCommand = "gnuplot -c 'gnuScript.txt'";
+
+                system(plotCommand.c_str());
+            }
+             
+            break;
+        }
+        default:
+        {
+            cout << "Invalid algorithm." << endl;
+            break;
+        }
+    }
+
+    return;
+}
+
+// Functon generateScript
+// Inputs:
+//       title - A string containing the title of the graph.
+//       xlabel - A string containing the x label for the graph.
+//       ylabel - A string containing the y label for the graph.
+//       outFileName - A string containing the name of the file to output the graph to.
+//       sourceFile - A string containing the name of the source data file
+//       channel - An integer describing which audio channel we are graphing
+// Outputs: None
+// Purpose:  Automates the generation of the gnuplot script file.
+void generateScript(string title, string xlabel, string ylabel, string outFileName, string sourceFile, int channel)
+{
+    ofstream outFile;
+
+    outFile.open("gnuScript.txt",ios::out);
+ 
+    outFile << "set terminal png \n";
+    outFile << "set output '" << outFileName << "'\n";
+    outFile << "set title '" << title << "'\n";
+    outFile << "set ylabel '" << ylabel << "'\n";
+    outFile << "set xlabel '" << xlabel << "'\n";
+    outFile << "plot '" << sourceFile << "' using " << channel << " with boxes \n";
+
+    outFile.close();
+
+    return;
+}
+
 
 // Function timestamp
 // Inputs: None

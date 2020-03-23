@@ -69,6 +69,8 @@ Week of March 21 2020
 - Wrote a small driver program for creating training databases for ANNI.
 
 Week of March 28 2020
+- Added a plotting function to the utilities
+
 TO DO
 - Add a working version of cepstrum algorithm to DeepSample
 - Download files for training ANNI
