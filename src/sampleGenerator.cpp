@@ -26,6 +26,7 @@
 #include <chrono>
 #include <ctime>
 #include <sys/stat.h>
+#include <stdio.h>
 #include <boost/filesystem.hpp>
 #include <boost/range/iterator_range.hpp>
 #include "../include/FourierTransform.h"
@@ -47,16 +48,26 @@ struct path_leaf_string
 int main(int argc, char** argv) 
 {
     string inputDirectory;                     // Location of user input files
-    string outputFilePrefix;                   // Prefix for the output file
+    string outputFileName;                     // Prefix for the output file
     string filePath;                           // Path for the algorithm outputs
+    string sFluxDir;                           // Directory for individual spectrum flux files
+    string zCrossDir;                          // Directory for individual zero cross results
+    string cepstrumDir;                        // Directory for individual cepstrum results
+    string fftDir;                             // Directory for individual fft results
+    string audioDir;                           // Directory for individual converted audio files
+    string plotPath;                           // Contains a user specified location for plotting data.
+    string plotFileName;                       // Contains the name of the file to save plots to.
+    string resultsFileName;                    // The name of the current results file
 
-    ostringstream convertor;                  // Used to convert directory entries to strings
+    ostringstream convertor;                   // Used to convert directory entries to strings
 
     ofstream outFile;                          // Pointer to the output file used for runtime data
     ofstream resultsFile;                      // Pointer to the output file used for audio segmentation data
+    ofstream database;                         // Pointer to the main database for the current segmentation algorithm.
     ifstream inFile;                           // Pointer to the user input file
 
     bool debug;                                // Toggles debug mode
+    bool plot;                                 // Toggles graph plotting
     int channels;		               // Number of channels in sound file.
     int test;                                  // Specifies which tests are being run.
 
@@ -66,24 +77,21 @@ int main(int argc, char** argv)
 
     vector <complex<double> > leftChannel;     // Container to hold the left side of the wave.
     vector<complex<double> > rightChannel;     // Container to hold the right side of the wave.
-    //vector<vector<float> > zeroCrossResults;   // Will contain the results of the zerocross algorithm
     vector<string> fileNames;                  // Will contain the names of the audio files for the current dataset.
+    vector<string> scrubbedFileNames;          // Will contain the names of the files without the directory paths.
+
+    outputFileName = "";
 
     if (argc <= 1)
     {
         cout << endl << endl << "Program Use:  " << endl << endl;
-	cout << "./SampleGeneration [resultsDirectory] [inputDirectory] [outputFilePrefix] [channels {1,2}] [debugMode {0,1}] tests{0,1,2,3,4}" << endl << endl;
+	cout << "./SampleGeneration [resultsDirectory] [inputDirectory] [outputFileName] [channels {1,2}] [debugMode {0,1}] [plot {0,1}]" << endl << endl;
         cout << "resultsDirectory: User specified directory where results will be stored.  If directory does not exist it will be created." << endl;
         cout << "inputDirectory:  Directory containing audio files for analysis" << endl;
-        cout << "outputFilePrefix: File prefix for main output file." << endl;
+        cout << "outputFileName:  Name of the output file prefix" << endl;
         cout << "channels:  1 = Mono 2 = Stereo" << endl;
-        cout << "debugMode:  Toggles debug output.  Warning: Debug mode causes output of large files and slows down execution." << endl << endl;
-        cout << "tests:" << endl << endl;
-        cout << "0: Run all tests." << endl;
-        cout << "1: Run only zero-cross test." << endl;
-        cout << "2: Run only spectrum flux test." << endl;
-        cout << "3: Run only cepstrum test." << endl;
-        cout << "4: Run only ANNI test." << endl;
+        cout << "debugMode:  Toggles debug output.  Warning: Debug mode causes output of large files and slows down execution." << endl;
+        cout << "plot: Toggles plotting of data graphs.  If selected, a directory called Plots will be created." << endl << endl;
         cout << endl;
 	return 0;
     }
@@ -103,11 +111,11 @@ int main(int argc, char** argv)
 		    inputDirectory = argv[i];
 		    break;
 		}
-		case 3:
-		{
-		    outputFilePrefix = argv[i];
-		    break;
-		}
+                case 3:
+                {
+                    outputFileName = argv[i];
+                    break;
+                }
                 case 4:
                 {
                     channels = atoi(argv[i]);
@@ -118,6 +126,15 @@ int main(int argc, char** argv)
 		    debug = atoi(argv[i]);
 		    break;
 		}
+                case 6:
+                {
+                    plot = atoi(argv[i]);
+
+                    cout << endl << "Please enter the directory to save plots to:  " ;
+                    cin >> plotPath;
+                    cout << endl;
+                    break;
+                }
 		default:
 		    cout << "Error with arguments." << endl;
             }
@@ -126,19 +143,48 @@ int main(int argc, char** argv)
 
     // Create a directory for results
     if(mkdir(filePath.c_str(), 0777) == -1)
-        cout << "Error creating directory.  " << filePath << " already exists." << endl;
+        cout << filePath << " directory already exists.  Will be using it as results directory." << endl;
     else
+    {
         cout << "Results directory created at " << filePath << endl;
 
+        sFluxDir = filePath + "/SpectrumFlux/";
+        zCrossDir = filePath + "/ZeroCross/";
+        cepstrumDir = filePath + "/Cepstrum/";
+        
+        mkdir(sFluxDir.c_str(), 0777);
+        mkdir(zCrossDir.c_str(),0777);
+        mkdir(cepstrumDir.c_str(),0777);
+    } 
+
+    if (debug)
+    {
+        fftDir = filePath + "/FFT/";
+        mkdir(fftDir.c_str(),0777);
+
+        audioDir = filePath + "/AudioDir/";
+        mkdir(audioDir.c_str(),0777);
+    }
+    
+    // Create plots directory
+    if (plot)
+        if (mkdir(plotPath.c_str(),0777) == -1)
+            cout << "Error creating directory. " << plotPath << " already exists." << endl;
+        else
+            cout << "Plots directory created at " << plotPath << endl;
+
     // Open the file for data output
-    outFile.open((filePath + "/" + outputFilePrefix + "_output.txt").c_str(),ios::out);
+    outFile.open((filePath + "/" + outputFileName + "_output.txt").c_str(),ios::out);
 
     outFile << "SampleGenerator run with the following arguments:" << endl << endl;
     outFile << "\tResults Directory:  " << filePath << endl;
     outFile << "\tInput Directory:  " << inputDirectory << endl;
-    outFile << "\tOutputfile Prefix:  " << outputFilePrefix << endl;
+    outFile << "\tOutputfile Prefix:  " << outputFileName << endl;
     outFile << "\tChannels:  " << channels << endl;
-    outFile << "\tDebug:  " << debug << endl << endl;
+    outFile << "\tDebug:  " << debug << endl;
+    outFile << "\tPlot:  " << plot << endl << endl;
+
+    
 
     p = inputDirectory;
 
@@ -157,9 +203,31 @@ int main(int argc, char** argv)
                 if (temp[i] != '\"')
                     converted += temp[i];
             }
+
             fileNames.push_back(converted);
             convertor.str("");
             convertor.clear();
+
+            string tempName = "";
+
+            for (int i = converted.size()-1; i > 0; i--)
+            {
+                if (converted[i] != '/')
+                    tempName += converted[i];
+                else
+                    break;
+            }
+
+            converted = "";
+
+            for (int i = tempName.size()-1; i >= 0; i--)
+            {
+                 converted += tempName[i];
+            }
+       
+            scrubbedFileNames.push_back(converted);
+
+            cout << "File Name = " << converted << endl;
         }
     }
     else
@@ -170,11 +238,11 @@ int main(int argc, char** argv)
     {
         cout << "Performing analysis of " << fileNames[i] << endl;
 
-        outFile << timestamp() << ": Performing analysis of " << fileNames[i] << endl;
+        outFile << timestamp() << ": Performing analysis of " << scrubbedFileNames[i] << endl;
     
         outFile << timestamp() << ": Loading audio file..." << endl;
 
-        loadAudio(fileNames[i], leftChannel, rightChannel, channels, debug, filePath);
+        loadAudio(fileNames[i], leftChannel, rightChannel, channels, debug, filePath, audioDir, scrubbedFileNames[i]);
 
         outFile << timestamp() << ": Audio file loaded." << endl;
 
@@ -201,7 +269,7 @@ int main(int argc, char** argv)
 
         if (debug)
         {
-            resultsFile.open((filePath + "/" + outputFilePrefix + "_fftResults.txt").c_str(),ios::app);
+            resultsFile.open((fftDir + scrubbedFileNames[i] + "_fftResults.txt").c_str(),ios::out);
 
             for (int i = 0; i < leftChannel.size(); i++)
             {
@@ -238,18 +306,20 @@ int main(int argc, char** argv)
        
         outFile << timestamp() << ": Zero cross algorithm completed in " << duration.count() << " microseconds." << endl;
 
-        outFile << timestamp() << ": Updating zero cross database at " << outputFilePrefix;
+        outFile << timestamp() << ": Updating zero cross database at " << outputFileName;
 
 
         if (channels == 1)
         {
             outFile << "_zeroCrossMono.txt..." << endl;
-            resultsFile.open((filePath + "/" + outputFilePrefix + "_zeroCrossMono.txt").c_str(),ios::app);
+            resultsFile.open((zCrossDir + scrubbedFileNames[i] + "_zeroCrossMono.txt").c_str(),ios::out);
+            database.open((filePath + "/zeroCrossMonoDatabase.txt").c_str(), ios::app);
         }
         else if (channels == 2)
         {
             outFile << "_zeroCrossStereo.txt..." << endl;
-            resultsFile.open((filePath + "/" + outputFilePrefix + "_zeroCrossStereo.txt").c_str(),ios::app);
+            resultsFile.open((zCrossDir + scrubbedFileNames[i] + "_zeroCrossStereo.txt").c_str(),ios::out);
+            database.open((filePath + "/zeroCrossStereoDatabase.txt").c_str(),ios::app);
         }
 
         for (int i = 0; i < zeroCrossResults.size(); i++)
@@ -257,17 +327,66 @@ int main(int argc, char** argv)
             if (zeroCrossResults[i].size() > 0)
             {
                 for (int j = 0; j < zeroCrossResults[i].size(); j++)
+                {
                     resultsFile << zeroCrossResults[i][j] << " ";
+                    database << zeroCrossResults[i][j] << " ";
+                }
 
                 resultsFile << endl;
+                database << endl;
             }
         }
 
         resultsFile << endl;
+        database << endl;
+
         resultsFile.close();
-        zeroCrossResults.clear();
+        database.close();
 
         outFile << timestamp() << ": Finished updating zero cross database." << endl;
+
+        // Plot the zero cross results if that is an option
+        if (plot)
+        {
+            ofstream tempOutFile;
+            string tempOutFileName;
+            vector<double> tempData;
+
+            tempOutFileName = filePath + "/" + scrubbedFileNames[i] + "_zeroCross";
+
+            cout << "TempFile located at:  " << tempOutFileName << endl;
+
+            tempOutFile.open(tempOutFileName.c_str(), ios::out);
+            
+            if (channels == 1)
+            {
+                for (int i = 0; i < zeroCrossResults[0].size(); i++)
+                    tempOutFile << zeroCrossResults[0][i] << endl;
+            }
+            else if (channels == 2)
+            {
+                for (int i = 0; i < zeroCrossResults[0].size(); i++)
+                {
+                    tempOutFile << zeroCrossResults[0][i] << " " << zeroCrossResults[1][i] << endl;
+                }
+            }
+           
+            if (channels == 1) 
+                plotFileName = scrubbedFileNames[i] + "_zeroCrossMono";
+            else
+                plotFileName = scrubbedFileNames[i] + "_zeroCrossingStereo";
+
+            plotter(tempOutFileName, plotFileName, plotPath, 0, channels, 0);
+
+            if (remove(tempOutFileName.c_str()) == 0)
+                cout << "Temporary file deleted" << endl;
+            else 
+                cout << "Failed to delete temp file." << endl;
+
+          
+        }
+
+        zeroCrossResults.clear();
 
         outFile << timestamp() << ": Beginning spectrum flux algorithm..." << endl;
 
@@ -278,27 +397,53 @@ int main(int argc, char** argv)
 
         outFile << timestamp() << ": Spectrum flux algorithm completed in " << duration.count() << " microseconds." << endl;
 
-        outFile << timestamp() << ": Updating spectrum flux database at " << outputFilePrefix;
+        outFile << timestamp() << ": Updating spectrum flux database at " << outputFileName;
 
         if (channels == 1)
         {
             outFile << "_spectrumFluxMono.txt..." << endl;
-            resultsFile.open((filePath + "/" + outputFilePrefix + "_spectrumFluxMono.txt").c_str(),ios::app);
+
+            resultsFileName = sFluxDir + scrubbedFileNames[i] + "_spectrumFluxMono.txt";
+            resultsFile.open(resultsFileName.c_str(),ios::out);
+            database.open((filePath + "/spectrumFluxMonoDatabase.txt").c_str(),ios::app);
         }
         else if (channels == 2)
         {
             outFile << "_spectrumFluxStereo.txt..." << endl;
-            resultsFile.open((filePath + "/" + outputFilePrefix + "_spectrumFluxStereo.txt").c_str(),ios::app);
+
+            resultsFileName = sFluxDir + scrubbedFileNames[i] + "_spectrumFluxStereo.txt";
+            resultsFile.open(resultsFileName.c_str(),ios::out);
+            database.open((filePath + "/spectrumFluxStereoDatabase.txt").c_str(),ios::app);
         }
 
         resultsFile << spectralFluxResults[0];
+        database << spectralFluxResults[0];
 
         if (channels == 2)
+        {
             resultsFile << " " << spectralFluxResults[1];
+            database << spectralFluxResults[0];
+        }
 
         resultsFile << endl;
+        database << endl;
 
         resultsFile.close();
+        database.close();
+
+        if (plot)
+        {
+            outFile << timestamp() << ": Plotting results of spectrum flux algorithm..." << endl;
+
+            if (channels == 1)
+                plotFileName = scrubbedFileNames[i] + "_spectrumFluxMono";
+            else
+                plotFileName = scrubbedFileNames[i] + "_spectrumFluxStereo";
+
+            plotter(resultsFileName,plotFileName,plotPath, 0, channels, 1);
+
+            outFile << timestamp() << ": Finished plotting results." << endl;
+        }
 
         outFile << timestamp() << ": Beginning cepstrum algorithm..." << endl;
 
@@ -309,17 +454,17 @@ int main(int argc, char** argv)
 
         outFile << timestamp() << ": Cepstrum algorithm completed in " << duration.count() << " microseconds." << endl;
 
-        outFile << timestamp() << ": Updating cepstrum database at " << outputFilePrefix;
+        outFile << timestamp() << ": Updating cepstrum database at " << outputFileName;
 
         if (channels == 1)
         {
             outFile << "_cepstrumMono.txt..." << endl;
-            resultsFile.open((filePath + "/" + outputFilePrefix + "_cepstrumMono.txt").c_str(),ios::app);
+            resultsFile.open((filePath + "/" + outputFileName + "_cepstrumMono.txt").c_str(),ios::app);
         }
         else if (channels == 2)
         {
             outFile << "_cepstrumStereo.txt..." << endl;
-            resultsFile.open((filePath + "/" + outputFilePrefix + "_cepstrumStereo.txt").c_str(),ios::app);
+            resultsFile.open((filePath + "/" + outputFileName + "_cepstrumStereo.txt").c_str(),ios::app);
         }
 
         resultsFile << endl;

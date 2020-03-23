@@ -33,7 +33,7 @@ string createString(int,int);
 string createString(bool,int);
 string createString(double,int);
 bool fileExists(string);
-void plotter(string,string,int,int,int);
+void plotter(string,string,string,int,int,int);
 void generateScript(string,string,string,string,string,int);
 string timestamp();
 bool sortDist(const vector<double>&, const vector<double>&);

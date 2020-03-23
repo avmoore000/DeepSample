@@ -37,7 +37,7 @@
 //    fullPrecision - A boolean flag that controls to precision of the output, defaults to full precision.
 // Outputs:  None
 // Purpose:  convertSound takes an audio file and converts it to a numerical representation.
-static void convertSound (string fileName,vector<complex<double> > &leftChannel,vector<complex<double> > &rightChannel,int channels,bool fullPrecision,bool debug, string path)
+static void convertSound (string fileName,vector<complex<double> > &leftChannel,vector<complex<double> > &rightChannel,int channels,bool fullPrecision,bool debug, string path, string audioDir, string sanName)
 {
     SNDFILE *infile = NULL;       // This will point to the audio file for conversion  
     SF_INFO sfinfo;               // Will contain the details of the audio file, such as frame rate, sample rate etc.
@@ -51,7 +51,7 @@ static void convertSound (string fileName,vector<complex<double> > &leftChannel,
 
     if (debug)
     {
-        outputName = fileName + "_converted.txt";
+        outputName =  audioDir + sanName + "_converted.txt";
 
         outFile.open(outputName, ios::out);
     }
@@ -121,17 +121,22 @@ static void convertSound (string fileName,vector<complex<double> > &leftChannel,
 // Function loadAudio
 // Inputs:
 //    fileName - A string containing the name of the audio file to be converted.
+//    leftChannel - A vector of complex doubles that will contain the left channel of the audio wave.
+//    rightChannel - A vector of complex doubles that will contain the right channel of the audio wave.
+//    channels - An integer describing the number of channels in the audio file.
 //    debug - A boolean flag that controls debug output
+//    path - A string describing the path to the output directory
+//    audioDir - A string describing the path to the individual audio directory
 // Outputs: None
 // Purpose:  loadAudio is wrapper function for the convertSound function
-void loadAudio(string fileName, vector<complex<double> > &leftChannel, vector<complex<double> > &rightChannel, int channels,  bool debug, string path)
+void loadAudio(string fileName, vector<complex<double> > &leftChannel, vector<complex<double> > &rightChannel, int channels,  bool debug, string path, string audioDir, string sanName)
 {
     if (debug)
     {
         cout << "Audio loader called." << endl;
     }
 
-    convertSound(fileName,leftChannel,rightChannel,channels,1,debug,path);
+    convertSound(fileName,leftChannel,rightChannel,channels,1,debug,path,audioDir,sanName);
 
     if (debug)
     {

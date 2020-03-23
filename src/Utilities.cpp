@@ -159,13 +159,14 @@ bool fileExists(string fileName)
 // Function plotter
 // Inputs:
 //       sourceFile - A string containing the name of the file to plot
+//       plotFileName - A string containing the name of the file to save plots to.
 //       path - A path to the directory for outputting the plot
 //       graphType - An integer denoting the type of graph to create.
 //       channel - An integer describing which channel is being plotted.
 //       alg - An integer describing which audio algorithm is being worked with.
 // Outputs: None
 // Purpose:  To graph a given data file.
-void plotter(string sourceFile, string path, int graphType, int channels, int alg)
+void plotter(string sourceFile, string plotFileName, string path, int graphType, int channels, int alg)
 {
     ifstream infile;          // Will be used to edit the sourceFile if needed.
     string plotCommand;       // Will contain the command for gnuplot
@@ -177,12 +178,13 @@ void plotter(string sourceFile, string path, int graphType, int channels, int al
     string mode;              // Holds the mode of the gnuplot terminal
     
     mode = "set terminal png";
+    plotCommand = "gnuplot -c 'gnuScript.txt'";
 
     switch(graphType)
     {
         case 0:
         {
-            outFileName = sourceFile + "_boxGraph";
+            outFileName = plotFileName + "_boxGraph";
             break;
         }
         default:
@@ -196,7 +198,32 @@ void plotter(string sourceFile, string path, int graphType, int channels, int al
     { 
         case 0: // Zero crossing algorithm
         {
+
+            // Graph the left channel zero crossing
+            title = "Left Channel Zero Crossing";
+            xlabel = "Left Channel";
+            ylabel = "Zero Cross Level";
+            tempOutFile = path + "/" + outFileName + "_leftZeroCross.png";
+
+            generateScript(title, xlabel, ylabel, tempOutFile, sourceFile, 1);
+
+            cout << "Calling gnuplot" << endl;
+            system(plotCommand.c_str());
         
+            // Graph the right channel zero crossing
+            if (channels == 2)
+            {
+                title = "Right Channel Zero Crossing";
+                xlabel = "Right Channel";
+                ylabel = "Zero Cross Level";
+                tempOutFile = path + "/" + outFileName + "_rightZeroCross.png";
+
+                generateScript(title, xlabel, ylabel, tempOutFile, sourceFile, 2);
+
+                cout << "Calling gnuplot" << endl;
+                system(plotCommand.c_str());
+            }
+
             break;
         }
         case 1: // Spectrum flux algorithm
@@ -206,25 +233,22 @@ void plotter(string sourceFile, string path, int graphType, int channels, int al
             title = "Left Channel Spectral Flux";
             xlabel = "Left Channel";
             ylabel = "Spectral Flux";
-            tempOutFile = outFileName + "_leftSpectralFlux.png";
+            tempOutFile = path + "/" + outFileName + "_leftSpectralFlux.png";
 
             generateScript(title, xlabel, ylabel, tempOutFile, sourceFile, 1);
-
-            plotCommand = "gnuplot -c 'gnuScript.txt'";
 
             cout << "Calling gnuplot" << endl;
             system(plotCommand.c_str()); 
 
+            // Graph the right channels spectral flux
             if (channels == 2)
             {
                 title = "Right Channel Spectral Flux";
                 xlabel = "Right Channel";
                 ylabel = "Spectral Flux";
-                tempOutFile = outFileName + "_rightSpectralFlux.png";
+                tempOutFile = path + "/" + outFileName + "_rightSpectralFlux.png";
 
                 generateScript(title, xlabel, ylabel, tempOutFile, sourceFile, 2);
-
-                plotCommand = "gnuplot -c 'gnuScript.txt'";
 
                 system(plotCommand.c_str());
             }

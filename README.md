@@ -70,6 +70,7 @@ Week of March 21 2020
 
 Week of March 28 2020
 - Added a plotting function to the utilities
+- Edited SampleGenerator to enable plotting as it goes
 
 TO DO
 - Add a working version of cepstrum algorithm to DeepSample
