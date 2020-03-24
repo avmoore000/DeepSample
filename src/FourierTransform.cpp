@@ -37,7 +37,7 @@ void fft(vector<complex<double> > x, bool debug, string resultDirectory)
     ofstream outFile;                            // Used for outputting results
     vector <complex<double> > even;              // Holds the even elements of the wave
     vector <complex<double> > odd;               // Holds the odd elements of the wave
-    const double PI = 3.1459265358793238460;     // Used in calculations
+    const double PI = 3.14159265358979323846;     // Used in calculations
     const int N = x.size();                      // Used for recursion
 
     fileName = resultDirectory + "/fastFourierTransform.txt";
