@@ -1,4 +1,4 @@
-# DeepSample
+#DeepSample
 Audio Processing Project
 
 Audio samples are clips of instrument(s) copied from another song, usually manipulated by changing tempo or speed to 
@@ -71,6 +71,7 @@ Week of March 21 2020
 Week of March 28 2020
 - Added a plotting function to the utilities
 - Edited SampleGenerator to enable plotting as it goes
+- Created a developer manual for using the program.
 
 TO DO
 - Add a working version of cepstrum algorithm to DeepSample

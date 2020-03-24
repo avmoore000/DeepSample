@@ -1,4 +1,4 @@
-/* 
+/*! 
  *  File:   main.cpp
  *  Author: Hue Truong, Andrew Moore, and Alex Reno
  *
@@ -6,7 +6,7 @@
  *
  */
 
-/**************************************Change Log *******************************/
+/*!*************************************Change Log *******************************/
 
 // Added a change log and to do list section - A.M. Feb 09 2020
 // Added the portaudio library for handling the audio file inputs - A.M. Feb 09 2020
@@ -16,12 +16,12 @@
 // Added in the chrono library for tracking completion time of algorithms - A.M. - Feb 26 2020
 // Added seperate vectors for left and right waves - A.M. - Feb 27 2020
 
-/**************************************End Change Log ***************************/
+/*!*************************************End Change Log ***************************/
 
-/**************************************To Do List ******************************/
+/*!*************************************To Do List ******************************/
 
 
-/**************************************End To Do List **************************/
+/*!*************************************End To Do List **************************/
 
 #include <iostream>
 #include <fstream>
@@ -30,7 +30,6 @@
 #include <string>
 #include <chrono>
 #include <sys/stat.h>
-//#include "../include/AudioSegmentation.h"
 #include "../include/FourierTransform.h"
 #include "../include/audioHandler.h"
 #include "../include/TestSuite.h"
@@ -39,19 +38,19 @@ using namespace std::chrono;
 
 int main(int argc, char** argv) 
 {
-    string inputFile;                          // Location of user input file
-    string outputFile;                         // Location to output file
-    string filePath;                           // Path for the algorithm outputs
+    string inputFile;                          //!< Location of user input file
+    string outputFile;                         //!< Location to output file
+    string filePath;                           //!< Path for the algorithm outputs
 
-    ofstream outFile;                          // Pointer to the output file
-    ifstream inFile;                           // Pointer to the user input file
+    ofstream outFile;                          //!< Pointer to the output file
+    ifstream inFile;                           //!< Pointer to the user input file
 
-    bool debug;                                // Toggles debug mode
-    int channels;		               // Number of channels in sound file.
-    int test;                                  // Specifies which tests are being run.
+    bool debug;                                //!< Toggles debug mode
+    int channels;		               //!< Number of channels in sound file.
+    int test;                                  //!< Specifies which tests are being run.
 
-    vector <complex<double> > leftChannel;     // Container to hold the left side of the wave.
-    vector<complex<double> > rightChannel;     // Container to hold the right side of the wave.
+    vector <complex<double> > leftChannel;     //!< Container to hold the left side of the wave.
+    vector<complex<double> > rightChannel;     //!< Container to hold the right side of the wave.
 
     if (argc <= 1)
     {

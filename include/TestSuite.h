@@ -1,4 +1,4 @@
-/* 
+/*! 
  *  File:    TestSuite.h
  *  Author:  Hue Truong, Andrew Moore, and Alex Reno
  *

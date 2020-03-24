@@ -48,24 +48,6 @@ vector<double> realCepstrum(vector<complex<double>> x)
     return realnum;
 }
 
-// Function getSign
-// Inputs:
-//    data - A float containing the current data point.
-//    debug - A flag to enable or disable debug messages.
-// Outputs:
-//    sign - A boolean stating whether the signal has changed from positive to negative or vice versa.
-// Purpose: Determines if a sign change has occured.
-bool getSign(complex<double> data, bool debug, string outputName)
-{
-    bool sign = 0;
-
-    if (real(data) > 0)
-        sign = 1;
-    else
-        sign = 0;
-
-    return sign;
-}
 
 // Function windowHamming
 // Inputs:

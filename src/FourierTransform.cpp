@@ -25,7 +25,7 @@ typedef std::vector<Complex> list;
 // Inputs:
 //    x - A vector of complex numbers describing an audio signal.
 //    debug - A boolean flag that controls debug output
-//    fileName - A string containing the name of the user specified output file.
+//    resultDirectory - A string containing the name of the user specified output file.
 // Outputs:  None
 // Purpose:  fft is a C++ implementation of the Cooley-Tukey Fast Fourier
 //           Transform (FFT) algorithm.  Fourier transformations are used

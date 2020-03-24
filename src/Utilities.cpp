@@ -23,7 +23,7 @@
 // Function printer
 // Inputs:  
 //        fileName - A string containing the name of the output file.
-//        value - A string to be addd to the output file.
+//        value - A string to be added to the output file.
 //        algo - An integer specifying the algorithm that called the printer.
 //        begin - An integer describing the beginning of the printed range.
 //        end - An integer describing the end of the printed range.
