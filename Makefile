@@ -12,9 +12,9 @@ DeepSample: src/main.o src/FourierTransform.o src/zeroCrossing.o src/spectrumFlu
 	$(CC) $(CFLAGS) -o DeepSample src/main.o src/FourierTransform.o src/zeroCrossing.o src/spectrumFlux.o src/cepstrum.o src/audioHandler.o src/Utilities.o src/ANN.o src/TestSuite.o $(LIBS)
 	$(RM) src/*.o
 
-SampleGenerator: src/sampleGenerator.o src/FourierTransform.o src/zeroCrossing.o src/spectrumFlux.o src/cepstrum.o src/audioHandler.o src/Utilities.o 
-	$(CC) $(CFLAGS) -o SampleGenerator src/sampleGenerator.o src/FourierTransform.o src/zeroCrossing.o src/spectrumFlux.o src/cepstrum.o src/audioHandler.o src/Utilities.o $(LIBS)
-	$(RM) src/*.o
+Samples: src/sampleGenerator.o src/FourierTransform.o src/zeroCrossing.o src/spectrumFlux.o src/cepstrum.o src/audioHandler.o src/Utilities.o 
+		$(CC) $(CFLAGS) -o SampleGenerator src/sampleGenerator.o src/FourierTransform.o src/zeroCrossing.o src/spectrumFlux.o src/cepstrum.o src/audioHandler.o src/Utilities.o $(LIBS)
+		$(RM) src/*.o
 
 main.o: src/main.cpp
 	$(CC) $(CFLAGS) -c src/main.cpp $(LIBS)

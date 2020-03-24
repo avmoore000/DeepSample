@@ -125,7 +125,7 @@ int main(int argc, char** argv)
     if ((test == 0) || (test == 1) || (test == 2) || (test == 3))
     {
         // Load the audio file.
-        loadAudio(inputFile,leftChannel,rightChannel,channels,debug);
+        loadAudio(inputFile,leftChannel,rightChannel,channels,debug,"","","");
 
         outFile << "Left Channel Size:  " << leftChannel.size() << endl;
         outFile << "Right Channel Size:  " << rightChannel.size() << endl << endl;

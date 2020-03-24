@@ -200,7 +200,7 @@ void anniTest(string path,string fileName,string audioName,int channels,bool deb
     cout << "ANNI Test started" << endl;
 
     // Load the audio file
-    loadAudio(audioName,leftChannel,rightChannel,channels,debug);
+    loadAudio(audioName,leftChannel,rightChannel,channels,debug,"","","");
 
     // Perform the fft on the audio
     fft(leftChannel,debug,path);
