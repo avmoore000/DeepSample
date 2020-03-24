@@ -10,21 +10,24 @@ FILES = $(shell git pull)
 # Make the DeepSample binary, first making sure the source files aren't stail.
 default: 
 	$(FILES);\
-	make DeepSample;
+	make tests;
 
 # Make all the binaries in the project, first making sure the source files aren't stail.
 all:   
 	$(FILES);\
-	make DeepSample;\
+	make tests;\
 	make Samples;
 
-# Just make the DeepSample binary, first making sure the source files aren't stail
-DeepSample: src/main.o src/FourierTransform.o src/zeroCrossing.o src/spectrumFlux.o src/cepstrum.o src/audioHandler.o src/Utilities.o src/ANN.o src/TestSuite.o 
-	$(CC) $(CFLAGS) -o DeepSample src/main.o src/FourierTransform.o src/zeroCrossing.o src/spectrumFlux.o src/cepstrum.o src/audioHandler.o src/Utilities.o src/ANN.o src/TestSuite.o $(LIBS)
-	$(RM) src/*.o
+test: 
+	$(FILES);\
+	make tests;
+
+tests: src/deepSampleTests.o src/FourierTransform.o src/zeroCrossing.o src/spectrumFlux.o src/cepstrum.o src/audioHandler.o src/Utilities.o src/ANN.o src/TestSuite.o
+	$(CC) $(CFLAGS) -o DeepSampleTests src/deepSampleTests.o src/FourierTransform.o src/zeroCrossing.o src/spectrumFlux.o src/cepstrum.o src/audioHandler.o src/Utilities.o src/ANN.o src/TestSuite.o $(LIBS)
+	$(RM) src/*.o;
 
 clean:
-	$(RM) DeepSample SampleGenerator *.o *.~ *.out src/*.o *.txt
+	$(RM) DeepSampleTests SampleGenerator *.o *.~ *.out src/*.o *.txt
 
 # Just make the sample binary, first making sure the source files aren't stail.
 Samples: src/sampleGenerator.o src/FourierTransform.o src/zeroCrossing.o src/spectrumFlux.o src/cepstrum.o src/audioHandler.o src/Utilities.o 
@@ -32,8 +35,8 @@ Samples: src/sampleGenerator.o src/FourierTransform.o src/zeroCrossing.o src/spe
 	$(RM) src/*.o
 
 # Object compilation
-main.o: src/main.cpp
-	$(CC) $(CFLAGS) -c src/main.cpp $(LIBS)
+deepSampleTests.o: src/deepSampleTests.cpp
+	$(CC) $(CFLAGS) -c src/deepSampleTests.cpp $(LIBS)
 
 sampleGenerator.o: src/sampleGenerator.cpp
 	$(CC) $(CFLAGS) -c src/sampleGenerator.cpp $(LIBS)
