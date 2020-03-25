@@ -83,7 +83,7 @@ void zeroCross (vector<complex<double> > leftChannel, vector<complex<double> > r
 
     if (channels == 2)
     {
-        summation(rightChannel, zeroCross, 1, channels, path, debug);
+        summation(rightChannel, zeroCross, 2, channels, path, debug);
 
         if (debug)
         {

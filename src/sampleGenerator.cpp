@@ -171,7 +171,14 @@ int main(int argc, char** argv)
         if (mkdir(plotPath.c_str(),0777) == -1)
             cout << "Error creating directory. " << plotPath << " already exists." << endl;
         else
+        {
             cout << "Plots directory created at " << plotPath << endl;
+            
+            mkdir((plotPath + "/LeftChannel").c_str(),0777);
+
+            if (channels == 2)
+                mkdir((plotPath + "/RightChannel").c_str(),0777);
+        }
 
     // Open the file for data output
     outFile.open((filePath + "/" + outputFileName + "_output.txt").c_str(),ios::out);
@@ -182,7 +189,7 @@ int main(int argc, char** argv)
     outFile << "\tOutputfile Prefix:  " << outputFileName << endl;
     outFile << "\tChannels:  " << channels << endl;
     outFile << "\tDebug:  " << debug << endl;
-    outFile << "\tPlot:  " << plot << endl << endl;
+    outFile << "\tPlot:  " << plot << endl;
 
     
 
@@ -233,11 +240,14 @@ int main(int argc, char** argv)
     else
         cout << "Invalid input directory." << endl;
 
+    outFile << "\tSample Directory Size:  " << fileNames.size() << " audio files." << endl << endl;
+
     // Run algorithms for each file in the input directory
     for (int i = 0; i < fileNames.size(); i++)
     {
         cout << "Performing analysis of " << fileNames[i] << endl;
 
+        outFile << "Sample [" << i << "]" << endl;
         outFile << timestamp() << ": Performing analysis of " << scrubbedFileNames[i] << endl;
     
         outFile << timestamp() << ": Loading audio file..." << endl;
@@ -360,17 +370,17 @@ int main(int argc, char** argv)
             
             if (channels == 1)
             {
-                for (int i = 0; i < zeroCrossResults[0].size(); i++)
+                for (int i = 0; i < zeroCrossResults[0].size()-1; i++)
                     tempOutFile << zeroCrossResults[0][i] << endl;
             }
             else if (channels == 2)
             {
-                for (int i = 0; i < zeroCrossResults[0].size(); i++)
+                for (int i = 0; i < zeroCrossResults[0].size()-1; i++)
                 {
                     tempOutFile << zeroCrossResults[0][i] << " " << zeroCrossResults[1][i] << endl;
                 }
             }
-           
+
             if (channels == 1) 
                 plotFileName = scrubbedFileNames[i] + "_zeroCrossMono";
             else
@@ -478,6 +488,10 @@ int main(int argc, char** argv)
         rightChannel.clear();
         
     }
+
+    // Clean up any trash
+    string cleanUp = "rm *.txt";
+    system(cleanUp.c_str());
 
     return 0;
 }

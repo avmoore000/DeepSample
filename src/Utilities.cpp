@@ -203,7 +203,7 @@ void plotter(string sourceFile, string plotFileName, int graphType, int alg, int
             title = "Left Channel Zero Crossing";
             xlabel = "Left Channel";
             ylabel = "Zero Cross Level";
-            tempOutFile = path + "/" + outFileName + "_leftZeroCross.png";
+            tempOutFile = path + "/LeftChannel/" + outFileName + "_ZeroCross.png";
 
             generateScript(title, xlabel, ylabel, tempOutFile, sourceFile, 1);
 
@@ -216,7 +216,7 @@ void plotter(string sourceFile, string plotFileName, int graphType, int alg, int
                 title = "Right Channel Zero Crossing";
                 xlabel = "Right Channel";
                 ylabel = "Zero Cross Level";
-                tempOutFile = path + "/" + outFileName + "_rightZeroCross.png";
+                tempOutFile = path + "/RightChannel/" + outFileName + "_ZeroCross.png";
 
                 generateScript(title, xlabel, ylabel, tempOutFile, sourceFile, 2);
 
@@ -233,7 +233,7 @@ void plotter(string sourceFile, string plotFileName, int graphType, int alg, int
             title = "Left Channel Spectral Flux";
             xlabel = "Left Channel";
             ylabel = "Spectral Flux";
-            tempOutFile = path + "/" + outFileName + "_leftSpectralFlux.png";
+            tempOutFile = path + "/LeftChannel/" + outFileName + "_SpectralFlux.png";
 
             generateScript(title, xlabel, ylabel, tempOutFile, sourceFile, 1);
 
@@ -246,7 +246,7 @@ void plotter(string sourceFile, string plotFileName, int graphType, int alg, int
                 title = "Right Channel Spectral Flux";
                 xlabel = "Right Channel";
                 ylabel = "Spectral Flux";
-                tempOutFile = path + "/" + outFileName + "_rightSpectralFlux.png";
+                tempOutFile = path + "/RightChannel/" + outFileName + "_SpectralFlux.png";
 
                 generateScript(title, xlabel, ylabel, tempOutFile, sourceFile, 2);
 
