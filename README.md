@@ -79,4 +79,3 @@ TO DO
 - Start training ANNI
 - Make a powerpoint deck explaining the process for use in presentations
 - Start rough draft of paper for project
-CREEPER AW MAN
