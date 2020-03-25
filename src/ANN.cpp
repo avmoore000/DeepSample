@@ -30,7 +30,7 @@ using namespace std;
 //       debug - A flag that controls debug output.
 // Outputs: None
 // Purpose: ANNI is an artificial neural network that is used to learn the classifications of music.
-void ANNI(vector<vector<float> > zeroCrossResults, double spectrumFluxResults[],string path, string audioName,int channels, bool debug)
+void ANNI(vector<vector<float> > zeroCrossResults, double spectrumFluxResults[], string audioName, int channels, string path, bool debug)
 {
     ofstream outFile;    // File pointer for outputting results and debug information.
     string fileName;     // Name of the output file for ANNI to use.
@@ -74,7 +74,7 @@ void ANNI(vector<vector<float> > zeroCrossResults, double spectrumFluxResults[],
 // Outputs:
 //       distance - A double describing the euclidean distance between row1 and row2
 // Purpose:  Calculate the euclidean distance between the first and second row
-double euclideanDistance(vector<double> row1,vector<double> row2,string path,bool debug)
+double euclideanDistance(vector<double> row1, vector<double> row2, string path, bool debug)
 {
     double distance;     // Will describe the euclidean distance between the row1 and row2
 
@@ -96,7 +96,7 @@ double euclideanDistance(vector<double> row1,vector<double> row2,string path,boo
 // Output:
 //       category - An integer describing the category the audio belongs to
 // Purpose:  Finds the best match of a piece of audio by comparing its zerocross to known data.
-int getBestMatch(vector<vector<float> > knownData, vector<float> testRow, string path,int channels, bool debug)
+int getBestMatch(vector<vector<float> > knownData, vector<float> testRow, int channels, string path, bool debug)
 {
     int match;
 
@@ -113,7 +113,7 @@ int getBestMatch(vector<vector<float> > knownData, vector<float> testRow, string
 // Output:
 //       category - An integer describing the category the audio belongs to
 // Purpose:  Finds the best match of a piece of audio by comparing its spectral flux to known data.
-int getBestMatch(vector<vector<double> > knownData, vector<double> testRow, string path,int channels, bool debug)
+int getBestMatch(vector<vector<double> > knownData, vector<double> testRow, int channels, string path, bool debug)
 {
     int match;                             // Will have the value of the match
     double tempDist;                       // Used to hold the calculated distance
@@ -268,7 +268,7 @@ void trainCodeBooks(vector<vector<double> > database, vector<vector<double> > tr
 
         for (int j = 0; j < database.size(); j++)
         {
-            bmu = getBestMatch(trainSet,database[j], path, channels, debug);
+            bmu = getBestMatch(trainSet,database[j], channels, path, debug);
 
             for (int k = 0; k < database[j].size(); j++)
             {

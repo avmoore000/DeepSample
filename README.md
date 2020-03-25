@@ -72,6 +72,8 @@ Week of March 28 2020
 - Added a plotting function to the utilities
 - Edited SampleGenerator to enable plotting as it goes
 - Created a developer manual for using the program.
+- Downloaded 107 OGG sample files from the Bad Panda collection at archive.org.  They are all creative commons.
+- Changed order of arguments passed to functions to be more consistent for easier development.  Updated dev manual to reflect the changes.
 
 TO DO
 - Add a working version of cepstrum algorithm to DeepSample

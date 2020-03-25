@@ -37,7 +37,7 @@
 //    fullPrecision - A boolean flag that controls to precision of the output, defaults to full precision.
 // Outputs:  None
 // Purpose:  convertSound takes an audio file and converts it to a numerical representation.
-static void convertSound (string fileName,vector<complex<double> > &leftChannel,vector<complex<double> > &rightChannel,int channels,bool fullPrecision,bool debug, string path, string audioDir, string sanName)
+static void convertSound(string fileName, vector<complex<double> > &leftChannel, vector<complex<double> > &rightChannel, bool fullPrecision, string audioDir, string sanName, int channels, string path, bool debug)
 {
     SNDFILE *infile = NULL;       // This will point to the audio file for conversion  
     SF_INFO sfinfo;               // Will contain the details of the audio file, such as frame rate, sample rate etc.
@@ -129,14 +129,14 @@ static void convertSound (string fileName,vector<complex<double> > &leftChannel,
 //    audioDir - A string describing the path to the individual audio directory
 // Outputs: None
 // Purpose:  loadAudio is wrapper function for the convertSound function
-void loadAudio(string fileName, vector<complex<double> > &leftChannel, vector<complex<double> > &rightChannel, int channels,  bool debug, string path, string audioDir, string sanName)
+void loadAudio(string fileName, vector<complex<double> > &leftChannel, vector<complex<double> > &rightChannel, string audioDir, string sanName, int channels, string path, bool debug)
 {
     if (debug)
     {
         cout << "Audio loader called." << endl;
     }
 
-    convertSound(fileName,leftChannel,rightChannel,channels,1,debug,path,audioDir,sanName);
+    convertSound(fileName, leftChannel, rightChannel, 1, audioDir, sanName, channels, path, debug);
 
     if (debug)
     {

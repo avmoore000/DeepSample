@@ -31,7 +31,7 @@ typedef std::vector<Complex> list;
 //           Transform (FFT) algorithm.  Fourier transformations are used
 //           primarily in signal processing to indicate the frequency in 
 //           a signal, and its proportion throughout said signal.
-void fft(vector<complex<double> > x, bool debug, string resultDirectory)
+void fft(vector<complex<double> > x, string resultDirectory, bool debug)
 {
     string fileName;                             // Contains the results directory path
     ofstream outFile;                            // Used for outputting results
@@ -42,6 +42,7 @@ void fft(vector<complex<double> > x, bool debug, string resultDirectory)
 
     fileName = resultDirectory + "/fastFourierTransform.txt";
   
+    
     if (debug)
         outFile.open(fileName.c_str(), ios::out);
 
@@ -71,8 +72,8 @@ void fft(vector<complex<double> > x, bool debug, string resultDirectory)
     }
     
     //Divide and conquer recursion
-    fft(even, debug, fileName); 
-    fft(odd, debug, fileName);
+    fft(even, fileName, debug); 
+    fft(odd, fileName, debug);
 
     for (int i = 0; i < (x.size() / 2); ++i)
     {
@@ -116,7 +117,7 @@ void fft(vector<complex<double> > x, bool debug, string resultDirectory)
 //    fileName - A string containing the name of a user specified output file.
 // Outputs:  None
 // Purpose:  The inverseFT function regenerates the audio wave based on the fft input.
-void inverseFT(vector<complex<double> >& x, bool debug, string fileName)
+void inverseFT(vector<complex<double> >& x, string fileName, bool debug)
 {
     //Loops through and conjoins complex numbers
     for(int i = 0; i < x.size(); i++)

@@ -30,7 +30,7 @@ using namespace std;
 //        path - A string containing the path for output files.
 // Outputs: None
 // Purpose:  spectrumFlux calculate the spectral flux between each frame of a given wave.
-void spectralFlux(vector<complex<double> > leftChannel,vector<complex<double> > rightChannel,double spectralFlux[],int channels,bool debug,string path)
+void spectralFlux(vector<complex<double> > leftChannel, vector<complex<double> > rightChannel, double spectralFlux[], int channels, string path, bool debug)
 {
     const int BLOCKSIZE = 4096;           // Used to calculate the number of frames
 
@@ -57,7 +57,7 @@ void spectralFlux(vector<complex<double> > leftChannel,vector<complex<double> > 
     // Compute spectrum flux for left channel
 
     // Normalize the left channel
-    normalize(leftChannel,normT,frames,1,debug,path);
+    normalize(leftChannel, normT, frames, 1, path, debug);
 
     if (debug)
     {
@@ -110,7 +110,7 @@ void spectralFlux(vector<complex<double> > leftChannel,vector<complex<double> > 
             outFile << "F_t = ";
         }
         // Normalize the right channel
-        normalize(rightChannel,normT,frames,2,debug,path);
+        normalize(rightChannel, normT, frames, 2, path, debug);
 
         // Calculate the spectral flux of the right channel
         for (int i = 0; i <= normT.size() - 1; i++)

@@ -242,14 +242,14 @@ int main(int argc, char** argv)
     
         outFile << timestamp() << ": Loading audio file..." << endl;
 
-        loadAudio(fileNames[i], leftChannel, rightChannel, channels, debug, filePath, audioDir, scrubbedFileNames[i]);
+        loadAudio(fileNames[i], leftChannel, rightChannel, audioDir, scrubbedFileNames[i], channels, filePath, debug);
 
         outFile << timestamp() << ": Audio file loaded." << endl;
 
         outFile << timestamp() << ": Performing FFT of left channel..." << endl;
 
         auto start = high_resolution_clock::now();
-        fft(leftChannel, debug, filePath);
+        fft(leftChannel, filePath, debug);
         auto stop = high_resolution_clock::now();
         auto duration = duration_cast<microseconds>(stop - start);
 
@@ -260,7 +260,7 @@ int main(int argc, char** argv)
             outFile << timestamp() << ": Performing FFT of right channel..." << endl;
 
             start = high_resolution_clock::now();
-            fft(rightChannel, debug, filePath);
+            fft(rightChannel, filePath, debug);
             stop = high_resolution_clock::now();
             duration = duration_cast<microseconds>(stop - start);
 
@@ -298,7 +298,7 @@ int main(int argc, char** argv)
         outFile << timestamp() << ": Beginning zero cross algorithm..." << endl;
 
         start = high_resolution_clock::now();
-        zeroCross(leftChannel,rightChannel,zeroCrossResults,channels,debug,filePath);
+        zeroCross(leftChannel, rightChannel, zeroCrossResults, channels, filePath, debug);
         stop = high_resolution_clock::now();
         duration = duration_cast<microseconds>(stop - start);
         
@@ -376,7 +376,7 @@ int main(int argc, char** argv)
             else
                 plotFileName = scrubbedFileNames[i] + "_zeroCrossingStereo";
 
-            plotter(tempOutFileName, plotFileName, plotPath, 0, channels, 0);
+            plotter(tempOutFileName, plotFileName, 0, 0, channels, plotPath);
 
             if (remove(tempOutFileName.c_str()) == 0)
                 cout << "Temporary file deleted" << endl;
@@ -391,7 +391,7 @@ int main(int argc, char** argv)
         outFile << timestamp() << ": Beginning spectrum flux algorithm..." << endl;
 
         start = high_resolution_clock::now();
-        spectralFlux(leftChannel, rightChannel, spectralFluxResults, channels, debug, filePath);
+        spectralFlux(leftChannel, rightChannel, spectralFluxResults, channels, filePath, debug);
         stop = high_resolution_clock::now();
         duration = duration_cast<microseconds>(stop - start);
 
@@ -440,7 +440,7 @@ int main(int argc, char** argv)
             else
                 plotFileName = scrubbedFileNames[i] + "_spectrumFluxStereo";
 
-            plotter(resultsFileName,plotFileName,plotPath, 0, channels, 1);
+            plotter(resultsFileName, plotFileName, 0, 1, channels, plotPath);
 
             outFile << timestamp() << ": Finished plotting results." << endl;
         }

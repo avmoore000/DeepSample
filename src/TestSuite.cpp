@@ -46,7 +46,7 @@ void zeroCrossingTest(vector<complex<double> > leftChannel,vector<complex<double
     output.open(outputFileName.c_str(), ios::app);
 
     auto start = high_resolution_clock::now();
-    zeroCross(leftChannel,rightChannel,zeroCrossResults,channels,debug,filePath);
+    zeroCross(leftChannel, rightChannel, zeroCrossResults, channels, filePath, debug);
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<milliseconds>(stop - start);
 
@@ -141,7 +141,7 @@ void spectrumFluxTest(vector<complex<double> > leftChannel,vector<complex<double
     outputFile.open(outputFileName.c_str(), ios::app);
 
     auto start = high_resolution_clock::now();
-    spectralFlux(leftChannel,rightChannel,spectralFluxResults,channels,debug,path);
+    spectralFlux(leftChannel, rightChannel, spectralFluxResults, channels, path, debug);
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<milliseconds>(stop - start);
 
@@ -200,27 +200,27 @@ void anniTest(string path,string fileName,string audioName,int channels,bool deb
     cout << "ANNI Test started" << endl;
 
     // Load the audio file
-    loadAudio(audioName,leftChannel,rightChannel,channels,debug,"","","");
+    loadAudio(audioName, leftChannel, rightChannel, "", "", channels, "", debug);
 
     // Perform the fft on the audio
-    fft(leftChannel,debug,path);
+    fft(leftChannel, path, debug);
 
     if (channels == 2)
-        fft(rightChannel,debug,path);
+        fft(rightChannel, path, debug);
 
     // Get zero crossing vector for audio file
 
     vector<float> dataPoints(leftChannel.size(),0);            // A vector containing datapoints for each channel
     vector<vector<float> > zeroCrossResults(2,dataPoints);     // A vector containing zero crossing results
 
-    zeroCross(leftChannel,rightChannel,zeroCrossResults,channels,debug,path);
+    zeroCross(leftChannel, rightChannel, zeroCrossResults,channels, path, debug);
 
     // Get the spectrum flux for audio file
-    spectralFlux(leftChannel,rightChannel,spectralFluxResults,channels,debug,path);
+    spectralFlux(leftChannel, rightChannel, spectralFluxResults, channels, path, debug);
 
 
     auto start = high_resolution_clock::now();
-    ANNI(zeroCrossResults,spectralFluxResults,path,audioName,channels,1);
+    ANNI(zeroCrossResults, spectralFluxResults, audioName, channels, path, debug);
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<milliseconds>(stop-start);
 

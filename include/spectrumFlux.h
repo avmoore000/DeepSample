@@ -30,7 +30,7 @@ using namespace std;
 #define spectrumFlux
 
 // Audio segmentation algorithms
-void spectralFlux(vector<complex<double> >,vector<complex<double> >,double[],int,bool,string);
+void spectralFlux(vector<complex<double> >, vector<complex<double> >, double[], int,string, bool);
 
 // Helper utilities
 

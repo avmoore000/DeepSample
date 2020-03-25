@@ -33,7 +33,7 @@ using namespace std;
 // Purpose:  The zeroCrossing function is an implementation of the zero crossing signal
 // analysis algorithm.  It counts the positive and negative changes within the signal
 // and records the results in a 2D vector that is passed by the user.
-void zeroCross (vector<complex<double> > leftChannel,vector<complex<double> > rightChannel,vector<vector<float> > &zeroCross,int channels,bool debug,string path)
+void zeroCross (vector<complex<double> > leftChannel, vector<complex<double> > rightChannel, vector<vector<float> > &zeroCross, int channels, string path, bool debug)
 {
     int lower;              // Mark the current lower bound of printed data
     int upper;              // Mark the current upper bound of printed data
@@ -79,11 +79,11 @@ void zeroCross (vector<complex<double> > leftChannel,vector<complex<double> > ri
     }
 
     // Always perform zero crossing on the left channel
-    summation(leftChannel, zeroCross, channels, 1, debug, path);
+    summation(leftChannel, zeroCross, 1, channels, path, debug);
 
     if (channels == 2)
     {
-        summation(rightChannel, zeroCross, channels, 2, debug, path);
+        summation(rightChannel, zeroCross, 1, channels, path, debug);
 
         if (debug)
         {
@@ -122,12 +122,12 @@ void zeroCross (vector<complex<double> > leftChannel,vector<complex<double> > ri
 //       data - A vector of complex doubles describing an audio wave
 //       zeroCrossResults - A 2D vector of floats that will contain the zero cross results for each frame of the wave.
 //       frames - An integer describing the number of frames in the audio file.
-//       channel - An integer describing the current channel
+//       currentChannel - An integer describing the current channel
 //       debug - A boolean flag that controls debug output
 //       path - A string describing the path for debug output.
 // Outputs: None
-// Purpose:  To calculate the spectral flux of a particular frame.
-void summation(vector<complex<double> > data, vector<vector<float> > &zeroCrossResults,int channels, int currentChannel, bool debug, string path)
+// Purpose:  To calculate the zerocross of a particular frame.
+void summation(vector<complex<double> > data, vector<vector<float> > &zeroCrossResults,int currentChannel, int channels, string path, bool debug)
 {
     const int BLOCKSIZE = 4096;
 

@@ -26,8 +26,8 @@ using namespace std;
 #ifndef FourierTransform
 #define FourierTransform
 
-void fft(vector<complex<double> >, bool, string);
-void inverseFT(vector<complex<double> >, bool, string);
+void fft(vector<complex<double> >, string, bool);
+void inverseFT(vector<complex<double> >, string, bool);
 
 #endif
 

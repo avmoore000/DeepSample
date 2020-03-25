@@ -30,10 +30,10 @@ using namespace std;
 #define zeroCrossing
 
 // zeroCrossing algorithms
-void zeroCross(vector<complex<double> >,vector<complex<double> >,vector<vector<float> >&,int,bool,string);
+void zeroCross(vector<complex<double> >, vector<complex<double> >, vector<vector<float> >&, int, string, bool);
 
 // Helper utilities
-void summation(vector<complex<double> >, vector<vector<float> >&, int, int, bool, string);
+void summation(vector<complex<double> >, vector<vector<float> >&, int, int, string, bool);
 
 #endif
 

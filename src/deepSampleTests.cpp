@@ -124,7 +124,7 @@ int main(int argc, char** argv)
     if ((test == 0) || (test == 1) || (test == 2) || (test == 3))
     {
         // Load the audio file.
-        loadAudio(inputFile,leftChannel,rightChannel,channels,debug,"","","");
+        loadAudio(inputFile,leftChannel,rightChannel,"","",channels,"",debug);
 
         outFile << "Left Channel Size:  " << leftChannel.size() << endl;
         outFile << "Right Channel Size:  " << rightChannel.size() << endl << endl;
@@ -133,7 +133,7 @@ int main(int argc, char** argv)
 
         // Get FFT of the left channel
         auto startL = high_resolution_clock::now(); 
-        fft(leftChannel,debug,filePath);
+        fft(leftChannel, filePath, debug);
         auto stopL = high_resolution_clock::now();
         auto durationL = duration_cast<microseconds>(stopL - startL);
 
@@ -145,7 +145,7 @@ int main(int argc, char** argv)
         if (channels == 2)
         {
             auto startR = high_resolution_clock::now();
-            fft(rightChannel,debug,filePath);
+            fft(rightChannel, filePath, debug);
             auto stopR = high_resolution_clock::now();
             auto durationR = duration_cast<microseconds>(stopR - startR);
 

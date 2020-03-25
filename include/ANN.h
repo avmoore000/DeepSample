@@ -31,14 +31,14 @@ using namespace std;
 #define ANN
 
 // Neural network functions
-void ANNI(vector<vector<float> >,double[],string,string,int,bool);
+void ANNI(vector<vector<float> >, double[], string, int, string, bool);
 
 // Helper utilities
-double euclideanDistance(vector<double>,vector<double>,string,bool);
-int getBestMatch(vector<vector<float> >, vector<float>,string,int, bool);
-int getBestMatch(vector<vector<double> >,vector<double>,string,int,bool);
-void randomDatabase(vector<vector<double> >,vector<vector<double> >&,string,bool);
-void trainCodeBooks(vector<vector<double> >,vector<vector<double> >&,int,double,int,int,string,bool);
+double euclideanDistance(vector<double>, vector<double>, string, bool);
+int getBestMatch(vector<vector<float> >, vector<float>, int, string, bool);
+int getBestMatch(vector<vector<double> >, vector<double>, int, string, bool);
+void randomDatabase(vector<vector<double> >, vector<vector<double> >&, string,bool);
+void trainCodeBooks(vector<vector<double> >, vector<vector<double> >&, int, double, int, int, string, bool);
 
 #endif
 

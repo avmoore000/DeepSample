@@ -166,7 +166,7 @@ bool fileExists(string fileName)
 //       alg - An integer describing which audio algorithm is being worked with.
 // Outputs: None
 // Purpose:  To graph a given data file.
-void plotter(string sourceFile, string plotFileName, string path, int graphType, int channels, int alg)
+void plotter(string sourceFile, string plotFileName, int graphType, int alg, int channels, string path)
 {
     ifstream infile;          // Will be used to edit the sourceFile if needed.
     string plotCommand;       // Will contain the command for gnuplot
@@ -355,7 +355,7 @@ int sign(double test)
 //       path - A string describing the output directory
 // Outputs: None
 // Purpose:  This is a function that normalizes a vector
-void normalize(vector<complex<double> > data,vector<double> &normals,int frames,int channel, bool debug,string path)
+void normalize(vector<complex<double> > data, vector<double> &normals, int frames, int channel, string path, bool debug)
 {
     double mag;           // Will hold the magnitude of the vector
     double tempMag;       // Will hold the intermediate calculation of the magnitude.
