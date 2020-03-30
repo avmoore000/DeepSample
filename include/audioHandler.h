@@ -24,13 +24,14 @@
 #include <ctype.h>
 #include <float.h>
 #include <sndfile.h>
+#include "AudioWave.h"
 using namespace std;
 
 #ifndef audioHandler
 #define audioHandler
 
-void loadAudio(string, vector<complex<double> >&, vector<complex<double> >&, string, string, int, string, bool);
-static void convertSound(string, vector<complex<double> >&, vector<complex<double> >&, bool, string, string, int, string, bool);
+void loadAudio(string, AudioWave&, string, string, int, string, bool);
+static void convertSound(string, AudioWave&, bool, string, string, int, string, bool);
 
 #endif
 

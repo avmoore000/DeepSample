@@ -24,13 +24,14 @@
 #include <cmath>
 #include <string>
 #include "FourierTransform.h"
+#include "AudioWave.h"
 using namespace std;
 
 #ifndef zeroCrossing
 #define zeroCrossing
 
 // zeroCrossing algorithms
-void zeroCross(vector<complex<double> >, vector<complex<double> >, vector<vector<float> >&, int, string, bool);
+void zeroCross(AudioWave&, string, string, bool);
 
 // Helper utilities
 void summation(vector<complex<double> >, vector<vector<float> >&, int, int, string, bool);

@@ -20,13 +20,14 @@
 #include <string>
 #include <complex>
 #include <cmath>
-
+#include "AudioWave.h"
 using namespace std;
 
 #ifndef FourierTransform
 #define FourierTransform
 
-void fft(vector<complex<double> >, string, bool);
+void fft(AudioWave &, string, string, bool);
+void FastFourier(vector<vector<complex<double> > > &, vector<complex<double> >, int, int&, string, bool);
 void inverseFT(vector<complex<double> >, string, bool);
 
 #endif

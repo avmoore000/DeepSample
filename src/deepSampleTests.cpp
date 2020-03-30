@@ -15,7 +15,7 @@
 // Edited zerocrossing test to accept vector data - A.M. - Feb 15 2020
 // Added in the chrono library for tracking completion time of algorithms - A.M. - Feb 26 2020
 // Added seperate vectors for left and right waves - A.M. - Feb 27 2020
-
+// Modified the program to use the new AudioWave class - A.M. - 29 Mar 2020
 /*!*************************************End Change Log ***************************/
 
 /*!*************************************To Do List ******************************/
@@ -33,11 +33,15 @@
 #include "../include/FourierTransform.h"
 #include "../include/audioHandler.h"
 #include "../include/TestSuite.h"
+#include "../include/AudioWave.h"
+#include "../include/Utilities.h"
 using namespace std;
 using namespace std::chrono;
 
 int main(int argc, char** argv) 
 {
+
+    vector<AudioWave> waves;                    // A vector of audio wave objects.
     string inputFile;                          //!< Location of user input file
     string outputFile;                         //!< Location to output file
     string filePath;                           //!< Path for the algorithm outputs
@@ -52,6 +56,14 @@ int main(int argc, char** argv)
     vector <complex<double> > leftChannel;     //!< Container to hold the left side of the wave.
     vector<complex<double> > rightChannel;     //!< Container to hold the right side of the wave.
 
+   /* auto start = high_resolution_clock::now();  // Used for tracking start times
+    auto stop = high_resolution_clock::now();   // Used for tracking end times.
+    auto duration = duration_cast<milliseconds>(stop - start);  // Used to track duration.*/
+
+    AudioWave w("test",2);
+
+    waves.push_back(w);
+
     if (argc <= 1)
     {
         cout << endl << endl << "Program Use:  " << endl << endl;
@@ -63,10 +75,11 @@ int main(int argc, char** argv)
         cout << "debugMode:  Toggles debug output.  Warning: Debug mode causes output of large files and slows down execution." << endl << endl;
         cout << "tests:" << endl << endl;
         cout << "0: Run all tests." << endl;
-        cout << "1: Run only zero-cross test." << endl;
-        cout << "2: Run only spectrum flux test." << endl;
-        cout << "3: Run only cepstrum test." << endl;
-        cout << "4: Run only ANNI test." << endl;
+        cout << "1: Run the FFT test." << endl;
+        cout << "2: Run only zero-cross test." << endl;
+        cout << "3: Run only spectrum flux test." << endl;
+        cout << "4: Run only cepstrum test." << endl;
+        cout << "5: Run only ANNI test." << endl;
         cout << endl;
 	return 0;
     }
@@ -118,40 +131,108 @@ int main(int argc, char** argv)
     else
         cout << "Results directory created at " << filePath << endl;
 
-    // Open the file for output
+    // Output initial run information
     outFile.open((filePath + "/" + outputFile).c_str(),ios::out);
+    outFile << "Running DeepSampleTest with the following options:" << endl << endl;
+    outFile << "\tfilePath:  " << filePath << endl;
+    outFile << "\tinputFile:  " << inputFile << endl;
+    outFile << "\tchannels:  " << channels << endl;
+    outFile << "\tdebug:  " << debug << endl;
+    outFile << "\ttest:  " << test << endl << endl;
+    outFile.close();
 
-    if ((test == 0) || (test == 1) || (test == 2) || (test == 3))
+    if ((test == 0) || (test == 1) || (test == 2) || (test == 3) || (test == 4))
     {
         // Load the audio file.
-        loadAudio(inputFile,leftChannel,rightChannel,"","",channels,"",debug);
-
-        outFile << "Left Channel Size:  " << leftChannel.size() << endl;
-        outFile << "Right Channel Size:  " << rightChannel.size() << endl << endl;
-
-        outFile.close();
-
-        // Get FFT of the left channel
-        auto startL = high_resolution_clock::now(); 
-        fft(leftChannel, filePath, debug);
-        auto stopL = high_resolution_clock::now();
-        auto durationL = duration_cast<microseconds>(stopL - startL);
 
         outFile.open((filePath + "/" + outputFile).c_str(), ios::app);
+        outFile << timestamp() << ":  Loading audio file..." << endl;
+        outFile.close();
 
-        outFile << "FFT of left channel completed in " << durationL.count() << " ms." << endl;
+        auto start = high_resolution_clock::now();
+        loadAudio(inputFile, waves[0], "", "", channels, "", debug);
+        auto stop = high_resolution_clock::now();
+        auto duration = duration_cast<microseconds>(stop - start);
 
-        // Get the FFT of the right channel if working with stereo
-        if (channels == 2)
+        outFile.open((filePath + "/" + outputFile).c_str(), ios::app);
+        outFile << timestamp() << ":  Finished loading audio file in " << duration.count() << "us."  << endl << endl;
+        outFile << "\tLeft Channel Size:  " << waves[0].getLeftSize() << endl;
+        outFile << "\tRight Channel Size:  " << waves[0].getRightSize() << endl << endl;
+        outFile.close();
+    }
+
+    switch(test)
+    {
+        case 0:        // Run all tests
         {
-            auto startR = high_resolution_clock::now();
-            fft(rightChannel, filePath, debug);
-            auto stopR = high_resolution_clock::now();
-            auto durationR = duration_cast<microseconds>(stopR - startR);
-
-            outFile << "FFT of the right channel completed in " << durationR.count() << " ms." << endl;
+            break;
         }
+        case 1:        // Run FFT test
+        {
 
+            outFile.open((filePath + "/" + outputFile).c_str(), ios::app);
+            outFile << timestamp() << ":  Starting FFT Test..." << endl;
+            outFile.close();
+
+            if (debug)
+                cout << timestamp() << ":  Starting FFT Test..." << endl;
+     
+            auto start = high_resolution_clock::now();
+            fft(waves[0], outputFile, filePath, debug);
+            auto stop = high_resolution_clock::now();
+            auto duration = duration_cast<microseconds>(stop - start);
+
+            outFile.open((filePath + "/" + outputFile).c_str(), ios::app);
+            outFile << timestamp() << ":  FFT Test completed in " << duration.count() << " us." << endl;
+            outFile.close();
+
+            if (debug)
+                cout << timestamp() << ":  FFT Test completed in " << duration.count() << " us." << endl;
+
+            break; 
+        }
+        case 2:        // Run zero crossing test
+        {
+
+            outFile.open((filePath + "/" + outputFile).c_str(), ios::app);
+            outFile << timestamp() << ":  Starting Zero Crossing Test..." << endl;
+            outFile.close();
+
+            if (debug)
+                cout << timestamp() << ":  Starting Zero Crossing Test..." << endl;
+
+            auto start = high_resolution_clock::now();
+            zeroCrossingTest(waves[0], outputFile, filePath, debug);
+            auto stop = high_resolution_clock::now();
+            auto duration = duration_cast<microseconds>(stop - start);
+ 
+            outFile.open((filePath + "/" + outputFile).c_str(), ios::app);
+            outFile << timestamp() << ":  Zero Crossing Test completed in " << duration.count() << " us." << endl;
+            outFile << endl << "\tZero Cross Database Contains " << waves[0].getZSize(0) << " channels." << endl;
+            outFile << "\tLeft Channel Zero Cross Size:  " << waves[0].getZSize(1) << endl;
+            outFile << "\tRight Channel Zero Cross Size:  " << waves[0].getZSize(2) << endl;
+            outFile.close();
+
+            if (debug)
+                cout << timestamp() << ":  Zero Crossing Test completed in " << duration.count() << "us." << endl;
+            break;
+        }
+        case 3:        // Run spectrum flux test
+        {
+            break;
+        }
+        case 4:        // Run cepstrum test
+        {
+            break;
+        }
+        default:       // Invalid test option
+        {
+            break;
+        }
+    }
+
+        
+/*
         cout << endl;
 
         outFile.close();
@@ -195,6 +276,6 @@ int main(int argc, char** argv)
     }
     else if (test == 4)
         anniTest(filePath,outputFile,inputFile,channels,debug);
-
+*/
     return 0;
 }

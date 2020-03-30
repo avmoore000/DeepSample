@@ -23,6 +23,8 @@
 #include "spectrumFlux.h"
 #include "ANN.h"
 #include "audioHandler.h"
+#include "AudioWave.h"
+#include "Utilities.h"
 
 using namespace std;
 using namespace std::chrono;
@@ -30,7 +32,8 @@ using namespace std::chrono;
 #ifndef TestSuite
 #define TestSuite
 
-void zeroCrossingTest(vector<complex<double> >,vector<complex<double> >,int,bool,string,string);
+void zeroCrossingTest(AudioWave&, string, string, bool);
+//void zeroCrossingTest(vector<complex<double> >,vector<complex<double> >,int,bool,string,string);
 void spectrumFluxTest(vector<complex<double> >,vector<complex<double> >,int,bool,string,string);
 void cepstrumTest(vector<complex<double> >, vector<complex<double> >, int, bool, string, string);
 void anniTest(string,string,string,int,bool);

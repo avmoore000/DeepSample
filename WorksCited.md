@@ -13,4 +13,4 @@ Simon, C. (2009 Oct 24). Bad Panda Records. https://archive.org/details/bad-pand
 
 Multiple. (2009 Apr 26. Free Music Charts. https://archive.org/details/free-music-charts?tab=collection
 
-
+In Place FFT Algorithm: https://rosettacode.org/wiki/Fast_Fourier_transform#C.2B.2B

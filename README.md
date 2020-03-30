@@ -75,9 +75,18 @@ Week of March 28 2020
 - Downloaded 107 OGG sample files from the Bad Panda collection at archive.org.  They are all creative commons.
 - Changed order of arguments passed to functions to be more consistent for easier development.  Updated dev manual to reflect the changes.
 
+Week of April 4 2020
+- Created an AudioWave object for ease of use.
+- Converted FFT to a more efficient model and altered to use the AudioWave object.
+- Added the resource for the new FFT to the works cited.
+- Altered the zeroCross function to use the AudioWave object.
+
 TO DO
 - Add a working version of cepstrum algorithm to DeepSample
 - Download files for training ANNI
 - Start training ANNI
 - Make a powerpoint deck explaining the process for use in presentations
 - Start rough draft of paper for project
+- Alter the rest of the functions to use the AudioWave object.
+- Enable plotter across all algorithms.
+- Update the dev manual to reflect changes in codebase.

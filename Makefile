@@ -22,8 +22,8 @@ test:
 	$(FILES);\
 	make tests;
 
-tests: src/deepSampleTests.o src/FourierTransform.o src/zeroCrossing.o src/spectrumFlux.o src/cepstrum.o src/audioHandler.o src/Utilities.o src/ANN.o src/TestSuite.o
-	$(CC) $(CFLAGS) -o DeepSampleTests src/deepSampleTests.o src/FourierTransform.o src/zeroCrossing.o src/spectrumFlux.o src/cepstrum.o src/audioHandler.o src/Utilities.o src/ANN.o src/TestSuite.o $(LIBS)
+tests: src/deepSampleTests.o src/FourierTransform.o src/zeroCrossing.o src/spectrumFlux.o src/cepstrum.o src/audioHandler.o src/Utilities.o src/ANN.o src/TestSuite.o src/AudioWave.o
+	$(CC) $(CFLAGS) -o DeepSampleTests src/deepSampleTests.o src/FourierTransform.o src/zeroCrossing.o src/spectrumFlux.o src/cepstrum.o src/audioHandler.o src/Utilities.o src/ANN.o src/TestSuite.o src/AudioWave.o $(LIBS)
 	$(RM) src/*.o;
 
 clean:
@@ -65,3 +65,5 @@ ANN.o: src/ANN.cpp include/ANN.h
 TestSuite.o: src/TestSuite.cpp include/TestSuite.h
 	$(CC) $(CFLAGS) -c src/TestSuite.cpp
 
+AudioWave.o: src/AudioWave.cpp include/AudioWave.h
+	$(CC) $(CFLAGS) -c src/AudioWave.cpp

@@ -24,102 +24,80 @@ using namespace std::chrono;
 
 // Function zeroCrossingTest
 // Inputs:
-//       leftChannel - A vector of complex doubles describing the left side of the audio wave.
-//       rightChannel - A vector of complex doubles describing the right side of the audio wave.
-//       channels - An integer describing the number of channels in the audio file.
-//       debug - A boolean flag that controls debug output
-//       fileName - A string containing the filname of hte output file
-//       filePath - A string containg the directory for file output
+//       wave - An AudioWave object containing the audio file to analyze.
+//       fileName - A string containing the filname of the output file
+//       path - A string containg the directory for file output
+//       debug - A boolean flag that controls debug output.
 // Outputs: None
 // Purpose:  This is a test function for the zero crossing algorithm.
-void zeroCrossingTest(vector<complex<double> > leftChannel,vector<complex<double> > rightChannel,int channels,bool debug,string fileName,string filePath)
+void zeroCrossingTest(AudioWave &wave, string fileName, string path, bool debug)
 {
-    int m = 2;                                             // Specify number of rows in vector
-    int n = leftChannel.size();                            // Specify number of columns of vector
-    vector<float> dataPoints(n,0);                         // A vector that will contain the data points for each channel	
-    vector<vector<float> > zeroCrossResults(2,dataPoints);        // Holds the datapoints for both waves in a 2D vector 
-    string outputFileName;                                 // Name of the file to output to
-    ofstream output;                                       // Points to the file to output results
+    ofstream outFile;               // Points to the file to output results
+    ofstream debugFile;             // Points to the file for outputting debug data
 
-    outputFileName = filePath + "/" + fileName;
-  
-    output.open(outputFileName.c_str(), ios::app);
+    outFile.open((path + "/" + fileName).c_str(), ios::app);
+    outFile << timestamp() << ":  Zero Cross Test called..." << endl;
+    outFile.close();
+
+    if (debug)
+        debugFile.open((path + "/zeroCrossTestSuiteDebug.txt").c_str(), ios::app);
 
     auto start = high_resolution_clock::now();
-    zeroCross(leftChannel, rightChannel, zeroCrossResults, channels, filePath, debug);
+    zeroCross(wave, fileName, path, debug);
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<milliseconds>(stop - start);
 
-    cout << "Zero Crossing Algorithm completed in " << duration.count() << " ms." << endl;
-    output << "Zero Crossing Algorithm completed in " << duration.count() << " ms." << endl << endl;
+    outFile.open((path + "/" + fileName).c_str(), ios::app);
+    outFile << timestamp() << ":  Zero Cross Test Completed in " << duration.count() << " ms." << endl;
+    outFile.close();
 
     if (debug)
     {
-        output << "Zero Crossing Results" << endl << endl;
+        // Output the left channel zero crossing results
 
-        output << "Left Channel Signal Array:  " << endl;
-        output << "[" << endl;
+        debugFile << "Zero Crossing Results" << endl << endl;
+        debugFile << "Left Channel Signal Array:  " << endl;
+        debugFile << "[" << endl << "\t";
 
-        for (int i = 0; i < leftChannel.size()-1; i++)
+        for (int i = 0; i < wave.getLeftSize() - 1; i++)
         {
-            output << leftChannel[i] << " ";
+            debugFile << wave.getZeroDataPoint(0, i);
 
-	    if ((i != 0) && ((i%10) == 0))
-	        output << endl;
+            if ((i != 0) && ((i % 50) == 0))
+                debugFile << endl << "\t";
         }
-        output << endl << "]" << endl << endl;
 
-        if (channels == 2)
+        debugFile << endl << "]" << endl << endl;
+
+        // Output the right channel zero crossing results
+
+        if (wave.getChannels() == 2)
         {
-            output << "Right Channel Signal Array:  " << endl << "[" << endl;
+            debugFile << "Right Channel Signal Array:  " << endl;
+            debugFile << "[" << endl << "\t";
 
-            for (int i = 0; i < rightChannel.size(); i++)
+            for (int i = 0; i < wave.getRightSize() - 1; i++)
             {
-                output << rightChannel[i] << " ";
+                debugFile << wave.getZeroDataPoint(1, i);
 
-                if ((i != 0) && ((i%10) == 0))
-                    output << endl;
+                if ((i != 0) && ((i % 50) == 0))
+                    debugFile << endl << "\t";
             }
 
-            output << endl << "]" << endl << endl;
+            debugFile << endl << "]" << endl << endl;
         }
     }
-    
-    output << "ZeroCrossTest Left Channel:  " << endl;
-    output << "[" << endl;
 
-    for (int i = 0; i < leftChannel.size(); i++)
-    {
-        output << zeroCrossResults[0][i] << " ";
-          
-        if ((i > 0) && ((i % 50) == 0))
-            output << endl;
-    }
-    output << endl << "]";
+    outFile.open((path + "/" + fileName).c_str(), ios::app);
+    outFile << timestamp() << ":  Zero Cross Test Suite Exiting..." << endl;
+    outFile.close();
 
-    if (channels == 2)
-    { 
-        output << endl << endl << "ZeroCrossTest Right Channel:" << endl << "[" << endl;
+    if (debug)
+        debugFile.close();
 
-        for (int i = 0; i < zeroCrossResults.size(); i++)
-        {
-            for (int j = 0; j < leftChannel.size(); j++)
-            {
-                output << zeroCrossResults[i][j] << " ";
-
-                if ((j > 0) && ((j % 50) == 0))
-                    output << endl;
-            }
-        }
-    }
-    
-    output << endl << "]" << endl << endl;
-
-    output.close();
-    
     return;
 }
-
+    
 // Function spectrumFluxTest
 // Inputs:
 //       leftChannel - A vector of complex doubles describing the left channel of an audio wave.
@@ -200,27 +178,27 @@ void anniTest(string path,string fileName,string audioName,int channels,bool deb
     cout << "ANNI Test started" << endl;
 
     // Load the audio file
-    loadAudio(audioName, leftChannel, rightChannel, "", "", channels, "", debug);
+    //loadAudio(audioName, leftChannel, rightChannel, "", "", channels, "", debug);
 
     // Perform the fft on the audio
-    fft(leftChannel, path, debug);
+    //fft(leftChannel, path, debug);
 
     if (channels == 2)
-        fft(rightChannel, path, debug);
+      //  fft(rightChannel, path, debug);
 
     // Get zero crossing vector for audio file
 
     vector<float> dataPoints(leftChannel.size(),0);            // A vector containing datapoints for each channel
-    vector<vector<float> > zeroCrossResults(2,dataPoints);     // A vector containing zero crossing results
+    //vector<vector<float> > zeroCrossResults(2,dataPoints);     // A vector containing zero crossing results
 
-    zeroCross(leftChannel, rightChannel, zeroCrossResults,channels, path, debug);
+    //zeroCross(leftChannel, rightChannel, zeroCrossResults,channels, path, debug);
 
     // Get the spectrum flux for audio file
     spectralFlux(leftChannel, rightChannel, spectralFluxResults, channels, path, debug);
 
 
     auto start = high_resolution_clock::now();
-    ANNI(zeroCrossResults, spectralFluxResults, audioName, channels, path, debug);
+    //ANNI(zeroCrossResults, spectralFluxResults, audioName, channels, path, debug);
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<milliseconds>(stop-start);
 

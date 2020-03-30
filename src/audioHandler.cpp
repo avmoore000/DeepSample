@@ -37,7 +37,7 @@
 //    fullPrecision - A boolean flag that controls to precision of the output, defaults to full precision.
 // Outputs:  None
 // Purpose:  convertSound takes an audio file and converts it to a numerical representation.
-static void convertSound(string fileName, vector<complex<double> > &leftChannel, vector<complex<double> > &rightChannel, bool fullPrecision, string audioDir, string sanName, int channels, string path, bool debug)
+static void convertSound(string fileName, AudioWave &wave, bool fullPrecision, string audioDir, string sanName, int channels, string path, bool debug)
 {
     SNDFILE *infile = NULL;       // This will point to the audio file for conversion  
     SF_INFO sfinfo;               // Will contain the details of the audio file, such as frame rate, sample rate etc.
@@ -49,19 +49,28 @@ static void convertSound(string fileName, vector<complex<double> > &leftChannel,
     ofstream outFile;             // Stores the numerical representation of the wave file for troubleshooting.
     string outputName;            // Will be used to generate the name of the output file.
 
+    cout << "Convert sound called..." << endl;
+
     if (debug)
     {
+
         outputName =  audioDir + sanName + "_converted.txt";
 
         outFile.open(outputName, ios::out);
     }
 
+    cout << "Filename = " << fileName << endl;
+    cout << "Channels = " << channels << endl;
     // Attempt to open the input file, make sure it is a readable format.   
     if((infile = sf_open(fileName.c_str(), SFM_READ, &sfinfo)) == NULL)
         cout << "Error opening audio file." << endl;
 
     // Determine the number of frames for processing the audio file
     frames = BLOCKSIZE / channels;
+
+    cout << "Frames = " << frames << endl;
+
+    wave.setFrames(frames);
 
     while ((readcount = sf_readf_float (infile, buf, frames)) > 0)
     {      
@@ -81,30 +90,23 @@ static void convertSound(string fileName, vector<complex<double> > &leftChannel,
                 }
             }
 
-            if (channels == 1)  // Mono
-            { 
-                if (dataPoint[0] < 0)
-                    tempSig = -polar(dataPoint[0], 0.0);
-                else
-                    tempSig = polar(dataPoint[0], 0.0);
+            // Always get channel 1
+            if (dataPoint[0] < 0)
+                tempSig = -polar(dataPoint[0], 0.0);
+            else
+                tempSig = polar(dataPoint[0], 0.0);
 
-               leftChannel.push_back(tempSig);
-            }
-            else  // Stereo, going to be twice the size
+            wave.pushLeftChannel(tempSig);
+
+            // Properly handle stereo sound.
+            if (wave.getChannels() == 2)
             {
-                if (dataPoint[0] < 0)
-                    tempSig = -polar(abs(dataPoint[0]), 0.0);
-                else 
-                    tempSig = polar(abs(dataPoint[0]), 0.0);
-
-                leftChannel.push_back(tempSig);  // First channel
-
                 if (dataPoint[1] < 0)
                     tempSig = -polar(abs(dataPoint[0]), 0.0);
                 else
                     tempSig = polar(abs(dataPoint[0]), 0.0);
 
-                rightChannel.push_back(tempSig); // Second channel
+                wave.pushRightChannel(tempSig);
             }
 
             if (debug)
@@ -121,22 +123,21 @@ static void convertSound(string fileName, vector<complex<double> > &leftChannel,
 // Function loadAudio
 // Inputs:
 //    fileName - A string containing the name of the audio file to be converted.
-//    leftChannel - A vector of complex doubles that will contain the left channel of the audio wave.
-//    rightChannel - A vector of complex doubles that will contain the right channel of the audio wave.
+//    wave - An AudioWave object representing the audio file.
 //    channels - An integer describing the number of channels in the audio file.
 //    debug - A boolean flag that controls debug output
 //    path - A string describing the path to the output directory
 //    audioDir - A string describing the path to the individual audio directory
 // Outputs: None
 // Purpose:  loadAudio is wrapper function for the convertSound function
-void loadAudio(string fileName, vector<complex<double> > &leftChannel, vector<complex<double> > &rightChannel, string audioDir, string sanName, int channels, string path, bool debug)
+void loadAudio(string fileName, AudioWave &wave, string audioDir, string sanName, int channels, string path, bool debug)
 {
     if (debug)
     {
         cout << "Audio loader called." << endl;
     }
 
-    convertSound(fileName, leftChannel, rightChannel, 1, audioDir, sanName, channels, path, debug);
+    convertSound(fileName, wave, 1, audioDir, sanName, channels, path, debug);
 
     if (debug)
     {

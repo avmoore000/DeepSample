@@ -22,142 +22,88 @@ using namespace std;
 
 // Function zeroCrossing
 // Inputs:  
-//        leftChannel - A vector of complex doubles describing the left half of the audio signal.
-//        rightChannel - A vector of complex doubles describing the right half of the audio signal.
-//        zeroCross - An 2D vector of doubles describing the results of the zero crossing algorithm.
-//        channels - An integer describing the number of channels in the audio wave.
-//        frames - The number of frames in the audio file.
-//        debug - A flag to enable or disable debug messages.
+//        &wave - An AudioWave object containing the audio file to analyze.
+//        fileName - A string indicating the name of the file for output.
 //        path - A string containing the path for file output.
+//        debug - A boolean flag that controls debug output.
 // Outputs:  None
 // Purpose:  The zeroCrossing function is an implementation of the zero crossing signal
 // analysis algorithm.  It counts the positive and negative changes within the signal
-// and records the results in a 2D vector that is passed by the user.
-void zeroCross (vector<complex<double> > leftChannel, vector<complex<double> > rightChannel, vector<vector<float> > &zeroCross, int channels, string path, bool debug)
+// and records the results in a 2D vector.
+void zeroCross(AudioWave &wave, string fileName, string path, bool debug)
 {
-    int lower;              // Mark the current lower bound of printed data
-    int upper;              // Mark the current upper bound of printed data
-    int fieldWidth;         // Specify the width of the data fields in output
-    double sum;             // Will hold the sum of the signal changes for the current frame.
+    ofstream outFile;        // Name of file to store standard output.
+    ofstream debugFile;      // Name of file for debug output.
 
-    string outputName;      // Name of file to store zeroCrossing results
-    vector<string> values;  // Store the values of current data points
-    ofstream outFile;       // File pointer for outputting results
-   
-    outputName = path + "/zeroCrossing.txt";
+    int step;                // Will control the size of the zero cross frame.
+    int chanSize;            // Will hold the size of the current channel.
+    double sum;              // Sum of signal changes in current frame;
 
-    fieldWidth = 10;
-    lower = 0;
-    upper = 0;
     sum = 0;
+    step = wave.getFrames();
+    chanSize = 0;
 
-    // Initialize the values vector
-    for (int i = 0; i < 6; i++)
-        values.push_back("");
 
-    if (debug)
-        outFile.open((path + "/zeroCrossing.txt").c_str(), ios::app);
-
-    outFile << endl << endl << "ZeroCross Algorithm" << endl << endl;
-    cout << "Zero Cross Algorithm Started" << endl;
-
-    for (int i = 0; i < 100; i++)
-        outFile << "*";
-
-    outFile << endl << endl;
+    outFile.open((path + "/" + fileName).c_str(), ios::app);
+    outFile << timestamp() << ":  ZeroCross Algorithm Called..." << endl;
+    outFile.close();
 
     if (debug)
+        debugFile.open((path + "/ZeroCrossAlgDebug.txt").c_str(), ios::out);
+
+    // Perform the zero cross for each channel in the wave
+    for (int i = 0; i < wave.getChannels(); i++)
     {
-        outFile << "Left Channel:" << endl << endl;
-         
-        for (int i = 0; i < 100; i++)
-            outFile << "*";
-
-        outFile << endl << endl;
-
-        outFile.close();
-    }
-
-    // Always perform zero crossing on the left channel
-    summation(leftChannel, zeroCross, 1, channels, path, debug);
-
-    if (channels == 2)
-    {
-        summation(rightChannel, zeroCross, 2, channels, path, debug);
-
-        if (debug)
+        if (i == 0)
         {
-
-            outFile.open((path + "/zeroCrossing.txt").c_str(), ios::app);
-
-            outFile << endl << endl << "Right Channel:" << endl << endl;
-       
-            for (int i = 0; i < 100; i++)
-                outFile << "*";
-
-            outFile << endl << endl;
+            chanSize = wave.getLeftSize();
            
-            outFile.close();
+            if (debug)
+                debugFile << "Left Channel Zero Cross:  " << endl;
         }
-    }
+        else if (i == 1)
+        {
+            chanSize = wave.getRightSize();
+          
+            if (debug)
+                debugFile << "Right Channel Zero Cross:  " << endl;
+        }
+
+        for (int j = 0; j < chanSize - 1; j += step)
+        {
+            int bound = 0;
+
+            if ((j + step) >= chanSize - 1)
+                bound = (j + step) - (chanSize-1);
+            else 
+                bound = j + step;
+
+
+            for (int k = j; k <= bound; k++)
+            {
+                sum += abs(sign(real(wave.getChannelData(i,k))) - sign(real(wave.getChannelData(i,k-1))));
+            }
+
+            if (debug)
+                debugFile << "\tSum of zeroCross[" << j << "-" << bound << " = " << sum << endl;
+
+            sum /= 2;
+
+            if (debug)
+                debugFile << "\tsum/2 = " << sum << endl;
+
+            wave.pushZero(i,sum);
+
+            sum = 0;
+        }
+    } 
+
+    outFile.open((path + "/" + fileName).c_str(), ios::app);
+    outFile << timestamp() << ":  ZeroCross Algorithm Finished, Exiting..." << endl;
+    outFile.close();
 
     if (debug)
-    {
-        outFile.open(outputName, ios::app);
-
-        cout << "ZeroCross Algorithm Complete." << endl << endl;
-        outFile << "ZeroCross Algorithm Complete. " << endl << endl;
-    
-        for (int i = 0; i < 100; i++)
-            outFile << "*";
-        outFile << endl << endl;
-
-        outFile.close();
-    }
-
-}
-
-// Function summation
-// Inputs:
-//       data - A vector of complex doubles describing an audio wave
-//       zeroCrossResults - A 2D vector of floats that will contain the zero cross results for each frame of the wave.
-//       frames - An integer describing the number of frames in the audio file.
-//       currentChannel - An integer describing the current channel
-//       debug - A boolean flag that controls debug output
-//       path - A string describing the path for debug output.
-// Outputs: None
-// Purpose:  To calculate the zerocross of a particular frame.
-void summation(vector<complex<double> > data, vector<vector<float> > &zeroCrossResults,int currentChannel, int channels, string path, bool debug)
-{
-    const int BLOCKSIZE = 4096;
-
-    double summedSigns;    // Will hold the summation of the signs for the current frame.
-    int step;              // Used to calculate the beginning of the next frame.
-
-    step = BLOCKSIZE / channels;
-    summedSigns = 0;
-    
-    for (int i = 1; i < data.size() - 1; i += step)
-    {
-        int bound = 0;
-
-        if ((i+step) >= data.size())
-            bound = (i + step) - data.size();
-        else
-            bound = i + step;
-
-        for (int j = i; j <= bound; j++)
-            summedSigns += abs(sign(real(data[j])) - sign(real(data[j-1])));
-
-        summedSigns = summedSigns / 2;
-
-        if (currentChannel == 1)
-            zeroCrossResults[0].push_back(summedSigns);
-        else if (currentChannel == 2)
-            zeroCrossResults[1].push_back(summedSigns);
-
-        summedSigns = 0;
-    }
+        debugFile.close();
 
     return;
 }
