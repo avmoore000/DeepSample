@@ -31,13 +31,17 @@
 
 // Function convertSound
 // Inputs:
-//    fileName - A string containing the name of the audio file.
-//    data - A vector of complex doubles that will hold the complex number representation of the audio file.
-//    channels - An integer specifying the number of channels in the audio file, defaults to stereo.
-//    fullPrecision - A boolean flag that controls to precision of the output, defaults to full precision.
+//    &wave - An AudioWave object.
+//    fileName - A string indicating the audio file to load.
+//    audioDir - A string indicating the path to the audio file directory.
+//    sanName - A string indicating the name of the audio file without path information.
+//    channels - An integer indicating the number of channels in the audio file.
+//    fullPrecision - A boolean flag specifying the precision of the output..
+//    path - A string indicating the path for output files.
+//    debug - A boolean flag that controls debug output.    
 // Outputs:  None
 // Purpose:  convertSound takes an audio file and converts it to a numerical representation.
-static void convertSound(string fileName, AudioWave &wave, bool fullPrecision, string audioDir, string sanName, int channels, string path, bool debug)
+static void convertSound(AudioWave &wave, string fileName, string audioDir, string sanName, int channels, bool fullPrecision, string path, bool debug)
 {
     SNDFILE *infile = NULL;       // This will point to the audio file for conversion  
     SF_INFO sfinfo;               // Will contain the details of the audio file, such as frame rate, sample rate etc.
@@ -122,22 +126,25 @@ static void convertSound(string fileName, AudioWave &wave, bool fullPrecision, s
 
 // Function loadAudio
 // Inputs:
-//    fileName - A string containing the name of the audio file to be converted.
-//    wave - An AudioWave object representing the audio file.
+//    wave - An AudioWave object.
+//    fileName - A string indicating the audio file to load.
+//    audioDir - A string indicating the path to the audio file directory.
+//    sanName - A string indicating the name of the audio file without path information.
 //    channels - An integer describing the number of channels in the audio file.
-//    debug - A boolean flag that controls debug output
+//    fullPrecision - A boolean flag specifying the precision of the output.
 //    path - A string describing the path to the output directory
-//    audioDir - A string describing the path to the individual audio directory
+//    debug - A boolean flag that controls debug output.
 // Outputs: None
 // Purpose:  loadAudio is wrapper function for the convertSound function
-void loadAudio(string fileName, AudioWave &wave, string audioDir, string sanName, int channels, string path, bool debug)
+void loadAudio(AudioWave &wave, string fileName, string audioDir, string sanName, int channels, bool fullPrecision,  string path, bool debug)
 {
     if (debug)
     {
         cout << "Audio loader called." << endl;
     }
 
-    convertSound(fileName, wave, 1, audioDir, sanName, channels, path, debug);
+
+    convertSound(wave, fileName, audioDir, sanName, channels, fullPrecision, path, debug);
 
     if (debug)
     {

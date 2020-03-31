@@ -9,6 +9,8 @@
 
 //  Added comments to function headers - A.M. Feb 23 2020
 //  Added debug information to functions - A.M. Feb 23 2020
+//  Changed FFT method to an in place calculation - A.M. 30 Mar 2020
+//  Standardized function argument list - A.M. 30 Mar 202
 
 /**************************************End Change Log ***************************/
 
@@ -24,23 +26,23 @@ typedef std::vector<Complex> list;
 
 // Function fft
 // Inputs:
-//       wave - An AudioWave object representing the audio wave.
-//    x - A vector of complex numbers describing an audio signal.
-//       debug - A boolean flag that controls debug output
-//       resultDirectory - A string containing the name of the user specified output file.
+//       wave - An AudioWave object.
+//       fileName - A string indicating the file for data output.
+//       path - A string indicating the path for output files.
+//       debug - A boolean flag that controls debug output.
 // Outputs:  None
 // Purpose:  fft is a C++ implementation of the Cooley-Tukey Fast Fourier
 //           Transform (FFT) algorithm.  Fourier transformations are used
 //           primarily in signal processing to indicate the frequency in 
 //           a signal, and its proportion throughout said signal.
-void fft(AudioWave &wave, string outputFile, string resultDirectory, bool debug)
+void fft(AudioWave &wave, string fileName, string path, bool debug)
 {
 
-    ofstream outFile;                                     // Will hold standard output.
-    ofstream debugFile;                                   // Will hold debug output.
+    ofstream outFile;                                     // A stream pointer for data output
+    ofstream debugFile;                                   // A stream pointer for debug output
 
-    vector<vector<complex<double> > > fft;                // Will hold the full fft
-    vector<complex<double> > channelWave;                 // Will hold the waves for the channels.
+    vector<vector<complex<double> > > fft;                // A vector to hold the FFT
+    vector<complex<double> > channelWave;                 // A vector to hold the channel data.
 
     unsigned int N;
     unsigned int k;
@@ -51,10 +53,10 @@ void fft(AudioWave &wave, string outputFile, string resultDirectory, bool debug)
     Complex phiT;
     Complex T;
 
-    outFile.open((resultDirectory + "/" + outputFile).c_str(), ios::app);
+    outFile.open((path + "/" + fileName).c_str(), ios::app);
 
     if (debug)
-        debugFile.open((resultDirectory + "/fastFourierDebug.txt").c_str(), ios::app);
+        debugFile.open((path + "/fastFourierDebug.txt").c_str(), ios::app);
 
     // Get the FFT of each channel
     for (int i = 0; i < wave.getChannels(); i++)
@@ -181,94 +183,6 @@ void fft(AudioWave &wave, string outputFile, string resultDirectory, bool debug)
 }
 
 
-/*
-void FastFourier(vector<vector<complex<double> > > &fft, vector<complex<double> > x, int N, int &call, string resultDirectory, bool debug)
-{
-    string fileName;                                // Contains the results directory path.
-    ofstream outFile;                               // Used for outputting results.
-    const double PI = 3.145926535897932386;         // Used for calculations.
-    Complex t;                                      // Used by fft
-
-    fileName = resultDirectory + "/fastFourierTransform.txt";
-
-    if (debug)
-    {
-        outFile.open(fileName.c_str(), ios::app);
-
-        outFile << "FAST FOURIER FUNCTION CALLED WITH N = " << N << endl;
-    }
-
-    // Recursive base step
-    if (N <= 1) 
-    {
-        if (debug)
-            outFile << "Recursive step returning from call:  " << call << endl;
-
-        call++;
-        
-        return;
-    }
-
-    if (debug)
-    {
-        outFile << "BASE STEP COMPLETE" << endl;
-    }
-
-    // Split complex set between even and odd elements
-    for (int i = 0; i < (N / 2); i += 2)
-    {
-        int t1 = i * 2;
-        int t2 = i * 2 + 1;
-        cout << "i = " << i << endl;
-        cout << "N / 2 = " << (N/2) << endl;
-        cout << "x.size = " << x.size() << endl;
-        if (t1 < x.size() - 1)
-            fft[0].push_back(x[t1]);
-
-        if (t2 < x.size() - 1)
-            fft[1].push_back(x[t2]);
-
-        if (debug)
-            outFile << "Split Loop ran ( " << i << " ) times!" << endl;
-    }
-
-    // Divide and conquer recursion
-    FastFourier(fft, fft[0], (N/2), call, resultDirectory, debug);
-    FastFourier(fft, fft[1], (N/2), call, resultDirectory, debug);
-
-    for (int i = 0; i < (N/2); ++i)
-    {
-        // t is a complex number calculated from polar coord of (magnitude, phase angle)
-        if (i < fft[1].size())
-        {
-            t = std::polar(1.0, -2 * PI * i / N) * fft[1].at(i);
-
-            if (debug)
-                outFile << "Caculated t" << endl;
-        }
-
-        if (i < fft[0].size() - 1)
-        {
-            // Replaces elements in x, adding complex to the original element.
-            x.at(i) = fft[0].at(i) + t;
-            x.at(i + N/2) = fft[0].at(i) - t;
-
-            if (debug)
-            {
-                outFile << "Replaced element in x " << endl;
-                outFile << "Merging Loop ran ( " << i << " ) times!" << endl;
-            }
-        }
-    }
-
-    if (debug)
-        outFile.close();
-
-    cout << "Finished FFT on " << N << " elements." << endl;
-
-    return;
-}
-*/
 // Function inverseFT
 // Inputs:
 //    x - A vector of complex numbers representing the fft of the audio signal.

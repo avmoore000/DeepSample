@@ -10,6 +10,9 @@
 
 // Added a change log and to do list section - A.M. Feb 09 2020
 // Implemented a 2D vector to contain zeroCross results
+// Edited all tests to use the AudioWave object. - A.M. 30 Mar 2020
+// Added testing for audio loading and the fft algorithm - A.M. 30 Mar 2020
+// Standardized order of function arguments.  - A.M. 30 Mar 2020
 
 /**************************************End Change Log ***************************/
 
@@ -22,25 +25,118 @@
 using namespace std;
 using namespace std::chrono;
 
+// Function audioTest
+// Inputs:
+//       &wave - An AudioWave object.
+//       audioFileName - A string indicating the name of the audio file being loaded.
+//       audioDir - A string indicating the path to the audio file directory.
+//       sanName - A string indicating the name of the audio file without path information.
+//       channels - An integer indicating the number of channels in the audio file.
+//       fileName - A string indicating the file for data output.
+//       path - A string indicating the path for output files.
+//       debug - A boolean flag that controls debug output
+// Outputs: None
+// Purpose: This is a test function for loading audio
+void audioTest(AudioWave &wave, string audioFileName, string audioDir, string sanName, int channels, bool fullPrecision, string fileName, string path, bool debug)
+{
+    ofstream outFile;        // A stream pointer for data output
+    ofstream debugFile;      // A stream pointer for debug output
+
+    outFile.open((path + "/" + fileName).c_str(), ios::app);
+    outFile << timestamp() << ":  Starting Audio Test" << endl;
+    outFile.close();
+
+    if (debug)
+    {
+        debugFile.open((path + "/audioLoaderTestSuiteDebug.txt").c_str(), ios::app);
+        debugFile << "Audio Test Suite" << endl;
+    }
+ 
+    auto start = high_resolution_clock::now();
+    loadAudio(wave, audioFileName, audioDir, sanName, channels, fullPrecision, path, debug);
+    auto stop = high_resolution_clock::now();
+    auto duration = duration_cast<microseconds>(stop - start);
+
+    outFile.open((path + "/" + fileName).c_str(), ios::app);
+    outFile << timestamp() << ":  Audio Test completed in " << duration.count() << " us." << endl << endl;
+    outFile << "\tLeft Channel Size:  " << wave.getLeftSize() << endl;
+    outFile << "\tRight Channel Size:  " << wave.getRightSize() << endl;
+
+    outFile << endl;
+    outFile.close();
+
+    if (debug)
+    {
+        debugFile << "Audio Loader Test complete." << endl;
+ 
+        debugFile.close();
+    }
+
+    return;
+}
+// Function fftTest
+// Inputs:
+//       wave - An AudioWave object.
+//       fileName - A string indicating the file for data output.
+//       path - A string indicating the path for output files..
+//       debug -  A boolean flag that controls debug output.
+// Outputs: None
+// Purpose: This is a test function for the FFT algorithm.
+void fftTest(AudioWave &wave, string fileName, string path, bool debug)
+{
+    ofstream outFile;               // A stream pointer for data output
+    ofstream debugFile;             // A stream pointer for debug output
+
+    outFile.open((path + "/" + fileName).c_str(), ios::app);
+    outFile << timestamp() << ":  Starting FFT Test..." << endl;
+    outFile.close();
+
+    if (debug)
+    {
+        debugFile.open((path + "/FFTTestSuiteDebug.txt").c_str(), ios::app);
+        debugFile << "FFT Test Suite" << endl;
+    }
+
+    auto start = high_resolution_clock::now();
+    fft(wave, fileName, path, debug);
+    auto stop = high_resolution_clock::now();
+    auto duration = duration_cast<microseconds>(stop - start);
+
+    outFile.open((path + "/" + fileName).c_str(), ios::app);
+    outFile << timestamp() << ":  FFT Test completed in " << duration.count() << " us." << endl;
+    outFile.close();
+
+    if (debug)
+    {
+        debugFile << "FFT Test Suite complete." << endl << endl;
+        debugFile.close();
+    }
+
+    return;
+}
+
 // Function zeroCrossingTest
 // Inputs:
-//       wave - An AudioWave object containing the audio file to analyze.
-//       fileName - A string containing the filname of the output file
-//       path - A string containg the directory for file output
+//       &wave - An AudioWave object.
+//       fileName - A string indicating the file for data output.
+//       path - A string indicating the path for output files.
 //       debug - A boolean flag that controls debug output.
 // Outputs: None
 // Purpose:  This is a test function for the zero crossing algorithm.
 void zeroCrossingTest(AudioWave &wave, string fileName, string path, bool debug)
 {
-    ofstream outFile;               // Points to the file to output results
-    ofstream debugFile;             // Points to the file for outputting debug data
+    ofstream outFile;               // A stream pointer for data output
+    ofstream debugFile;             // A stream pointer for debug output
 
     outFile.open((path + "/" + fileName).c_str(), ios::app);
-    outFile << timestamp() << ":  Zero Cross Test called..." << endl;
+    outFile << timestamp() << ":  Starting Zero Cross Test..." << endl;
     outFile.close();
 
     if (debug)
+    {
         debugFile.open((path + "/zeroCrossTestSuiteDebug.txt").c_str(), ios::app);
+        debugFile << "Zero Cross Test Suite" << endl;
+    }
 
     auto start = high_resolution_clock::now();
     zeroCross(wave, fileName, path, debug);
@@ -48,7 +144,10 @@ void zeroCrossingTest(AudioWave &wave, string fileName, string path, bool debug)
     auto duration = duration_cast<milliseconds>(stop - start);
 
     outFile.open((path + "/" + fileName).c_str(), ios::app);
-    outFile << timestamp() << ":  Zero Cross Test Completed in " << duration.count() << " ms." << endl;
+    outFile << timestamp() << ":  Zero Cross Test completed in " << duration.count() << " ms." << endl;
+    outFile << endl << "\tZero Cross Database contains " << wave.getZSize(0) << " channels." << endl;
+    outFile << "\tLeft Channel Zero Cross Size:  " << wave.getZSize(1) << endl;
+    outFile << "\tRight Channel Zero Cross Size:  " << wave.getZSize(2) << endl << endl;
     outFile.close();
 
     if (debug)
@@ -86,125 +185,157 @@ void zeroCrossingTest(AudioWave &wave, string fileName, string path, bool debug)
 
             debugFile << endl << "]" << endl << endl;
         }
-    }
 
-    outFile.open((path + "/" + fileName).c_str(), ios::app);
-    outFile << timestamp() << ":  Zero Cross Test Suite Exiting..." << endl;
-    outFile.close();
+        debugFile << "Zero Cross Suite completed." << endl;
 
-    if (debug)
         debugFile.close();
+    }
 
     return;
 }
     
 // Function spectrumFluxTest
 // Inputs:
-//       leftChannel - A vector of complex doubles describing the left channel of an audio wave.
-//       rightChannel - A vector of complex doubles describing the right channel of an audio wave.
-//       channels - An integer describing the number of channels in the audio file.
-//       debug - A flag that controls the debug output.
-//       outputFile - A string describing the file to output results
-//       path - A string describing the path for the output file directory
-// Outputs: None
+//       &wave - An AudioWave object.
+//       fileName - A string indicating the file for data output.
+//       path - A string indicating the path for output files.
+//       debug - A boolean flag that controls the debug output.
+// Outputs:  None
 // Purpose:  This function tests the spectrum flux algorithm.
-void spectrumFluxTest(vector<complex<double> > leftChannel,vector<complex<double> > rightChannel,int channels,bool debug,string fileName,string path)
+void spectrumFluxTest(AudioWave &wave, string fileName, string path, bool debug)
 {
-    string outputFileName;             // Contains the name of the output file
-    ofstream outputFile;               // A stream pointer for data output.
-    double spectralFluxResults[2];     // Will hold the results of the spectrum flux algorithm.
+    ofstream outFile;                  // A stream pointer for data output.
+    ofstream debugFile;                // A stream pointer for debug output.
 
-    outputFileName = path + "/" + fileName;
+    outFile.open((path + "/" + fileName).c_str(), ios::app);
+    outFile << timestamp() << ":  Starting Spectrum Flux Test..." << endl;
+    outFile.close();
 
-    outputFile.open(outputFileName.c_str(), ios::app);
-
-    auto start = high_resolution_clock::now();
-    spectralFlux(leftChannel, rightChannel, spectralFluxResults, channels, path, debug);
-    auto stop = high_resolution_clock::now();
-    auto duration = duration_cast<milliseconds>(stop - start);
-
-    cout << "Spectrum Flux Algorithm completed in " << duration.count() << " ms." << endl;
-    outputFile << "Spectrum Flux Algorithm completed in " << duration.count() << " ms." << endl << endl;    
-    
-    outputFile << "Left Channel Spectral Flux:  " << spectralFluxResults[0] << endl;
-
-    if (channels == 2)
+    if (debug)
     {
-        outputFile << "Right Channel Spectral Flux:  " << spectralFluxResults[1] << endl;
+        debugFile.open((path + "/spectrumFluxTestDebug.txt").c_str(), ios::app);
+        debugFile << "Spectrum Flux Test Suite:  " << endl << endl;
     }
 
-    outputFile << endl;
+    auto start = high_resolution_clock::now();
+    spectralFlux(wave, fileName, path, debug);
+    auto stop = high_resolution_clock::now();
+    auto duration = duration_cast<microseconds>(stop - start);
 
-    outputFile.close();
+    outFile.open((path + "/" + fileName).c_str(), ios::app);
+    outFile << timestamp() << ":  Spectrum Flux Test completed in " << duration.count() << " us." << endl;
+    outFile << endl << "\tSpectrum Flux Results:" << endl;
+    outFile << endl << "\tTotal Vector Size:  " << wave.getSSize() << endl;
+    outFile << "\tLeft Channel:  " << wave.getSpectrumDataPoint(0) << endl;
+ 
+    if (wave.getChannels() == 2)
+        outFile << "\tRight Channel:  " << wave.getSpectrumDataPoint(1) << endl;
+
+    outFile << endl;
+
+    outFile.close();
+
+    if (debug)
+    {
+        debugFile << "Spectrum Flux Test Results:" << endl;
+        debugFile << "Left Channel:  " << wave.getSpectrumDataPoint(0) << endl;
+
+        if (wave.getChannels() == 2)
+            debugFile << "Right Channel:  " << wave.getSpectrumDataPoint(1) << endl;
+
+        debugFile << endl << "Spectrum Flux test complete." << endl;
+
+        debugFile.close();
+    }
+
+
     return;
 }
 
 // Function cepstrumTest
 // Inputs:
-//       leftChannel - A vector of complex doubles describing the left channel of an audio wave.
-//       rightChannel - A vector of complex doubles describing the right channel of an audio wave.
-//       channels - An integer describing the number of channels in an audio file
-//       debug - A flag that controls debug output
-//       outputFile - A string descibing the file to output results
-//       path - A string describing the path for the output file directory
+//       &wave - An AudioWave object.
+//       fileName - A string indicating the file for data output.
+//       path - A string indicating the path for output files.
+//       debug - A boolean flag that controls debug output.
 // Outputs: None
 // Purpose:  This function tests the cepstrum algorithm
-void cepstrumTest(vector<complex<double> > leftChannel, vector<complex<double> > rightChannel, int channels, bool debug, string fileName, string path)
+void cepstrumTest(AudioWave &wave, string fileName, string path, bool debug)
 {
+    ofstream outFile;       // A stream pointer for data output.
+    ofstream debugFile;     // A stream pointer for debug output.
+
+    outFile.open((path + "/" + fileName).c_str(), ios::app);
+    outFile << timestamp() << ":  Starting Cepstrum Test..." << endl;
+    outFile.close();
+
+    if (debug)
+    {
+        debugFile.open((path + "/cepstrumTestSuiteDebug.txt").c_str(), ios::app);
+        debugFile << "Cepstrum Test Suite" << endl;
+    }
+
+    auto start = high_resolution_clock::now();
+    // cepstrum()
+    auto stop = high_resolution_clock::now();
+    auto duration = duration_cast<microseconds>(stop - start);
+
+    outFile.open((path + "/" + fileName).c_str(), ios::app);
+    outFile << timestamp() << ":  Cepstrum Test completed in " << duration.count() << " us." << endl;
+    outFile << endl << "\tCepstrum database contains:  " << endl;
+
+    outFile << endl;
+    outFile.close();
+
+    if (debug)
+    {
+        debugFile << "Cepstrum Test Suite complete." << endl;
+        debugFile.close();
+    }
+
     return;
 }
 
 // Function anniTest
 // Inputs:
-//       path - A string describing the path for the output directory
-//       audioName - A string containing the name of the current audio file.
-//       channels - An integer describing the number of channels in the audio.
-//       debug - A flag that controls the debug output.
+//       &wave - An AudioWave object.
+//       fileName - A string indicating the file for data output.
+//       path - A string indicating the path for output files.
+//       debug - A boolean flag that controls the debug output.
 // Outputs: None
 // Purpose:  This function tests the performance of ANNI.
-void anniTest(string path,string fileName,string audioName,int channels,bool debug)
+void anniTest(AudioWave &wave, string fileName, string path, bool debug)
 {
-    string outputFileName;                   // Contains the name of the output file.
-    ofstream outputFile;                     // A stream pointer for data output.
-    double spectralFluxResults[2];           // Will hold the results of the spectral flux algorithm.
-    
-    vector<complex<double> > leftChannel;    // Container to hold the left side of the wave.
-    vector<complex<double> > rightChannel;   // Container to hold the right side of the wave.
-    
-    outputFileName = path + "/" + fileName;
+    ofstream outFile;                        // A stream pointer for data output
+    ofstream debugFile;                      // A stream pointer for debug output
+ 
+    outFile.open((path + "/" + fileName).c_str(), ios::app);
+    outFile << timestamp() << ":  Starting ANNI Test..." << endl;
+    outFile.close();
 
-    outputFile.open(outputFileName.c_str(),ios::app);
-
-    cout << "ANNI Test started" << endl;
-
-    // Load the audio file
-    //loadAudio(audioName, leftChannel, rightChannel, "", "", channels, "", debug);
-
-    // Perform the fft on the audio
-    //fft(leftChannel, path, debug);
-
-    if (channels == 2)
-      //  fft(rightChannel, path, debug);
-
-    // Get zero crossing vector for audio file
-
-    vector<float> dataPoints(leftChannel.size(),0);            // A vector containing datapoints for each channel
-    //vector<vector<float> > zeroCrossResults(2,dataPoints);     // A vector containing zero crossing results
-
-    //zeroCross(leftChannel, rightChannel, zeroCrossResults,channels, path, debug);
-
-    // Get the spectrum flux for audio file
-    spectralFlux(leftChannel, rightChannel, spectralFluxResults, channels, path, debug);
-
+    if (debug)
+    {
+        debugFile.open((path + "/ANNITestSuiteDebug.txt").c_str(), ios::app);    
+        debugFile << "ANNI Test Suite" << endl << endl;
+    }
 
     auto start = high_resolution_clock::now();
-    //ANNI(zeroCrossResults, spectralFluxResults, audioName, channels, path, debug);
+    //ANNI()
     auto stop = high_resolution_clock::now();
-    auto duration = duration_cast<milliseconds>(stop-start);
+    auto duration = duration_cast<microseconds>(stop - start);
 
-    cout << "ANNI completed in " << duration.count() << " ms." << endl;
-    outputFile << "ANNI completed running with " << audioName << " as input in " 
-               << duration.count() << " ms." << endl << endl;
+    outFile.open((path + "/" + fileName).c_str(), ios::app);
+    outFile << timestamp() << ":  ANNI Test completed in " << duration.count() << " us." << endl;
+    outFile << endl << "\tANNI Results:  " << endl;
+
+    outFile << endl;
+    outFile.close();
+
+    if (debug)
+    {
+        debugFile << "ANNI Test complete." << endl;
+        debugFile.close();
+    }
 
     return;
 }

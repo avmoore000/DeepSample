@@ -8,6 +8,7 @@
 /**************************************Change Log *******************************/
 
 // Created zeroCrossing.cpp file - A.M and H.T Feb 29 2020
+// Standardized function argument order - A.M. 30 Mar 2020
 
 /**************************************End Change Log ***************************/
 
@@ -22,9 +23,9 @@ using namespace std;
 
 // Function zeroCrossing
 // Inputs:  
-//        &wave - An AudioWave object containing the audio file to analyze.
-//        fileName - A string indicating the name of the file for output.
-//        path - A string containing the path for file output.
+//        &wave - An AudioWave object.
+//        fileName - A string indicating the file for data output.
+//        path - A string indicating the path for output files.
 //        debug - A boolean flag that controls debug output.
 // Outputs:  None
 // Purpose:  The zeroCrossing function is an implementation of the zero crossing signal
@@ -32,8 +33,8 @@ using namespace std;
 // and records the results in a 2D vector.
 void zeroCross(AudioWave &wave, string fileName, string path, bool debug)
 {
-    ofstream outFile;        // Name of file to store standard output.
-    ofstream debugFile;      // Name of file for debug output.
+    ofstream outFile;        // A stream pointer for data output
+    ofstream debugFile;      // A stream pointer for debug output
 
     int step;                // Will control the size of the zero cross frame.
     int chanSize;            // Will hold the size of the current channel.
@@ -99,7 +100,7 @@ void zeroCross(AudioWave &wave, string fileName, string path, bool debug)
     } 
 
     outFile.open((path + "/" + fileName).c_str(), ios::app);
-    outFile << timestamp() << ":  ZeroCross Algorithm Finished, Exiting..." << endl;
+    outFile << timestamp() << ":  ZeroCross Algorithm completed." << endl;
     outFile.close();
 
     if (debug)

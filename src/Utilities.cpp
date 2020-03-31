@@ -31,7 +31,7 @@
 // Purpose:  Formats and outputs text to a file.
 void printer (string fileName, vector<string> value, int algo, int begin, int end)
 {
-    ofstream outFile;                // Points to user specified output file
+    ofstream outFile;                // A stream pointer for data output
     stringstream stringBuilder;      // This will be used to create the output string
     string line;                     // Stores the line as the string is built
 
@@ -347,100 +347,127 @@ int sign(double test)
 
 // Function normalize
 // Inputs:
-//       data - A vector of complex doubles describing an audiowave.
-//       frames - An integer describing the number of frames to break wave into.
-//       normals - A vector of doubles that will contain the normalized vector
-//       channel - An integer describing the channel we are normalizing.
-//       debug - A flag that controls debug output.
+//       wave - An AudioWave object containing the audio wave being analyzed.
+//       outputFile - A string describing the name of the file for output.
+//       normals - A 2D vector of doubles that will contain the normalized vector
 //       path - A string describing the output directory
+//       debug - A boolean flag that controls the debug output.
 // Outputs: None
 // Purpose:  This is a function that normalizes a vector
-void normalize(vector<complex<double> > data, vector<double> &normals, int frames, int channel, string path, bool debug)
+void normalize(AudioWave wave, vector<vector<double> > &normals, string outputFile, string path, bool debug)
 {
-    double mag;           // Will hold the magnitude of the vector
+    ofstream outFile;     // A stream pointer for data output.
+    ofstream debugFile;   // A stream pointer for debug output.
+
+    double mag;           // Will hold the magnitude of the vector.
     double tempMag;       // Will hold the intermediate calculation of the magnitude.
-    int step;             // Used to calculate beginning of next frame.
-    string fileName;      // Will contain the file and path for debug output
-    ofstream outfile;     // Stream pointer for debug output
-
-    // Clear out the normals vector
-    normals.clear();
-
-    if (debug)
-    {
-        fileName = path + "/normals.txt";
-
-        outfile.open(fileName.c_str(), ios::app);
-
-        outfile << "Frames = " << frames << endl;
-
-        if (channel == 1)
-            outfile << "Left Channel Normals:" <<  endl;
-        else if (channel == 2)
-            outfile << "Right Channel Normals:" << endl;
-    }
+    int step;             // Will control the size of the step in the summation.
 
     mag = 0;
-    step = frames;
+    tempMag = 0;
+    step = wave.getFrames();
 
-    for (int i = 0; i <= data.size() - 1; i += step)
-    {
-        tempMag = 0;
-        int bound = 0;
+    outFile.open((path + "/" + outputFile).c_str(), ios::app);
+    outFile << timestamp() << ":  Calculating normals..." << endl;
+    outFile.close();
 
-        if ((i+step) >= data.size())
-            bound = (i + step) - data.size();
-        else 
-            bound = i+step;
-
-        // Calculate the inside of the magnitude
-        for (int j = i; j <= bound; j++)
-        {
-            tempMag += real(data[j]) * real(data[j]);
-        }
-
-        // Calculate the magnitude
-        mag = sqrt(abs(tempMag));
-
-        // Calculate normals of the window
-        for (int j = i; j <= bound; j++)
-        {
-            double norm = real(data[j]) / mag;
-
-            if (isnan(norm))
-                norm = 0;
-            normals.push_back(norm);
-        }
-
-        if ( (step >= 1) && ((i + frames-1) < data.size() -1))
-            step = frames-1;
-        else if (step != 1)
-            step = 1;
-    }
+    // Clear out the normals vector(s)
+    for (int i = 0; i < normals.size(); i++)
+        normals[i].clear();
 
     if (debug)
     {
-        outfile << "Total Elements = " << normals.size() << endl;
-   
-        outfile << "[" << endl;
+        debugFile.open((path + "/normals.txt").c_str(), ios::app);
 
-        for (int i = 0; i <= normals.size() - 1; i++)
-        {
-            outfile << normals[i] << " ";
- 
-            if (((i % 10) == 0) && (i != 0))
-                outfile << endl;
-        }
-
-        outfile << endl << "]" << endl << endl;
- 
-        for (int i = 0; i < 100; i++)
-            outfile << "*";
-
-        outfile << endl << endl;
-
-        outfile.close();
+        debugFile << "Frames = " << wave.getFrames() << endl;
     }
+
+    for (int i = 0; i < wave.getChannels(); i++)
+    {
+        for (int j = 0; j < wave.getChannelSize(i+1); j += step)
+        {
+            tempMag = 0;
+            int bound = 0;
+
+            if ((j + step) >= wave.getChannelSize(i+1))
+                bound = (j + step) - wave.getChannelSize(i+1);
+            else
+                bound = j + step;
+
+            // Calculate the inside of the magnitude
+            for (int k = j; k <= bound; k++)
+            {
+                double n1 = real(wave.getChannelData(i,k));
+                double n2 = real(wave.getChannelData(i,k));
+
+                if (isnan(n1))
+                    n1 = 1;
+                if (isnan(n2))
+                    n2 = 1;
+
+                tempMag += n1 * n2;
+            }
+
+            // Calculate the magnitude
+            mag = sqrt(abs(tempMag));
+
+            // Calculate the normals of the windoow
+            for (int k = j; k <= bound; k++)
+            {
+                double n = real(wave.getChannelData(i,k));
+
+                if(isnan(n))
+                    n = 1;
+
+                double norm = n / mag;
+
+                if (isnan(norm))
+                    norm = 0;
+
+                normals[i].push_back(norm);
+            }
+        
+            if ( (step >= 1) && ((i + (wave.getFrames() - 1)) < (wave.getChannelSize(i+1) - 1)))
+                step = wave.getFrames() - 1;
+            else
+                step = 1;
+        }
+    }
+
+    outFile.open((path + "/" + outputFile).c_str(), ios::app);
+    outFile << timestamp() << ":  Finished calculating normals." << endl;
+    outFile.close();
+
+    if (debug)
+    {
+        for (int i = 0; i < normals.size(); i++)
+        {
+            if (i == 0)
+            {
+                debugFile << "Left Channel contains " << normals[i].size() << " normals." << endl << endl;
+                debugFile << "Normals:" << endl << endl;
+            }
+            else if (i == 1)
+            {
+                debugFile << "Right Channel contains " << normals[i].size() << " normals." << endl << endl;
+                debugFile << "Normals:" << endl << endl << "\t";
+            }
+
+            debugFile << "[" << endl;
+
+            for (int j = 0; j < normals[i].size() - 1; j++)
+            {
+                debugFile << normals[i].at(j) << " ";
+
+                if (((i % 20) == 0) && (i != 0))
+                    debugFile << endl << "\t";
+            }
+
+            debugFile << endl << "]" << endl << endl;
+        }
+    }
+
+    debugFile.close();
 
     return;
 }

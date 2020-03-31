@@ -23,6 +23,7 @@
 #include <complex>
 #include <chrono>
 #include <ctime>
+#include "AudioWave.h"
 using namespace std;
 
 #ifndef Utilities
@@ -37,7 +38,7 @@ void plotter(string,string,int,int,int,string);
 void generateScript(string,string,string,string,string,int);
 string timestamp();
 bool sortDist(const vector<double>&, const vector<double>&);
-void normalize(vector<complex<double > >,vector<double>&,int,int,string,bool);
+void normalize(AudioWave, vector<vector<double> >&, string, string, bool);
 int sign(double);
 #endif
 

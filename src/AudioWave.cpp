@@ -212,6 +212,38 @@ int AudioWave::getFrames()
     return frames;
 }
 
+// Function getChannelSize
+// Inputs:
+//       chan - An integer indicating the channel to look at.
+// Outputs: cSize - An integer containing the size of the channel.
+// Purpose:  Return the size of a channel in the audio wave object.
+int AudioWave::getChannelSize(int chan)
+{
+    int cSize;
+
+    cSize = 0;
+
+    switch(chan)
+    {
+        case 1:
+        {
+            cSize = leftChannel.size();
+            break;
+        }
+        case 2:
+        {
+            cSize = rightChannel.size();
+            break;
+        }
+        default:
+        {
+            cout << "Invalid channel requested." << endl;
+            break;
+        }
+    }
+  
+    return cSize;
+}
 // Function getLeftSize
 // Inputs: None
 // Outputs:
@@ -440,8 +472,8 @@ double AudioWave::getSpectrumDataPoint(int chan)
 
     dataPoint = NULL;
 
-    if (chan <= spectrumData.size())
-        dataPoint = spectrumData.at(chan - 1);
+    if (chan < spectrumData.size())
+        dataPoint = spectrumData.at(chan);
 
     return dataPoint;
 }

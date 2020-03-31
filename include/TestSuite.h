@@ -32,11 +32,12 @@ using namespace std::chrono;
 #ifndef TestSuite
 #define TestSuite
 
+void audioTest(AudioWave&, string, string, string, int, bool, string, string, bool);
+void fftTest(AudioWave&, string, string, bool);
 void zeroCrossingTest(AudioWave&, string, string, bool);
-//void zeroCrossingTest(vector<complex<double> >,vector<complex<double> >,int,bool,string,string);
-void spectrumFluxTest(vector<complex<double> >,vector<complex<double> >,int,bool,string,string);
-void cepstrumTest(vector<complex<double> >, vector<complex<double> >, int, bool, string, string);
-void anniTest(string,string,string,int,bool);
+void spectrumFluxTest(AudioWave&, string, string, bool);
+void cepstrumTest(AudioWave&, string, string, bool);
+void anniTest(AudioWave&, string, string, bool);
 
 #endif
 

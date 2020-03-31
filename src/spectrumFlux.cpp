@@ -8,6 +8,7 @@
 /**************************************Change Log *******************************/
 
 // Created individual source for spectrum flux algorithm - A.M. and H.T. Feb 29 2020
+// Standardized the function argument order - A.M. 30 Mar 2020
 
 /**************************************End Change Log ***************************/
 
@@ -22,135 +23,97 @@ using namespace std;
 
 // Function spectrumFlux
 // Inputs:
-//        leftChannel - A vector of complex doubles describing the left channel of the audio wave.
-//        rightChannel - A vector of complex doubles describing the right channel of the audio wave.
-//        spectralFlux - An array of doubles that will hold the results of the calculations
-//        channels - An integer describing the number of channels in the audiofile.
-//        debug - A flag that controls the debug output.
-//        path - A string containing the path for output files.
+//        &wave - An AudioWave object.
+//        fileName - A string indicating the file for data output.
+//        path - A string indicating the path for output files.
+//        debug - A boolean flag that controls the debug output.
 // Outputs: None
 // Purpose:  spectrumFlux calculate the spectral flux between each frame of a given wave.
-void spectralFlux(vector<complex<double> > leftChannel, vector<complex<double> > rightChannel, double spectralFlux[], int channels, string path, bool debug)
+void spectralFlux(AudioWave &wave, string outputFile, string path, bool debug)
 {
-    const int BLOCKSIZE = 4096;           // Used to calculate the number of frames
+    ofstream outFile;                    // A stream pointer for data output.
+    ofstream debugFile;                  // A stream pointer for debug output.
 
-    int frames;                           // Determine the size of the windows
-    double mag;                           // Will contain the magnitude of the vector within the frame.
-    vector<double> normT;                 // The normalized vector in the first window
-    bool nt;                              // Flag to control which part of the summation we are doing.
+    double sFlux;                        // Will be used when calculating the flux.
+    vector<double> normT;                // A vector of normalized datapoint from a single channel.
+    vector<vector<double> > norms;       // A vector of both the right and left normalized channels.
+    bool nt;                             // A flag to control the part of the summation being worked.
 
-    ofstream outFile;                     // File used for outputing results.
-
-    frames = 0;
-    mag = 0;
+    sFlux = 0;
     nt = 0;
-    spectralFlux[0] = 0;
-    spectralFlux[1] = 0;
+    
+    for (int i = 0; i < 2; i++)
+        norms.push_back(normT);
 
-    outFile.open((path + "/spectrumFlux.txt"),ios::out);
-
-    outFile << "Spectrum Flux" << endl << endl;
-
-    // Calculate the number of frames per window
-    frames = BLOCKSIZE / channels;
-
-    // Compute spectrum flux for left channel
-
-    // Normalize the left channel
-    normalize(leftChannel, normT, frames, 1, path, debug);
+    outFile.open((path + "/" + outputFile).c_str(), ios::app);
+    outFile << timestamp() << ":  Spectrum Flux Algorithm started..." << endl;
+    outFile.close();
 
     if (debug)
     {
-        outFile << "Left Channel Calculation:  " << endl << endl;
-        outFile << "F_t = ";
+        debugFile.open((path + "/SpectrumFluxAlgDebug.txt").c_str(), ios::app);  
+        debugFile << "Spectrum Flux Algorithm Debug" << endl << endl;
     }
 
-    // Calculate the spectral flux of the left channel
-    for (int i = 0; i <= normT.size() - 1; i++)
-    {
-        if (i == 0)
-        {
-            spectralFlux[0] += normT[i] * normT[i];
-        } 
-        else
-        {
-            spectralFlux[0] += (normT[i] - normT[i-1]) * (normT[i] - normT[i-1]);
-        }
 
-        if (debug)
-        {
-            if (i == 0)
-                outFile << "(" << normT[i] << " * " << normT[i] << ") ";
-            else 
-                outFile << "( (" << normT[i] << " * " << normT[i] << ") * (" << normT[i] << " - " << normT[i-1] << ") )";
+    normalize(wave, norms, outputFile, path, debug);
 
-            if (i != normT.size() - 1)
-                outFile << " + ";
-
-            if (i % 10)
-                outFile << endl << "     ";
-        }
-    }
-
-    if (debug)
-    {
-        outFile << endl << "F_t = " << spectralFlux[0] << endl << endl;
-
-        for (int i = 0; i < 100; i++)
-            outFile << "*";
-
-        outFile << endl << endl;
-    }
-
-    if (channels == 2) // Compute the spectrum flux of right channel
+    // Calculate the spectral flux of all channels in audio signal
+    for (int i = 0; i < wave.getChannels(); i++)
     {
         if (debug)
-        {   
-            outFile << "Right Channel Calculation:  " << endl << endl;
-            outFile << "F_t = ";
-        }
-        // Normalize the right channel
-        normalize(rightChannel, normT, frames, 2, path, debug);
-
-        // Calculate the spectral flux of the right channel
-        for (int i = 0; i <= normT.size() - 1; i++)
         {
             if (i == 0)
             {
-                spectralFlux[1] += normT[i] * normT[i];
+                if (wave.getChannels() > 1)
+                    debugFile << "Left Channel Spectral Flux Calculation:";
+                else
+                    debugFile << "Spectral Flux Calculation:";
             }
+            else if ( i == 1)
+                debugFile << "Right Channel Spectral Flux Calculation:";
+
+            debugFile << endl << endl << "\t";
+        }
+
+        for (int j = 0; j < norms[i].size() - 1; j++)
+        {
+            if (j == 0)
+                sFlux += norms[i].at(j) * norms[i].at(j);    
             else
-            {
-                spectralFlux[1] += (normT[i] - normT[i-1]) * (normT[i] - normT[i-1]);
-            }
+                sFlux += (norms[i].at(j) - norms[i].at(j-1)) * (norms[i].at(j) - norms[i].at(j-1));
 
             if (debug)
-            {   
-                if (i == 0) 
-                    outFile << "(" << normT[i] << " * " << normT[i] << ") ";
-                else 
-                    outFile << "( (" << normT[i] << " - " << normT[i-1] << ") * (" << normT[i] << " - " << normT[i-1] << ") )";
-            
-                if (i != normT.size() - 1)
-                    outFile << " + ";
-            
-                if (i % 10) 
-                    outFile << endl << "     ";
-            }   
+            {
+                if (j == 0)
+                    debugFile << "(" << norms[i].at(j) << " * " << norms[i].at(j) << ") ";
+                else
+                    debugFile << "( (" << norms[i].at(j) << " - " << norms[i].at(j-1)
+                              << ") * (" << norms[i].at(j) << " - " << norms[i].at(j-1)
+                              << ") )";
+
+                if (j != norms[i].size() - 1)
+                    debugFile << " + ";
+
+                if (j % 10)
+                    debugFile << endl << "\t";
+            }
         }
+
+        // Update the spectrum flux database for the wave object
+        wave.pushSpectrum(sFlux);
+
         if (debug)
         {
-            outFile << endl << "F_t = " << spectralFlux[1] << endl << endl;
-
-            for (int i = 0; i < 100; i++)
-                outFile << "*";
-
-            outFile << endl << endl;
+            debugFile << endl << "]" << endl << endl;
         }
     }
-    
-    outFile << "End of Spectrum Flux" << endl;
-    outFile.close();   
+
+    outFile.open((path + "/" + outputFile).c_str(), ios::app);
+    outFile << timestamp() << ":  Spectral Flux Algorithm Completed." << endl;
+    outFile.close();
+
+    debugFile.close();
 
     return;
 }

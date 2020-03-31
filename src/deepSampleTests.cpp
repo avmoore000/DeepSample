@@ -53,13 +53,6 @@ int main(int argc, char** argv)
     int channels;		               //!< Number of channels in sound file.
     int test;                                  //!< Specifies which tests are being run.
 
-    vector <complex<double> > leftChannel;     //!< Container to hold the left side of the wave.
-    vector<complex<double> > rightChannel;     //!< Container to hold the right side of the wave.
-
-   /* auto start = high_resolution_clock::now();  // Used for tracking start times
-    auto stop = high_resolution_clock::now();   // Used for tracking end times.
-    auto duration = duration_cast<milliseconds>(stop - start);  // Used to track duration.*/
-
     AudioWave w("test",2);
 
     waves.push_back(w);
@@ -67,19 +60,29 @@ int main(int argc, char** argv)
     if (argc <= 1)
     {
         cout << endl << endl << "Program Use:  " << endl << endl;
-	cout << "./DeepSample [resultsDirectory] [inputFile] [outputFile] [channels {1,2}] [debugMode {0,1}] tests{0,1,2,3,4}" << endl << endl;
-        cout << "resultsDirectory: User specified directory where results will be stored.  If directory does not exist it will be created." << endl;
-        cout << "inputFile:  Audio file for analysis." << endl;
-        cout << "outputFile: File name for main output file." << endl;
-        cout << "channels:  1 = Mono 2 = Stereo" << endl;
-        cout << "debugMode:  Toggles debug output.  Warning: Debug mode causes output of large files and slows down execution." << endl << endl;
-        cout << "tests:" << endl << endl;
-        cout << "0: Run all tests." << endl;
-        cout << "1: Run the FFT test." << endl;
-        cout << "2: Run only zero-cross test." << endl;
-        cout << "3: Run only spectrum flux test." << endl;
-        cout << "4: Run only cepstrum test." << endl;
-        cout << "5: Run only ANNI test." << endl;
+	cout << "./DeepSample [resultsDirectory] [inputFile] [outputFile] [channels {1,2}]"
+             << endl << "   [debugMode {0,1}] tests{0,1,2,3,4}" << endl << endl;
+        cout << "\tresultsDirectory:"
+             << endl << endl << "\t     User specified directory where results will be stored.  If directory" 
+             << endl << "\t     does not exist it will be created" << endl << endl; 
+        cout << "\tinputFile:"
+             << endl << endl << "\t     Audio file for analysis." << endl << endl;
+        cout << "\toutputFile:"
+             << endl << endl << "\t     File name for main output file." << endl << endl;
+        cout << "\tchannels:"
+             << endl << endl << "\t     1 = Mono " << endl;
+        cout << "\t     2 = Stereo" << endl << endl;
+        cout << "\tdebugMode:"
+             << endl << endl << "\t     Toggles debug output.  Warning: Debug mode causes output of large"
+             << endl << "\t     files and slows down execution." << endl << endl;
+        cout << "\ttests:" << endl << endl;
+        cout << "\t     0: Run all tests." << endl;
+        cout << "\t     1: Audio Loader test." << endl;
+        cout << "\t     2: Run the FFT test." << endl;
+        cout << "\t     3: Run only zero-cross test." << endl;
+        cout << "\t     4: Run only spectrum flux test." << endl;
+        cout << "\t     5: Run only cepstrum test." << endl;
+        cout << "\t     6: Run only ANNI test." << endl;
         cout << endl;
 	return 0;
     }
@@ -117,6 +120,7 @@ int main(int argc, char** argv)
                 case 6:
                 {
                     test = atoi(argv[i]);
+
                     break;
                 }
 		default:
@@ -133,7 +137,7 @@ int main(int argc, char** argv)
 
     // Output initial run information
     outFile.open((filePath + "/" + outputFile).c_str(),ios::out);
-    outFile << "Running DeepSampleTest with the following options:" << endl << endl;
+    outFile << endl << "Running DeepSampleTest with the following options:" << endl << endl;
     outFile << "\tfilePath:  " << filePath << endl;
     outFile << "\tinputFile:  " << inputFile << endl;
     outFile << "\tchannels:  " << channels << endl;
@@ -141,141 +145,186 @@ int main(int argc, char** argv)
     outFile << "\ttest:  " << test << endl << endl;
     outFile.close();
 
-    if ((test == 0) || (test == 1) || (test == 2) || (test == 3) || (test == 4))
-    {
-        // Load the audio file.
-
-        outFile.open((filePath + "/" + outputFile).c_str(), ios::app);
-        outFile << timestamp() << ":  Loading audio file..." << endl;
-        outFile.close();
-
-        auto start = high_resolution_clock::now();
-        loadAudio(inputFile, waves[0], "", "", channels, "", debug);
-        auto stop = high_resolution_clock::now();
-        auto duration = duration_cast<microseconds>(stop - start);
-
-        outFile.open((filePath + "/" + outputFile).c_str(), ios::app);
-        outFile << timestamp() << ":  Finished loading audio file in " << duration.count() << "us."  << endl << endl;
-        outFile << "\tLeft Channel Size:  " << waves[0].getLeftSize() << endl;
-        outFile << "\tRight Channel Size:  " << waves[0].getRightSize() << endl << endl;
-        outFile.close();
-    }
-
     switch(test)
     {
-        case 0:        // Run all tests
+        case 1:        // Load Audio test
         {
+            if (debug)
+                cout << timestamp() << ":  Starting Audio Loader Test..." << endl;
+
+            audioTest(waves[0], inputFile, "", "", channels, 1, outputFile, filePath, debug);
+
+            if (debug)
+                cout << timestamp() << ":  Audio Loader Test complete." << endl;
+
             break;
         }
-        case 1:        // Run FFT test
+        case 2:        // Run FFT test
         {
+            if (debug)
+            {
+                cout << timestamp() << ":  Doing prep work for FFT Test..." << endl;
+                cout << timestamp() << ":  Loading Audio..." << endl;
+            }
 
-            outFile.open((filePath + "/" + outputFile).c_str(), ios::app);
-            outFile << timestamp() << ":  Starting FFT Test..." << endl;
-            outFile.close();
+                loadAudio(waves[0], inputFile, "", "", channels, 1, filePath, debug);
 
             if (debug)
+            {
+                cout << timestamp() << ":  Audio loaded." << endl;
+                cout << timestamp() << ":  Prep work complete." << endl;
                 cout << timestamp() << ":  Starting FFT Test..." << endl;
-     
-            auto start = high_resolution_clock::now();
-            fft(waves[0], outputFile, filePath, debug);
-            auto stop = high_resolution_clock::now();
-            auto duration = duration_cast<microseconds>(stop - start);
+            }
 
-            outFile.open((filePath + "/" + outputFile).c_str(), ios::app);
-            outFile << timestamp() << ":  FFT Test completed in " << duration.count() << " us." << endl;
-            outFile.close();
+            fftTest(waves[0], outputFile, filePath, debug);
 
             if (debug)
-                cout << timestamp() << ":  FFT Test completed in " << duration.count() << " us." << endl;
+                cout << timestamp() << ":  FFT Test complete." << endl;
 
             break; 
         }
-        case 2:        // Run zero crossing test
+        case 3:        // Run zero crossing test
         {
+            if (debug)
+            {
+                cout << timestamp() << ":  Doing prep work for Zero Cross Test..." << endl;
+                cout << timestamp() << ":  Loading Audio..." << endl;
+            }
 
-            outFile.open((filePath + "/" + outputFile).c_str(), ios::app);
-            outFile << timestamp() << ":  Starting Zero Crossing Test..." << endl;
-            outFile.close();
+                loadAudio(waves[0], inputFile, "", "", channels, 1, filePath, debug);     
 
             if (debug)
-                cout << timestamp() << ":  Starting Zero Crossing Test..." << endl;
+            {
+                cout << timestamp() << ":  Audio loaded." << endl;
+                cout << timestamp() << ":  Prep work complete." << endl;
+                cout << timestamp() << ":  Starting Zero Cross Test..." << endl;
+            }
 
-            auto start = high_resolution_clock::now();
-            zeroCrossingTest(waves[0], outputFile, filePath, debug);
-            auto stop = high_resolution_clock::now();
-            auto duration = duration_cast<microseconds>(stop - start);
- 
-            outFile.open((filePath + "/" + outputFile).c_str(), ios::app);
-            outFile << timestamp() << ":  Zero Crossing Test completed in " << duration.count() << " us." << endl;
-            outFile << endl << "\tZero Cross Database Contains " << waves[0].getZSize(0) << " channels." << endl;
-            outFile << "\tLeft Channel Zero Cross Size:  " << waves[0].getZSize(1) << endl;
-            outFile << "\tRight Channel Zero Cross Size:  " << waves[0].getZSize(2) << endl;
-            outFile.close();
+            zeroCrossingTest(waves[0], outputFile, filePath, debug); 
 
             if (debug)
-                cout << timestamp() << ":  Zero Crossing Test completed in " << duration.count() << "us." << endl;
+                cout << timestamp() << ":  Zero Cross Test complete." << endl;
+
             break;
         }
-        case 3:        // Run spectrum flux test
+        case 4:        // Run spectrum flux test
         {
+            if (debug)
+            {
+                cout << timestamp() << ":  Doing prep work for Spectrum Flux Test..." << endl;
+                cout << timestamp() << ":  Loading Audio..." << endl;
+            }
+          
+                loadAudio(waves[0], inputFile, "", "", channels, 1, filePath, debug);
+
+            if (debug)
+            {
+                cout << timestamp() << ":  Audio loaded." << endl;
+                cout << timestamp() << ":  Prep work complete." << endl;
+                cout << timestamp() << ":  Starting Spectrum Flux Test..." << endl;
+            }
+
+            spectrumFluxTest(waves[0], outputFile, filePath, debug);
+
+            if (debug)
+                cout << timestamp() << ":  Spectrum Flux Test complete." << endl;
+
             break;
         }
-        case 4:        // Run cepstrum test
+        case 5:        // Run cepstrum test
         {
+            if (debug)
+            {
+                cout << timestamp() << ":  Doing prep work for Cepstrum Test..." << endl;
+                cout << timestamp() << ":  Loading Audio..." << endl;
+            }
+
+                loadAudio(waves[0], inputFile, "", "", channels, 1, filePath, debug);
+
+            if (debug)
+            {
+                cout << timestamp() << ":  Audio loaded." << endl;
+                cout << timestamp() << ":  Prep work complete." << endl;
+                cout << timestamp() << ":  Starting Cepstrum Test..." << endl;
+            }
+
+            cepstrumTest(waves[0], outputFile, filePath, debug);
+
+
+            if (debug)
+                cout << timestamp() << ":  Cepstrum Test complete." << endl;
+
+            break;
+        }
+        case 6:  // Run ANNI test (runs all tests)
+        case 0:
+        {
+            // Do the prep work for ANNI
+            if (debug)
+            {
+                if (test == 5)
+                    cout << timestamp() << ":  Doing prep work for ANNI Test..." << endl;
+
+                cout << timestamp() << ":  Loading Audio..." << endl;
+            }
+                loadAudio(waves[0], inputFile, "", "", channels, 1, filePath, debug);
+
+            if (debug)
+            {
+                cout << timestamp() << ":  Audio Loaded." << endl;
+                cout << timestamp() << ":  Generating FFT..." << endl;
+            }
+
+            // Generate the FFT
+            fftTest(waves[0], outputFile, filePath, debug);
+            
+            if (debug)
+            {
+                cout << timestamp() << ":  FFT generation complete." << endl;
+                cout << timestamp() << ":  Generating Zero Cross..." << endl;
+            }
+
+            // Generate zero cross
+            zeroCrossingTest(waves[0], outputFile, filePath, debug);     
+
+            if (debug)
+            {
+                cout << timestamp() << ":  Zero Cross generation complete." << endl;
+                cout << timestamp() << ":  Generating Spectrum Flux..." << endl;
+            }
+
+            // Generate spectrum flux
+            spectrumFluxTest(waves[0], outputFile, filePath, debug);
+
+            if (debug)
+            {
+                cout << timestamp() << ":  Spectrum Flux generation complete." << endl;
+                cout << timestamp() << ":  Generating Cepstrum..." << endl;
+            }
+
+            // Generate cepstrum
+            cepstrumTest(waves[0], outputFile, filePath, debug);
+
+            if (debug)
+            {
+                cout << timestamp() << ":  Cepstrum generation complete." << endl;
+                cout << timestamp() << ":  Prep work complete." << endl;
+                cout << timestamp() << ":  Starting ANNI Test..." << endl;
+            }
+
+            anniTest(waves[0], outputFile, filePath, debug);
+
+            if (debug)
+                cout << timestamp() << ":  ANNI Test complete." << endl;
+
             break;
         }
         default:       // Invalid test option
         {
+            cout << "Error, unsupported test." << endl << endl;
             break;
         }
     }
-
-        
-/*
-        cout << endl;
-
-        outFile.close();
-
-        switch(test)
-        {
-            case 0:
-            {
-                zeroCrossingTest(leftChannel,rightChannel,channels,debug,outputFile,filePath);
-                spectrumFluxTest(leftChannel,rightChannel,channels,debug,outputFile,filePath);
-                cepstrumTest(leftChannel,rightChannel,channels,debug,outputFile,filePath);
-                anniTest(filePath,outputFile,inputFile,channels,debug);
-
-                break;
-            }
-            case 1:
-            {
-                zeroCrossingTest(leftChannel,rightChannel,channels,debug,outputFile,filePath);
-
-                break;
-            }
-            case 2:
-            {
-                spectrumFluxTest(leftChannel,rightChannel,channels,debug,outputFile,filePath);
-
-                break;
-            }
-            case 3:
-            {
-                cepstrumTest(leftChannel,rightChannel,channels,debug,outputFile,filePath);
-
-                break;
-            }
-            default:
-            {
-                cout << "Error, unsupported test." << endl << endl;
-
-                break;
-            }
-        }
-    }
-    else if (test == 4)
-        anniTest(filePath,outputFile,inputFile,channels,debug);
-*/
+ 
     return 0;
 }

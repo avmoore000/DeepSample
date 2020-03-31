@@ -55,6 +55,7 @@ class AudioWave
         double getSpectrumDataPoint(int);                      // Returns value from spectrumData
         double getCepstrumDataPoint(int);                      // Returns value from cepstrumData
         complex<double> getChannelData(int, int);              // Returns a value from a channel.
+        int getChannelSize(int);                               // Returns the size of a channel.
         int getLeftSize();                                     // Returns left channel size.
         int getRightSize();                                    // Returns right channel size.
         int getZSize(int);                                     // Returns zeroCrossData size.
