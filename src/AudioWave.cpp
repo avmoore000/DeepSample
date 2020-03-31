@@ -18,7 +18,7 @@
 
 // Function AudioWave
 // Inputs:
-//       audioName - A string containing the full path to an audio file.
+//       audioName - A string indicating the full path to an audio file.an.
 //       chan - A integer indicating the number of channels in the audio file.
 // Outputs: None
 // Purpose:  This is the constructor for an AudioWave object.
@@ -427,10 +427,10 @@ complex<double> AudioWave::getChannelData(int channel, int index)
 // Function getZeroDataPoint
 // Inputs:
 //       chan - An integer indicating which channel to pull the data from.
-//       location - An integer indicating which data point to return.
+//       index - An integer indicating which data point to return.
 // Outputs: dataPoint - A double containing the datapoint.
 // Purpose:  Returns the datapoint from the indicated channel and location.
-double AudioWave::getZeroDataPoint(int chan, int location)
+double AudioWave::getZeroDataPoint(int chan, int index)
 {
     double dataPoint;
 
@@ -441,7 +441,7 @@ double AudioWave::getZeroDataPoint(int chan, int location)
         case 1:
         {
             if (location < zeroData[0].size())
-                dataPoint = zeroData[0][location];
+                dataPoint = zeroData[0][index];
             break;
         }
         case 2:
@@ -449,7 +449,7 @@ double AudioWave::getZeroDataPoint(int chan, int location)
             if (channels == 2)
             {
                 if (location < zeroData[1].size())
-                    dataPoint = zeroData[1][location];
+                    dataPoint = zeroData[1][index];
             }
             
             break;
@@ -481,6 +481,7 @@ double AudioWave::getSpectrumDataPoint(int chan)
 // Function getCepstrumDataPoint
 // Inputs:
 //       chan - An integer indicating which channel to pull the data from.
+//       index - An integer indicating the index to access.
 // Outputs: dataPoint - A double containing the datapoint
 // Purpose: Returns the datapoint from the indicated channel and location.
 double AudioWave::getCepstrumDataPoint(int chan)
