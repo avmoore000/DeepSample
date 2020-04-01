@@ -440,7 +440,7 @@ double AudioWave::getZeroDataPoint(int chan, int index)
     {
         case 1:
         {
-            if (location < zeroData[0].size())
+            if (index < zeroData[0].size())
                 dataPoint = zeroData[0][index];
             break;
         }
@@ -448,7 +448,7 @@ double AudioWave::getZeroDataPoint(int chan, int index)
         {
             if (channels == 2)
             {
-                if (location < zeroData[1].size())
+                if (index < zeroData[1].size())
                     dataPoint = zeroData[1][index];
             }
             

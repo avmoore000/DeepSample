@@ -37,14 +37,14 @@ class AudioWave
         void setFrames(int);                                   // Initialize the frames member
         void setName(string);                                  // Initialize the fileName member
         void setLeftFFT(vector<complex<double> >);             // Initialize the leftFFT member
-        void setRightFFT(vector<complex<double> >)             // Initialize the rightFFT member
+        void setRightFFT(vector<complex<double> >);            // Initialize the rightFFT member
         void setZeroData();                                    // Initialize the zeroData member
 
         // Updaters
         void pushCepstrum(int, double);                        // Push a value to cepstrumData
         void pushLeftChannel(complex<double>);                 // Push a value to leftChannel
         void pushRightChannel(complex<double>);                // Push a value to rightChannel
-        void pushSpectrum(int,double);                         // Push a value to spectrumData
+        void pushSpectrum(double);                             // Push a value to spectrumData
         void pushZero(int, double);                            // Push a value to zeroData
 
         // Getters
@@ -65,7 +65,7 @@ class AudioWave
         int getLeftSize();                                     // Return leftChannel size
         int getRightSize();                                    // Return rightChannel size
         int getSSize();                                        // Return spectrumData size
-        int getZSize();                                        // Return zeroData size     
+        int getZSize(int);                                        // Return zeroData size     
       
     private:
 

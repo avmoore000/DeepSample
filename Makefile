@@ -30,8 +30,8 @@ clean:
 	$(RM) DeepSampleTests SampleGenerator *.o *.~ *.out src/*.o *.txt
 
 # Just make the sample binary, first making sure the source files aren't stail.
-Samples: src/sampleGenerator.o src/FourierTransform.o src/zeroCrossing.o src/spectrumFlux.o src/cepstrum.o src/audioHandler.o src/Utilities.o 
-	$(CC) $(CFLAGS) -o SampleGenerator src/sampleGenerator.o src/FourierTransform.o src/zeroCrossing.o src/spectrumFlux.o src/cepstrum.o src/audioHandler.o src/Utilities.o $(LIBS)
+Samples: src/sampleGenerator.o src/FourierTransform.o src/zeroCrossing.o src/spectrumFlux.o src/cepstrum.o src/audioHandler.o src/Utilities.o src/AudioWave.o 
+	$(CC) $(CFLAGS) -o SampleGenerator src/sampleGenerator.o src/FourierTransform.o src/zeroCrossing.o src/spectrumFlux.o src/cepstrum.o src/audioHandler.o src/Utilities.o src/AudioWave.o $(LIBS)
 	$(RM) src/*.o
 
 # Object compilation

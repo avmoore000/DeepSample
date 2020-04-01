@@ -14,6 +14,7 @@
 /**************************************To Do List ******************************/
 /**************************************End To Do List **************************/
 
+#include "AudioWave.h"
 #include "FourierTransform.h"
 #include "audioHandler.h"
 #include "zeroCrossing.h"
