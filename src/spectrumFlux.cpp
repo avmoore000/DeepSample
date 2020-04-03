@@ -51,7 +51,7 @@ void spectralFlux(AudioWave &wave, string fileName, string path, bool debug)
 
     if (debug)
     {
-        debugFile.open((path + "/SpectrumFluxAlgDebug.txt").c_str(), ios::app);  
+        debugFile.open((path + "/SpectrumFlux/SpectrumFluxAlgDebug.txt").c_str(), ios::app);  
         debugFile << "Spectrum Flux Algorithm Debug" << endl << endl;
 
         cout << timestamp() << ":  Spectrum Flux Algorithm started..." << endl;

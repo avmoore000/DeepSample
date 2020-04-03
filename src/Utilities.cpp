@@ -282,8 +282,9 @@ void graphAlg(AudioWave wave, string filePrefix, int alg, string fileName, strin
             fullTitle[1] = title + " Right Channel Audio Wave";
             fullOutFile[0] = tempOutFile + "LeftAudioWave.png";
             fullOutFile[1] = tempOutFile + "RightAudioWave.png";
-            sourceFile = wave.getSourceFile(0,0);
+            sourceFile = wave.getSourceFile(0);
             ylabel = "Audio Wave";
+
             break;
         }
         case 1: // Graphing FFT
@@ -292,7 +293,7 @@ void graphAlg(AudioWave wave, string filePrefix, int alg, string fileName, strin
             fullTitle[1] = title + " Right Channel FFT";
             fullOutFile[0] = tempOutFile + "LeftFFT.png";
             fullOutFile[1] = tempOutFile + "RightFFT.png";
-            sourceFile = wave.getSourceFile(0,1);
+            sourceFile = wave.getSourceFile(1);
             ylabel = "FFT";
             break;
         }
@@ -302,7 +303,7 @@ void graphAlg(AudioWave wave, string filePrefix, int alg, string fileName, strin
             fullTitle[1] = title + " Right Channel Zero Cross";
             fullOutFile[0] = tempOutFile + "LeftZeroCross.png";
             fullOutFile[1] = tempOutFile + "RightZeroCross.png";
-            sourceFile = wave.getSourceFile(0,2);
+            sourceFile = wave.getSourceFile(2);
             ylabel = "Zero Cross Level";
             break;
         }
@@ -312,7 +313,7 @@ void graphAlg(AudioWave wave, string filePrefix, int alg, string fileName, strin
             fullTitle[1] = title + " Right Channel Spectral Flux";
             fullOutFile[0] = tempOutFile + "LeftSpectralFlux.png";
             fullOutFile[1] = tempOutFile + "RightSpectralFlux.png";
-            sourceFile = wave.getSourceFile(0,3);
+            sourceFile = wave.getSourceFile(3);
             ylabel = "Spectral Flux";
             break;
         }
@@ -322,7 +323,7 @@ void graphAlg(AudioWave wave, string filePrefix, int alg, string fileName, strin
             fullTitle[1] = title + " Right Channel Cepstrum";
             fullOutFile[0] = tempOutFile + "LeftCepstrum.png";
             fullOutFile[1] = tempOutFile + "RightCepstrum.png";
-            sourceFile = wave.getSourceFile(0,4);
+            sourceFile = wave.getSourceFile(4);
             ylabel = "Cepstrum";
             break;
         }
@@ -332,7 +333,7 @@ void graphAlg(AudioWave wave, string filePrefix, int alg, string fileName, strin
             fullTitle[1] = title + " Right Channel Spectrum Centroid";
             fullOutFile[0] = tempOutFile + "LeftSpectrumCentroid.png";
             fullOutFile[1] = tempOutFile + "RightSpectrumCentroid.png";
-            sourceFile = wave.getSourceFile(0,5);
+            sourceFile = wave.getSourceFile(5);
             ylabel = "Spectrum Centroid";
             break;
         }
@@ -342,6 +343,8 @@ void graphAlg(AudioWave wave, string filePrefix, int alg, string fileName, strin
             break;
         }
     }
+
+    // Graph the left channel
  
     xlabel = "Left Channel";
 
@@ -358,45 +361,6 @@ void graphAlg(AudioWave wave, string filePrefix, int alg, string fileName, strin
     // Graph the right channel
     if (wave.getChannels() == 2)
     {
-        switch(alg)
-        {
-            case 0:
-            {
-                sourceFile = wave.getSourceFile(1,0);
-                break;
-            }
-            case 1:
-            { 
-                sourceFile = wave.getSourceFile(1,1);
-                break;
-            }
-            case 2:
-            {
-                sourceFile = wave.getSourceFile(1,2);
-                break;
-            }
-            case 3:
-            {
-                sourceFile = wave.getSourceFile(1,3);
-                break;
-            }
-            case 4:
-            {
-                sourceFile = wave.getSourceFile(1,4);
-                break;
-            }
-            case 5:
-            {
-                sourceFile = wave.getSourceFile(1,5);
-                break;
-            }
-            default:
-            {
-                cout << "Invalid algorithm." << endl;
-                break;
-            }
-        }
-
         xlabel = "Right Channel";
 
         generateScript(fullTitle[1], xlabel, ylabel, fullOutFile[1], sourceFile, 2);
@@ -519,13 +483,16 @@ void normalize(AudioWave wave, vector<vector<double> > &normals, string outputFi
     outFile << timestamp() << ":  Calculating normals..." << endl;
     outFile.close();
 
+    if (debug)
+        cout << timestamp() << ":  Calculating normals..." << endl;
+
     // Clear out the normals vector(s)
     for (int i = 0; i < normals.size(); i++)
         normals[i].clear();
 
     if (debug)
     {
-        debugFile.open((path + "/normals.txt").c_str(), ios::app);
+        debugFile.open((path + "/SpectrumFlux/normals.txt").c_str(), ios::app);
 
         debugFile << "Frames = " << wave.getFrames() << endl;
     }
@@ -613,6 +580,8 @@ void normalize(AudioWave wave, vector<vector<double> > &normals, string outputFi
 
             debugFile << endl << "]" << endl << endl;
         }
+
+        cout << timestamp() << ":  Normals calculated." << endl;
     }
 
     debugFile.close();

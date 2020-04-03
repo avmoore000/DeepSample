@@ -112,10 +112,18 @@ void fft(AudioWave &wave, string fileName, string path, bool debug)
                 debugFile << "\tResults:  " << endl;
             }
 
+            if (debug)
+            {
+                if (i == 0)
+                    debugFile << "Left Channel DFT Results" << endl << endl;
+                else if (i == 1)
+                    debugFile << "Right Channel DFT Results" << endl << endl;
+            }
             // DFT
             while (k > 1)
             {
-                debugFile << "\t\tK = " << k << endl;
+                if (debug)
+                    debugFile <<"\tK = " << k << endl;
 
                 n = k;
 
@@ -135,8 +143,20 @@ void fft(AudioWave &wave, string fileName, string path, bool debug)
                             b = channelWave.size() - 1;
 
                         Complex t = channelWave[a] - channelWave[b];
+
                         channelWave[a] += channelWave[b];
                         channelWave[b] = t * T;
+
+                        // Correct for NAN results
+                        if (isnan(real(channelWave[a])))
+                            channelWave[a] = (0,0);
+                        
+                        if (isnan(real(channelWave[b])))
+                            channelWave[b] = (0,0);
+
+                        if (debug)
+                            debugFile << "channelWave(" << a << "," << b << ") = ("
+                                      << channelWave[a] << "," << channelWave[b] << ")" << endl;
                     }
 
                     T *= phiT;
@@ -145,6 +165,16 @@ void fft(AudioWave &wave, string fileName, string path, bool debug)
 
             // Decimate
             m = (unsigned int)log2(N);
+
+            if (debug)
+            {
+                debugFile << endl << endl << "Decimation Results:" << endl << endl;
+
+                if (i == 0)
+                    debugFile << "Left Channel:  " << endl << endl;
+                else
+                    debugFile << "Right Channel:  " << endl << endl;
+            }
 
             for (unsigned int a = 0; a < N; a++)
             {
@@ -161,6 +191,13 @@ void fft(AudioWave &wave, string fileName, string path, bool debug)
                     Complex t = channelWave[a];
                     channelWave[a] = channelWave[b];
                     channelWave[b] = t;
+
+                    if (debug)
+                    {
+                       debugFile << "\tchannelWave(" << a << "," << b << ") = ("
+                                 << channelWave[a] << "," << channelWave[b] << ")" << endl;      
+                    } 
+                    
                 }
             }
         }

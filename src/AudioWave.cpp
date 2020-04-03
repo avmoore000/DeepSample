@@ -29,11 +29,6 @@ AudioWave::AudioWave(string audioName, int chan)
     setFrames(0);
     setZeroData();
     setCepstrumData();
-    
-    vector<string> file;
-
-    sourceFiles.push_back(file);
-    sourceFiles.push_back(file);
 }
 
 // Function ~AudioWave
@@ -42,7 +37,6 @@ AudioWave::AudioWave(string audioName, int chan)
 // Purpose: This is the destructor for an AudioWave object.
 AudioWave::~AudioWave()
 {
-    system(("rm -rf temp").c_str());
 }
 
 // Function setName
@@ -74,118 +68,93 @@ void AudioWave::setSourceFiles()
 
 //    system(mkdir(dirName.c_str(), 0777));
 
-    outFile.open(dirName + "/srcLeftChan.txt", ios::out);
-    sourceFiles[0].push_back((dirName + "/srcLeftChan.txt"));
+    outFile.open(dirName + "/srcAudioFiles.txt", ios::out);
+    sourceFiles.push_back((dirName + "/srcAudioFiles.txt"));
 
     for (int i = 0; i < leftChannel.size(); i++)
     {
-        outFile << i << " " << real(leftChannel.at(i)) << endl;
+        outFile  << real(leftChannel.at(i));
+
+        if (channels == 2)
+        {
+            if (i < rightChannel.size())
+                outFile << " " << real(rightChannel.at(i));
+        }
+
+        outFile << endl;
     }
 
     // Set up the source file for the left channel FFT
     outFile.close();
-    outFile.open((dirName + "/srcLeftFFT").c_str(), ios::out);
-    sourceFiles[0].push_back((dirName + "/srcLeftFFT"));
+    outFile.open((dirName + "/srcFFT.txt").c_str(), ios::out);
+    sourceFiles.push_back((dirName + "/srcFFT.txt"));
 
     for (int i = 0; i < leftFFT.size(); i++)
     {
-        outFile << i << real(leftFFT.at(i)) << endl;
+        outFile << real(leftFFT.at(i));
+
+        if (channels == 2)
+        {
+            if (i < rightFFT.size())
+                outFile << " " << real(rightFFT.at(i));
+        }
+
+        outFile << endl;
     }
 
     // Set up the source file for the left zero cross
     outFile.close();
-    outFile.open((dirName + "/srcLeftZeroCross").c_str(), ios::out);
-    sourceFiles[0].push_back((dirName + "/srcLeftZeroCross"));
+    outFile.open((dirName + "/srcZeroCross.txt").c_str(), ios::out);
+    sourceFiles.push_back((dirName + "/srcZeroCross.txt"));
 
     for (int i = 0; i < zeroData[0].size(); i++)
     {
-        outFile << i << " " << zeroData[0].at(i) << endl;
+        outFile << zeroData[0].at(i);
+
+        if (channels == 2)
+        {
+            if (i < zeroData[1].size())
+                outFile << " " << zeroData[1].at(i);
+        }
+
+        outFile << endl;
     }
 
     // Set up the source file for the left spectrum flux
     outFile.close();
-    outFile.open((dirName + "/srcLeftSFlux").c_str(), ios::out);
-    sourceFiles[0].push_back((dirName + "/srcLeftSFlux"));
+    outFile.open((dirName + "/srcSFlux.txt").c_str(), ios::out);
+    sourceFiles.push_back((dirName + "/srcSFlux.txt"));
 
-    outFile << "1 " << spectrumData[0] << endl;
+    outFile <<  spectrumData[0];
 
-    cout << "Making it to the cepstrum setup" << endl;
+    if (channels == 2)
+        outFile << " " << spectrumData[1];
+
+    outFile << endl;
 
     // Set up the source file for the left cepstrum
     outFile.close();
-    outFile.open((dirName + "/srcLeftCepstrum").c_str(), ios::out);
-    sourceFiles[0].push_back((dirName + "/srcLeftCepstrum"));
+    outFile.open((dirName + "/srcCepstrum.txt").c_str(), ios::out);
+    sourceFiles.push_back((dirName + "/srcCepstrum.txt"));
 
     for (int i = 0; i < cepstrumData[0].size(); i++)
     {
-        outFile << i << " " << cepstrumData[0].at(i) << endl;
+        outFile << cepstrumData[0].at(i);
+
+        if (channels == 2)
+        {
+            if (i < cepstrumData[1].size())
+                outFile << " " << cepstrumData[1].at(i);
+        }
+
+        outFile << endl;
     }
 
-    cout << "Making it past the cepstrum setup" << endl;
- 
     // Set up the source file for the left spectrum centroid
     outFile.close();
-    outFile.open((dirName + "/srcLeftSCentroid").c_str(), ios::out);
-    sourceFiles[0].push_back((dirName + "/srcLeftSCentroid"));
+    outFile.open((dirName + "/srcLeftSCentroid.txt").c_str(), ios::out);
+    sourceFiles.push_back((dirName + "/srcSCentroid.txt"));
 
-    // Set up sources for the right channel
-    if (channels == 2)
-    {
-        // Set up source file for right channel
-        outFile.close();
-        outFile.open((dirName + "/srcRightChannel").c_str(), ios::out);
-        sourceFiles[1].push_back((dirName + "/srcRightChannel"));
-
-        for (int i = 0; i < rightChannel.size(); i++)
-        {
-            outFile << i << " " << real(rightChannel.at(i)) << endl;
-        }
-
-        // Set up source file for right FFT
-        outFile.close();
-        outFile.open((dirName + "/srcRightFFT").c_str(), ios::out);
-        sourceFiles[1].push_back((dirName + "/srcRightFFT"));
-
-        for (int i = 0; i < rightFFT.size(); i++)
-        {
-            outFile << i << " " << real(rightFFT.at(i)) << endl;
-        }
-
-        // Set up source file for right zero cross
-        outFile.close();
-        outFile.open((dirName + "/srcRightZeroCross").c_str(), ios::out);
-        sourceFiles[1].push_back((dirName + "/srcRightZeroCross"));
-
-        for (int i = 0; i < zeroData[1].size(); i++)
-        {
-            outFile << i << " " << zeroData[1].at(i) << endl;
-        }
-
-        // Set up source file for right spectral flux
-        outFile.close();
-        outFile.open((dirName + "/srcRightSFlux").c_str(), ios::out);
-        sourceFiles[1].push_back((dirName + "/srcRightSFlux"));
-
-        outFile << "1 " << spectrumData[1] << endl;
-
-        // Set up source file for right cepstrum
-        outFile.close();
-        outFile.open((dirName + "/srcRightCepstrum").c_str(), ios::out);
-        sourceFiles[1].push_back((dirName + "/srcRightCepstrum"));
-
-        for (int i = 0; i < cepstrumData[1].size(); i++)
-        {
-            outFile << i << " " << cepstrumData[1].at(i) << endl;
-        }
-
-        // Set up source file for righ spectrum centroid
-        outFile.close();
-        outFile.open((dirName + "/srcRightSCentroid").c_str(), ios::out);
-        sourceFiles[1].push_back((dirName + "/srcRightSCentroid"));
-
-        outFile.close();
-    }
-    
     return;
 }
 
@@ -337,14 +306,13 @@ string AudioWave::getFileName()
 
 // Function getSourceFile
 // Inputs:
-//       chan - An integer indicating the channel to access.
 //       index - An integer indicating the source file to look up.
 // Outputs:
 //        sourceFile - A string containing the filename and path of the source file.
 // Purpose:  Return the name and path of a source file for graphing.
-string AudioWave::getSourceFile(int chan, int index)
+string AudioWave::getSourceFile(int index)
 {
-    return sourceFiles[chan][index];
+    return sourceFiles[index];
 }
 
 // Function getChannels

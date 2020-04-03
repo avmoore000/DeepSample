@@ -439,20 +439,26 @@ int main(int argc, char** argv)
                     cout << timestamp() << ":  Performing FFT..." << endl;
                 }
 
+                auto start = high_resolution_clock::now();
                 fft(wave, fileName, path, debug);
+                auto stop = high_resolution_clock::now();
+                auto FFTDuration = duration_cast<microseconds>(stop - start);
 
                 outFile.open((path + "/" + fileName).c_str(), ios::app);
-                outFile << timestamp() << ":  FFT complete." << endl;
+                outFile << timestamp() << ":  FFT completed." << endl;
                 outFile << timestamp() << ":  Performing Zero Cross..." << endl;
                 outFile.close();
 
                 if (debug)
                 {
-                    cout << timestamp() << ":  FFT complete." << endl;
+                    cout << timestamp() << ":  FFT completed." << endl;
                     cout << timestamp() << ":  Performing Zero Cross..." << endl;
                 }
 
+                start = high_resolution_clock::now();
                 zeroCross(wave, fileName, path, debug);
+                stop = high_resolution_clock::now();
+                auto ZeroDuration = duration_cast<microseconds>(stop - start);
 
                 outFile.open((path + "/" + fileName).c_str(), ios::app);
                 outFile << timestamp() << ":  Zero Cross complete." << endl;
@@ -465,7 +471,10 @@ int main(int argc, char** argv)
                     cout << timestamp() << ":  Performing Spectrum Flux..." << endl;
                 }
 
+                start = high_resolution_clock::now();
                 spectralFlux(wave, fileName, path, debug);
+                stop = high_resolution_clock::now();
+                auto SFDuration = duration_cast<microseconds>(stop - start);
 
                 outFile.open((path + "/" + fileName).c_str(), ios::app);
                 outFile << timestamp() << ":  Spectrum Flux complete." << endl;
@@ -478,7 +487,10 @@ int main(int argc, char** argv)
                     cout << timestamp() << ":  Performing Cepstrum..." << endl;
                 }
 
+                start = high_resolution_clock::now();
                 // cepstrum()
+                stop = high_resolution_clock::now();
+                auto cDuration = duration_cast<microseconds>(stop - start);
 
                outFile.open((path + "/" + fileName).c_str(), ios::app);
                outFile << timestamp() << ":  Cepstrum complete." << endl;
@@ -491,17 +503,32 @@ int main(int argc, char** argv)
                    cout << timestamp() << ":  Performing Spectrum Centroid..." << endl;
                }
 
+               start = high_resolution_clock::now();
                // spectrumCentroid()
+               stop = high_resolution_clock::now();
+               auto SCDuration = duration_cast<microseconds>(stop - start);
 
                outFile.open((path + "/" + fileName).c_str(), ios::app);
                outFile << timestamp() << ":  Spectrum Centroid complete." << endl;
                outFile << timestamp() << ":  Audio Algorithms completed for sample " << (i+1) << "." << endl << endl;
+               outFile << "\tTiming Data:" << endl << endl;
+               outFile << "\tFFT:  Completed in " << FFTDuration.count() << " \u03bc" << "s" << endl;
+               outFile << "\tZeroCross:  Completed in " << ZeroDuration.count() << " \u03bc" << "s" << endl;
+               outFile << "\tSpectrumFlux:  Completed in " << SFDuration.count() << " \u03bc" << "s" <<endl;
+               outFile << "\tCepstrum:  Completed in " << cDuration.count() << " \u03bc" << "s" << endl;
+               outFile << "\tSpectrumCentroid:  Completed in " << SCDuration.count() << " \u03bc" << "s" << endl << endl;
                outFile.close();
 
                if (debug)
                {
                    cout << timestamp() << ":  Spectrum Centroid complete." << endl;
                    cout << timestamp() << ":  Audio Algorithms completed for sample " << (i+1) << "." << endl << endl;
+                   cout << "\tTiming Data:" << endl << endl;
+                   cout << "\tFFT:  Completed in " << FFTDuration.count() << " \u03bc" << "s" << endl;
+                   cout << "\tZeroCross: Completed in " << ZeroDuration.count() << " \u03bc" << "s" << endl;
+                   cout << "\tSpectrumFlux:  Completed in " << SFDuration.count() << " \u03bc" << "s" << endl;
+                   cout << "\tCepstrum:  Completed in " << cDuration.count() << " \u03bc" << "s" << endl;
+                   cout << "\tSpectrumCentroid:  Completed in " << SCDuration.count() << " \u03bc" << "s" << endl << endl;
                }
 
                waves.push_back(wave);
@@ -602,6 +629,10 @@ int main(int argc, char** argv)
 
     if (debug)
         cout << timestamp() << ":  SampleGenerator completed." << endl << endl;
+
+    // Clean up trash files
+    if (remove("*.txt") != 0)
+        cout << "Couldn't clean up files." << endl;
 
     return 0;
 }

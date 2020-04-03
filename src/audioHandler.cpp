@@ -74,24 +74,22 @@ static void convertSound(AudioWave &wave, string fileName, string audioDir, stri
     wave.setName(sanName);
     wave.setFrames(frames);
 
+    outFile.open((path + "/" + wave.getFileName() + "_converted.txt").c_str(), ios::out);
+
     while ((readcount = sf_readf_float (infile, buf, frames)) > 0)
     {      
         for (int i = 0; i < readcount; i++)
         {       
             for (int j = 0; j < channels; j++)
             {
+
                 dataPoint[j] = buf[i * channels + j];
 
-                /*
-                if (save)
-                {
                     if (fullPrecision)
-                        outFile << OP_DBL_Digs-1 << ", " << buf[i * channels + j];
+                        outFile << OP_DBL_Digs-1 << ", " << buf[i * channels + j] << endl;
                     else
-                        outFile << buf[i * channels + j];
+                        outFile << buf[i * channels + j] << endl;
                         //fprintf (outFile, " % 12.10f", buf [i * channels + j]);
-                }
-                */
             }
 
             // Always get channel 1
@@ -117,6 +115,8 @@ static void convertSound(AudioWave &wave, string fileName, string audioDir, stri
                 debugFile << endl;
         } 
     }
+
+    outFile.close();
 
     return;
 }

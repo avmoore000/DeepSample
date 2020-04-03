@@ -51,7 +51,7 @@ class AudioWave
 
         // Getters
         string getFileName();                                  // Return fileName
-        string getSourceFile(int, int);                        // Return name of source file.
+        string getSourceFile(int);                             // Return name of source file.
         vector<complex<double> > getLeftChannel();             // Return leftChannel
         vector<complex<double> > getLeftFFT();                 // Return leftFFT
         vector<complex<double> > getRightChannel();            // Return rightChannel
@@ -68,7 +68,7 @@ class AudioWave
         int getLeftSize();                                     // Return leftChannel size
         int getRightSize();                                    // Return rightChannel size
         int getSSize();                                        // Return spectrumData size
-        int getZSize(int);                                        // Return zeroData size     
+        int getZSize(int);                                     // Return zeroData size     
       
     private:
 
@@ -78,7 +78,7 @@ class AudioWave
         string fileName;                                       // Name of audio file.
         vector<vector<double> > zeroData;                      // Zero cross data
         vector<vector<double> > cepstrumData;                  // Cepstrum data
-        vector<vector<string> > sourceFiles;                   // Graphing source files.
+        vector<string > sourceFiles;                           // Graphing source files.
         vector<complex<double> > leftChannel;                  // Left channel
         vector<complex<double> > leftFFT;                      // Left channel FFT
         vector<complex<double> > rightChannel;                 // Right channel.
