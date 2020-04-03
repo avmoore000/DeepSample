@@ -31,7 +31,7 @@ using namespace std;
 #define audioHandler
 
 void loadAudio(AudioWave&, string, string, string, int, bool, string, bool);
-static void convertSound(AudioWave&, string, bool, string, string, int, string, bool);
+static void convertSound(AudioWave&, string, string, string, int, bool, string, bool);
 
 #endif
 

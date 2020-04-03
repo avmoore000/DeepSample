@@ -50,7 +50,10 @@ void zeroCross(AudioWave &wave, string fileName, string path, bool debug)
     outFile.close();
 
     if (debug)
+    {
         debugFile.open((path + "/ZeroCrossAlgDebug.txt").c_str(), ios::out);
+        cout << timestamp() << ":  ZeroCross Algorithm Called..." << endl;
+    }
 
     // Perform the zero cross for each channel in the wave
     for (int i = 0; i < wave.getChannels(); i++)
@@ -58,16 +61,32 @@ void zeroCross(AudioWave &wave, string fileName, string path, bool debug)
         if (i == 0)
         {
             chanSize = wave.getLeftSize();
+
+            outFile.open((path + "/" + fileName).c_str(), ios::app);
+            outFile << timestamp() << ":  Calculating left channel zero cross..." << endl;
+            outFile.close();
            
             if (debug)
+            {
                 debugFile << "Left Channel Zero Cross:  " << endl;
+
+                cout << timestamp() << ":  Calculating left channel zero cross..." << endl;
+            }
         }
         else if (i == 1)
         {
             chanSize = wave.getRightSize();
+
+            outFile.open((path + "/" + fileName).c_str(), ios::app);
+            outFile << timestamp() << ":  Calculating right channel zero cross..." << endl;
+            outFile.close();
           
             if (debug)
+            {
                 debugFile << "Right Channel Zero Cross:  " << endl;
+
+                cout << timestamp() << ":  Calculating right channel zero cross..." << endl;
+            }
         }
 
         for (int j = 0; j < chanSize - 1; j += step)
@@ -82,7 +101,10 @@ void zeroCross(AudioWave &wave, string fileName, string path, bool debug)
 
             for (int k = j; k <= bound; k++)
             {
-                sum += abs(sign(real(wave.getChannelData(i,k))) - sign(real(wave.getChannelData(i,k-1))));
+                if (k == 0)
+                    sum += abs(sign(real(wave.getChannelData(i,k))));
+                else
+                    sum += abs(sign(real(wave.getChannelData(i,k))) - sign(real(wave.getChannelData(i,k-1))));
             }
 
             if (debug)
@@ -97,6 +119,24 @@ void zeroCross(AudioWave &wave, string fileName, string path, bool debug)
 
             sum = 0;
         }
+
+        outFile.open((path + "/" + fileName).c_str(), ios::app);
+
+        if (i == 0)
+        {
+            outFile << timestamp() << ":  Left Channel Zero Cross calculated." << endl;
+
+            if (debug)
+                cout << timestamp() << ":  Left Channel Zero Cross calculated." << endl;
+        }
+        else if (i == 1)
+        {
+            outFile << timestamp() << ":  Right Channel Zero Cross calculated."  << endl;
+
+            if (debug)
+                cout << timestamp() << ":  Right Channel Zero Cross calculated." << endl;
+        }
+ 
     } 
 
     outFile.open((path + "/" + fileName).c_str(), ios::app);
@@ -104,7 +144,10 @@ void zeroCross(AudioWave &wave, string fileName, string path, bool debug)
     outFile.close();
 
     if (debug)
+    {
+        cout << timestamp() << ":  ZeroCross Algorithm returning..." << endl;
         debugFile.close();
+    }
 
     return;
 }

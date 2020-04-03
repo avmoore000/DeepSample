@@ -27,6 +27,7 @@ typedef std::vector<Complex> list;
 // Function fft
 // Inputs:
 //       wave - An AudioWave object.
+//       save - A boolean flag specifiying whether to save data to file.
 //       fileName - A string indicating the file for data output.
 //       path - A string indicating the path for output files.
 //       debug - A boolean flag that controls debug output.
@@ -56,7 +57,7 @@ void fft(AudioWave &wave, string fileName, string path, bool debug)
     outFile.open((path + "/" + fileName).c_str(), ios::app);
 
     if (debug)
-        debugFile.open((path + "/fastFourierDebug.txt").c_str(), ios::app);
+        debugFile.open((path + "/Debug/fastFourierDebug.txt").c_str(), ios::app);
 
     // Get the FFT of each channel
     for (int i = 0; i < wave.getChannels(); i++)
@@ -67,7 +68,11 @@ void fft(AudioWave &wave, string fileName, string path, bool debug)
             channelWave = wave.getLeftChannel();
 
             if (debug)
+            {
                 debugFile << "Left Channel Size = " << channelWave.size() << endl;
+
+                cout << timestamp() << ":  Getting FFT of left channel..." << endl;
+            }
         }
         else if (i == 1)
         {
@@ -77,7 +82,11 @@ void fft(AudioWave &wave, string fileName, string path, bool debug)
                 channelWave = wave.getRightChannel();
 
                 if (debug)
+                {
                     debugFile << "Right Channel Size = " << channelWave.size() << endl;
+
+                    cout << timestamp() << ":  Getting FFT of right channel..." << endl;
+                }
             }
         }
 
@@ -160,6 +169,9 @@ void fft(AudioWave &wave, string fileName, string path, bool debug)
         {
             outFile << timestamp() << ":  Left Channel FFT computed." << endl;
             wave.setLeftFFT(channelWave);
+
+            if (debug)
+                cout << timestamp() << ":  Left Channel FFT computed." << endl;
         }
         else if (i == 1)
         {
@@ -167,6 +179,9 @@ void fft(AudioWave &wave, string fileName, string path, bool debug)
             {
                 outFile << timestamp() << ":  Right Channel FFT computed." << endl;
                 wave.setRightFFT(channelWave);
+
+                if (debug)
+                   cout << timestamp() << ":  Right Channel FFT computed." << endl;
             }
             else
                 outFile << timestamp() << "Invalid right channel.  FFT not computed." << endl;

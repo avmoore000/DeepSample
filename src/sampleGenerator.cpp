@@ -62,13 +62,14 @@ int main(int argc, char** argv)
     bool debug;                                // Flag that controls debug output.
     bool plot;                                 // Flag that controls plotting functionality.
     bool startGeneration;                      // Starts the sample generation.
+    bool fullPrecision;                        // The precision for output.
+    bool save;                                 // Toggle saving
     int channels;                              // Holds the number of channels in the file.
     int test;                                  // Specifies which tests are being run.
+    int graphType;                             // Specifies the type of graph to plot.
 
     fs::path p;                                // Will hold an iterable directory path.
 
-    AudioWave wave("test", 2);                 // An AudioWave object
-   
     vector<AudioWave> waves;                   // Will hold all generated waves.
     vector<string> audioNames;                 // Names of all audio files to analyze.
     vector<string> scrubbedAudioNames;         // Names of file without path information.
@@ -85,11 +86,14 @@ int main(int argc, char** argv)
              << "analysis." << endl << endl;
         cout << "\tfileName" << endl << endl << "\t\tName of the output file prefix." << endl << endl;
         cout << "\tchannels" << endl << endl << "\t\t1 = Mono" << endl << "\t\t2 = Stereo" << endl << endl;
+        cout << "\tfullPrecison" << endl << endl << "\t\tSet the precision for decimal output." << endl << endl;
         cout << "\tdebug" << endl << endl << "\t\tToggle debug output.  Warning: Debug mode causes"
              << " large files and" << endl << "\t\t slows down execution." << endl << endl
              << "\t\t1 = On" << endl << "\t\t\t2 = Off" << endl << endl;
         cout << "\tplot" << endl << endl << "\t\tToggle plotting." << endl << endl 
-             << "\t\t1 = Plot" << endl << "\t\t\t2 = No Plot" << endl << endl;
+             << "\t\t1 = Plot" << endl << "\t\t2 = No Plot" << endl << endl;
+        cout << "\tsave" << endl << endl << "\t\tToggle Saving" << endl << endl << "\t\t1 = Save"
+             << endl << "\t\t2= No Save" << endl << endl;
 
         startGeneration = false;
     }
@@ -123,12 +127,22 @@ int main(int argc, char** argv)
                 }
                 case 5:
                 {
-                    debug = atoi(argv[i]);
+                    fullPrecision = atoi(argv[i]);
                     break;
                 }
                 case 6:
                 {
+                    debug = atoi(argv[i]);
+                    break;
+                }
+                case 7:
+                {
                     plot = atoi(argv[i]);
+                    break;
+                }
+                case 8:
+                {
+                    save = atoi(argv[i]);
                     break;
                 }
                 default:
@@ -138,6 +152,15 @@ int main(int argc, char** argv)
                 }
             }
         }
+    }
+
+    if (plot)
+    {
+        cout << "What type of graph?" << endl;
+        cout << "\t1. Box Plot" << endl;
+        cout << "Enter Selection:  ";
+        cin >> graphType;
+        cout << endl;
     }
 
     if (startGeneration)
@@ -284,6 +307,22 @@ int main(int argc, char** argv)
                         cout << timestamp() << ":  Plots directory created at " << path << "/Plots" << endl;
                 }
             }
+
+            if (debug)
+            {
+                if (mkdir((path + "/Debug").c_str(), 0777) == -1)
+                {
+                    outFile << timestamp() << ":  Debug directory could not be created." << endl;
+ 
+                    cout << timestamp() << ":  Debug directory could not be created." << endl;
+                }
+                else
+                {
+                    outFile << timestamp() << ":  Debug directory created at " << path << "/Debug" << endl;
+     
+                    cout << timestamp() << ":  Debug directory created at " << path << "/Debug" << endl;
+                }
+            }
         } // Finished making directories
 
         // Grab the audio file names from the input directory
@@ -338,6 +377,11 @@ int main(int argc, char** argv)
                     cout << "\tFile Name = " << converted << endl;
             }
 
+            outFile << "\tTotal Audio Samples:  " << audioNames.size() << endl << endl;
+
+            if (debug)
+                cout << "\tTotal Audio Samples:  " << audioNames.size() << endl << endl;
+
             outFile << timestamp() << ":  Audio files retrieved." << endl;
 
             if (debug)
@@ -357,16 +401,11 @@ int main(int argc, char** argv)
 
         if (startGeneration)
         {
-            outFile << endl << "\tAudio Sample Directory Size:  " << audioNames.size() << endl << endl;
-
-            if (debug)
-                cout << endl << "\tAudio Sample Directory Size:  " << audioNames.size() << endl << endl;
-
-            outFile << timestamp() << ":  Processing Audio Files..." << endl;
+            outFile << timestamp() << ":  Processing Audio Files..." << endl << endl;
             outFile.close();
 
             if (debug)
-                cout << timestamp() << ":  Processing Audio Files..." << endl;
+                cout << timestamp() << ":  Processing Audio Files..." << endl << endl;
 
             // Run algorithms for each file in the audio sample directory
             for (int i = 0; i < audioNames.size(); i++)
@@ -377,6 +416,8 @@ int main(int argc, char** argv)
 		outFile << timestamp() << ":  Loading audio file..." << endl;
                 outFile.close();
 
+                AudioWave wave("test", 2);  // An AudioWave object
+
                 if (debug)
                 {
                     cout << "Sample [" << (i + 1) << "]" << endl;
@@ -384,7 +425,8 @@ int main(int argc, char** argv)
                     cout << timestamp() << ":  Loading audio file..." << endl;
                 }
 
-                //loadAudio()
+                loadAudio(wave, audioNames[i],"ConvertedAudio", scrubbedAudioNames[i], 
+                          channels, fullPrecision, path, debug);
 
                 outFile.open((path + "/" + fileName).c_str(), ios::app);
                 outFile << timestamp() << ":  Audio file loaded." << endl;
@@ -397,7 +439,7 @@ int main(int argc, char** argv)
                     cout << timestamp() << ":  Performing FFT..." << endl;
                 }
 
-                //fft()
+                fft(wave, fileName, path, debug);
 
                 outFile.open((path + "/" + fileName).c_str(), ios::app);
                 outFile << timestamp() << ":  FFT complete." << endl;
@@ -406,11 +448,11 @@ int main(int argc, char** argv)
 
                 if (debug)
                 {
-                    cout << timestamp() << ":  FFT completd." << endl;
+                    cout << timestamp() << ":  FFT complete." << endl;
                     cout << timestamp() << ":  Performing Zero Cross..." << endl;
                 }
 
-                //zeroCross()
+                zeroCross(wave, fileName, path, debug);
 
                 outFile.open((path + "/" + fileName).c_str(), ios::app);
                 outFile << timestamp() << ":  Zero Cross complete." << endl;
@@ -423,7 +465,7 @@ int main(int argc, char** argv)
                     cout << timestamp() << ":  Performing Spectrum Flux..." << endl;
                 }
 
-                // spectrumFlux()
+                spectralFlux(wave, fileName, path, debug);
 
                 outFile.open((path + "/" + fileName).c_str(), ios::app);
                 outFile << timestamp() << ":  Spectrum Flux complete." << endl;
@@ -461,6 +503,9 @@ int main(int argc, char** argv)
                    cout << timestamp() << ":  Spectrum Centroid complete." << endl;
                    cout << timestamp() << ":  Audio Algorithms completed for sample " << (i+1) << "." << endl << endl;
                }
+
+               waves.push_back(wave);
+
             } // Finished algorithm loop
 
             outFile.open((path + "/" + fileName).c_str(), ios::app);
@@ -469,9 +514,31 @@ int main(int argc, char** argv)
 
             if (debug)
                 cout << timestamp() << ":  Finished processing audio files." << endl << endl;
-            // Plot the results if plot is selected
+
+            
+            // Set up the source files for the audio waves
             if (plot)
             {
+                outFile.open((path + "/" + fileName).c_str(), ios::app);
+                outFile << timestamp() << ":  Setting up source files for plotting..." << endl;
+                outFile.close();
+
+                if (debug)
+                    cout << timestamp() << ":  Setting up source files for plotting..." << endl;
+
+                for (int i = 0; i < waves.size(); i++)
+                {
+                    waves[i].setSourceFiles();
+                }
+
+                outFile.open((path + "/" + fileName).c_str(), ios::app);
+                outFile << timestamp() << ":  Source files set up." << endl;
+                outFile.close();
+
+                if (debug)
+                    cout << timestamp() << ":  Source files set up." << endl;
+   
+            // Plot the results if plot is selected
                 outFile.open((path + "/" + fileName).c_str(), ios::app);
                 outFile << timestamp() << ":  Plotting Data..." << endl << endl;
                 outFile.close();
@@ -482,93 +549,9 @@ int main(int argc, char** argv)
                 // Loop through the wave objects.
                 for (int i = 0; i < waves.size(); i++)
                 {
-                    // Plot the audio wave
-                    outFile.open((path + "/" + fileName).c_str(), ios::app);
-                    outFile << "\t" << waves[i].getFileName() << endl << endl;
-                    outFile << "\t" << timestamp() << ":  Plotting Audio Wave..." << endl;
-                    outFile.close();
+                    // Call plotter with a 0 for alg in order to plot all graphs
+                    plotter(waves[i], graphType, 0, fileName, path, debug);
 
-                    if (debug)
-                    {
-                        cout << "\t" << waves[i].getFileName() << endl << endl;
-                        cout << "\t" <<timestamp() << ":  Plotting Audio Wave.." << endl;
-                    }
-
-                    //plotter()
-
-                    // Plot the FFT
-                    outFile.open((path + "/" + fileName).c_str(), ios::app);
-                    outFile << "\t" << timestamp() << ":  Audio Wave plotted." << endl;
-                    outFile << "\t" << timestamp() << ":  Plotting FFT..." << endl;
-                    outFile.close();
-
-                    if (debug)
-                    {
-                        cout << "\t" << timestamp() << ":  Audio Wave plotted." << endl;
-                        cout << "\t" << timestamp() << ":  Plotting FFT..." << endl;
-                    }
-
-                    //plotter()
-
-                    // Plot the Zero Cross
-                    outFile.open((path + "/" + fileName).c_str(), ios::app);
-                    outFile << "\t" << timestamp() << ":  FFT plotted." << endl;
-                    outFile << "\t" << timestamp() << ":  Plotting Zero Cross..." << endl;
-                    outFile.close();
-
-                    if (debug)
-                    {
-                        cout << "\t" << timestamp() << ":  FFT plotted." << endl;
-                        cout << "\t" << timestamp() << ":  Plotting Zero Cross..." << endl;
-                    }
-
-                    //plotter()
-
-                    outFile.open((path + "/" + fileName).c_str(), ios::app);
-                    outFile << "\t" << timestamp() << ":  Zero Cross plotted." << endl;
-                    outFile << "\t" << timestamp() << ":  Plotting Cepstrum..." << endl;
-                    outFile.close();
-
-                    if (debug)
-                    {
-                        cout << "\t" << timestamp() << ":  Zero Cross plotted." << endl;
-                        cout << "\t" << timestamp() << ":  Plotting Cepstrum..." << endl;
-                    }
-
-                    //plotter()
-
-                    outFile.open((path + "/" + fileName).c_str(), ios::app);
-                    outFile << "\t" << timestamp() << ":  Cepstrum plotted." << endl;
-                    outFile << "\t" << timestamp() << ":  Plotting Spectrum Flux..." << endl;
-                    outFile.close();
-
-                    if (debug)
-                    {
-                        cout << "\t" << timestamp() << ":  Cepstrum plotted." << endl;
-                        cout << "\t" << timestamp() << ":  Plotting Spectrum Flux..." << endl;
-                    }    
-
-                    //plotter()
-
-                    outFile.open((path + "/" + fileName).c_str(), ios::app);
-                    outFile << "\t" << timestamp() << ":  Spectrum Flux plotted." << endl;
-                    outFile << "\t" << timestamp() << ":  Plotting Spectrum Centroid..." << endl;
-                    outFile.close();
-
-                    if (debug)
-                    {
-                        cout << "\t" << timestamp() << ":  Spectrum Flux plotted." << endl;
-                        cout << "\t" << timestamp() << ":  Plotting Spectrum Centroid..." << endl;
-                    }
-
-                    //plotter()
-
-                    outFile.open((path + "/" + fileName).c_str(), ios::app);
-                    outFile << "\t" << timestamp() << ":  Spectrum Centroid plotted." << endl << endl;
-                    outFile.close();
-
-                    if (debug)
-                        cout << "\t" << timestamp() << ":  Spectrum Centroid plotted." << endl << endl;
                 } // End plot loop
 
                 outFile.open((path + "/" + fileName).c_str(), ios::app);
@@ -619,6 +602,6 @@ int main(int argc, char** argv)
 
     if (debug)
         cout << timestamp() << ":  SampleGenerator completed." << endl << endl;
- 
+
     return 0;
 }

@@ -50,21 +50,17 @@ static void convertSound(AudioWave &wave, string fileName, string audioDir, stri
     complex<double> tempSig;      // Temporary variable to hold the complex number representation of the wave.s
     sf_count_t frames;            // Keep track of the number of frames
     int readcount;                // Keep track of whether there is a frame to be counted.
-    ofstream outFile;             // Stores the numerical representation of the wave file for troubleshooting.
-    string outputName;            // Will be used to generate the name of the output file.
-
-    cout << "Convert sound called..." << endl;
-
+    ofstream outFile;             // Stream pointer for data output.
+    ofstream debugFile;           // Stream pointer for debug output.
+   
     if (debug)
     {
-
-        outputName =  audioDir + sanName + "_converted.txt";
-
-        outFile.open(outputName, ios::out);
+        debugFile.open((path + "/Debug/convertSoundDebug.txt").c_str(), ios::app);
+        debugFile << "Convert sound called..." << endl;
+        debugFile << "Filename = " << fileName << endl;
+        debugFile << "Channels = " << channels << endl;
     }
 
-    cout << "Filename = " << fileName << endl;
-    cout << "Channels = " << channels << endl;
     // Attempt to open the input file, make sure it is a readable format.   
     if((infile = sf_open(fileName.c_str(), SFM_READ, &sfinfo)) == NULL)
         cout << "Error opening audio file." << endl;
@@ -72,8 +68,10 @@ static void convertSound(AudioWave &wave, string fileName, string audioDir, stri
     // Determine the number of frames for processing the audio file
     frames = BLOCKSIZE / channels;
 
-    cout << "Frames = " << frames << endl;
+    if (debug)
+        debugFile << "Frames = " << frames << endl;
 
+    wave.setName(sanName);
     wave.setFrames(frames);
 
     while ((readcount = sf_readf_float (infile, buf, frames)) > 0)
@@ -84,7 +82,8 @@ static void convertSound(AudioWave &wave, string fileName, string audioDir, stri
             {
                 dataPoint[j] = buf[i * channels + j];
 
-                if (debug)
+                /*
+                if (save)
                 {
                     if (fullPrecision)
                         outFile << OP_DBL_Digs-1 << ", " << buf[i * channels + j];
@@ -92,6 +91,7 @@ static void convertSound(AudioWave &wave, string fileName, string audioDir, stri
                         outFile << buf[i * channels + j];
                         //fprintf (outFile, " % 12.10f", buf [i * channels + j]);
                 }
+                */
             }
 
             // Always get channel 1
@@ -114,12 +114,9 @@ static void convertSound(AudioWave &wave, string fileName, string audioDir, stri
             }
 
             if (debug)
-                outFile << endl;
+                debugFile << endl;
         } 
     }
-
-    if (debug)
-        outFile.close(); 
 
     return;
 }
@@ -136,20 +133,9 @@ static void convertSound(AudioWave &wave, string fileName, string audioDir, stri
 //    debug - A boolean flag that controls debug output.
 // Outputs: None
 // Purpose:  loadAudio is wrapper function for the convertSound function
-void loadAudio(AudioWave &wave, string fileName, string audioDir, string sanName, int channels, bool fullPrecision,  string path, bool debug)
+void loadAudio(AudioWave &wave, string fileName, string audioDir, string sanName, int channels, bool fullPrecision, string path, bool debug)
 {
-    if (debug)
-    {
-        cout << "Audio loader called." << endl;
-    }
-
-
     convertSound(wave, fileName, audioDir, sanName, channels, fullPrecision, path, debug);
-
-    if (debug)
-    {
-        cout << "Audio loader returned." << endl;
-    }
 
     return;
 

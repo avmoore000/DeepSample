@@ -15,6 +15,7 @@
 /**************************************End To Do List **************************/
 
 #include <iostream>
+#include <fstream>
 #include <vector>
 #include <complex>
 #include <string>
@@ -39,6 +40,7 @@ class AudioWave
         void setLeftFFT(vector<complex<double> >);             // Initialize the leftFFT member
         void setRightFFT(vector<complex<double> >);            // Initialize the rightFFT member
         void setZeroData();                                    // Initialize the zeroData member
+        void setSourceFiles();                                 // Initialize the sourceFiles member
 
         // Updaters
         void pushCepstrum(int, double);                        // Push a value to cepstrumData
@@ -49,6 +51,7 @@ class AudioWave
 
         // Getters
         string getFileName();                                  // Return fileName
+        string getSourceFile(int, int);                        // Return name of source file.
         vector<complex<double> > getLeftChannel();             // Return leftChannel
         vector<complex<double> > getLeftFFT();                 // Return leftFFT
         vector<complex<double> > getRightChannel();            // Return rightChannel
@@ -75,6 +78,7 @@ class AudioWave
         string fileName;                                       // Name of audio file.
         vector<vector<double> > zeroData;                      // Zero cross data
         vector<vector<double> > cepstrumData;                  // Cepstrum data
+        vector<vector<string> > sourceFiles;                   // Graphing source files.
         vector<complex<double> > leftChannel;                  // Left channel
         vector<complex<double> > leftFFT;                      // Left channel FFT
         vector<complex<double> > rightChannel;                 // Right channel.

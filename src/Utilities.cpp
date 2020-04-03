@@ -158,28 +158,23 @@ bool fileExists(string fileName)
 
 // Function plotter
 // Inputs:
-//       sourceFile - A string containing the name of the file to plot
-//       plotFileName - A string containing the name of the file to save plots to.
-//       path - A path to the directory for outputting the plot
+//       wave - An AudioWave object
 //       graphType - An integer denoting the type of graph to create.
-//       channel - An integer describing which channel is being plotted.
-//       alg - An integer describing which audio algorithm is being worked with.
+//       alg - An integer indicating which audio algorithm(s) to plot
+//       fileName - A string indicating the name of the output file.
+//       path - A path to the directory for outputting the plot
+//       debug - A boolean flag that controls debug output.
 // Outputs: None
 // Purpose:  To graph a given data file.
-void plotter(string sourceFile, string plotFileName, int graphType, int alg, int channels, string path)
+void plotter(AudioWave wave, int graphType, int alg, string fileName, string path, bool debug)
 {
+    ofstream outFile;         // Stream pointer for data output
+    ofstream debugFile;       // Stream pointer for debug output.
     ifstream infile;          // Will be used to edit the sourceFile if needed.
-    string plotCommand;       // Will contain the command for gnuplot
-    string outFileName;       // Will hold the name of the output file
-    string tempOutFile;       // Will hold a modified name for the output file.
-    string xlabel;            // Will hold the label for the x-axis
-    string ylabel;            // Will hold the label for the y-axis
-    string title;             // Will hold the title of the plot
-    string mode;              // Holds the mode of the gnuplot terminal
-    
-    mode = "set terminal png";
-    plotCommand = "gnuplot -c 'gnuScript.txt'";
-
+     
+    string filePrefix;        // The prefix for plot files
+ 
+    /*
     switch(graphType)
     {
         case 0:
@@ -192,67 +187,50 @@ void plotter(string sourceFile, string plotFileName, int graphType, int alg, int
             cout << "Unsupported graph type." << endl;
             break;
         }
-    }
+    }*/
 
+    filePrefix = path + "/Plots/" + wave.getFileName() + "_";
     switch(alg)
     { 
-        case 0: // Zero crossing algorithm
+        case 0: // Plot all algorithms
         {
-
-            // Graph the left channel zero crossing
-            title = "Left Channel Zero Crossing";
-            xlabel = "Left Channel";
-            ylabel = "Zero Cross Level";
-            tempOutFile = path + "/LeftChannel/" + outFileName + "_ZeroCross.png";
-
-            generateScript(title, xlabel, ylabel, tempOutFile, sourceFile, 1);
-
-            cout << "Calling gnuplot" << endl;
-            system(plotCommand.c_str());
-        
-            // Graph the right channel zero crossing
-            if (channels == 2)
+            for (int i = 0; i < 6; i++)
             {
-                title = "Right Channel Zero Crossing";
-                xlabel = "Right Channel";
-                ylabel = "Zero Cross Level";
-                tempOutFile = path + "/RightChannel/" + outFileName + "_ZeroCross.png";
-
-                generateScript(title, xlabel, ylabel, tempOutFile, sourceFile, 2);
-
-                cout << "Calling gnuplot" << endl;
-                system(plotCommand.c_str());
+                graphAlg(wave, filePrefix, i, fileName, path, debug);
             }
 
             break;
         }
-        case 1: // Spectrum flux algorithm
+        case 1: // Graph Audio wave
         {
-            // Graph the left channels of the spectral flux
+            graphAlg(wave, filePrefix, 0, fileName, path, debug);
+            break;
+        }
+        case 2: // Graph FFT
+        {
+            graphAlg(wave, filePrefix, 1, fileName, path, debug);
+            break;
+        }
+        case 3: // Graph Zero cross
+        {
+            graphAlg(wave, filePrefix, 2, fileName, path, debug);
+            break;
+        }
+        case 4:
+        {
+            graphAlg(wave, filePrefix, 3, fileName, path, debug);
+            break;
+        }
+        case 5:
+        {
+            graphAlg(wave, filePrefix, 4, fileName, path, debug);
+ 
+            break;
+        }
+        case 6:
+        {
+            graphAlg(wave, filePrefix, 5, fileName, path, debug);
 
-            title = "Left Channel Spectral Flux";
-            xlabel = "Left Channel";
-            ylabel = "Spectral Flux";
-            tempOutFile = path + "/LeftChannel/" + outFileName + "_SpectralFlux.png";
-
-            generateScript(title, xlabel, ylabel, tempOutFile, sourceFile, 1);
-
-            cout << "Calling gnuplot" << endl;
-            system(plotCommand.c_str()); 
-
-            // Graph the right channels spectral flux
-            if (channels == 2)
-            {
-                title = "Right Channel Spectral Flux";
-                xlabel = "Right Channel";
-                ylabel = "Spectral Flux";
-                tempOutFile = path + "/RightChannel/" + outFileName + "_SpectralFlux.png";
-
-                generateScript(title, xlabel, ylabel, tempOutFile, sourceFile, 2);
-
-                system(plotCommand.c_str());
-            }
-             
             break;
         }
         default:
@@ -261,6 +239,177 @@ void plotter(string sourceFile, string plotFileName, int graphType, int alg, int
             break;
         }
     }
+
+    return;
+}
+
+// Function graphAlg
+// Inputs:
+//       wave - An AudioWave object
+//       filePrefix - A string indicating the prefix for the plot file.
+//       alg - An integer indicating the algorithm to graph.
+//       fileName - A string indicating the name for data output.
+//       path - A string indicating the path for output files.
+//       debug - A boolean flag that controls debug output.
+// Outputs: None
+// Purpose: Plots the results of an algorithm to file.
+void graphAlg(AudioWave wave, string filePrefix, int alg, string fileName, string path, bool debug)
+{
+    string title;                       // Will hold the title of the plot
+    string xlabel;                      // Will hold the label for the x-axis
+    string ylabel;                      // Will hold the label for the y-axis
+    string tempOutFile;                 // Will hold a modified name for the output file.
+    string sourceFile;                  // Will hold the name of the file containing the data.
+    string plotCommand;                 // Will contain the command for gnuplot
+    string fullTitle[2];                // Will hold the full title for each plot.
+    string fullOutFile[2];              // Will hold the full output path for the plot
+    
+    ofstream outFile;                   // Stream pointer for data output.
+
+    title = wave.getFileName();
+    tempOutFile = filePrefix;
+
+    
+
+    plotCommand = "gnuplot -c 'gnuScript.txt'";
+
+    // Graph the left channel data
+    switch(alg)
+    {
+        case 0:  // Graphing audio wave
+        {
+            fullTitle[0] = title + " Left Channel Audio Wave";
+            fullTitle[1] = title + " Right Channel Audio Wave";
+            fullOutFile[0] = tempOutFile + "LeftAudioWave.png";
+            fullOutFile[1] = tempOutFile + "RightAudioWave.png";
+            sourceFile = wave.getSourceFile(0,0);
+            ylabel = "Audio Wave";
+            break;
+        }
+        case 1: // Graphing FFT
+        {
+            fullTitle[0] = title + " Left Channel FFT";
+            fullTitle[1] = title + " Right Channel FFT";
+            fullOutFile[0] = tempOutFile + "LeftFFT.png";
+            fullOutFile[1] = tempOutFile + "RightFFT.png";
+            sourceFile = wave.getSourceFile(0,1);
+            ylabel = "FFT";
+            break;
+        }
+        case 2: // Graphing zero cross
+        {
+            fullTitle[0] = title + " Left Channel Zero Cross";
+            fullTitle[1] = title + " Right Channel Zero Cross";
+            fullOutFile[0] = tempOutFile + "LeftZeroCross.png";
+            fullOutFile[1] = tempOutFile + "RightZeroCross.png";
+            sourceFile = wave.getSourceFile(0,2);
+            ylabel = "Zero Cross Level";
+            break;
+        }
+        case 3: // Graphing spectral flux
+        {
+            fullTitle[0] = title + " Left Channel Spectral Flux";
+            fullTitle[1] = title + " Right Channel Spectral Flux";
+            fullOutFile[0] = tempOutFile + "LeftSpectralFlux.png";
+            fullOutFile[1] = tempOutFile + "RightSpectralFlux.png";
+            sourceFile = wave.getSourceFile(0,3);
+            ylabel = "Spectral Flux";
+            break;
+        }
+        case 4: // Graphing cepstrum
+        {
+            fullTitle[0] = title + " Left Channel Cepstrum";
+            fullTitle[1] = title + " Right Channel Cepstrum";
+            fullOutFile[0] = tempOutFile + "LeftCepstrum.png";
+            fullOutFile[1] = tempOutFile + "RightCepstrum.png";
+            sourceFile = wave.getSourceFile(0,4);
+            ylabel = "Cepstrum";
+            break;
+        }
+        case 5: // Graphing spectrum centroid
+        {
+            fullTitle[0] = title + " Left Channel Spectrum Centroid";
+            fullTitle[1] = title + " Right Channel Spectrum Centroid";
+            fullOutFile[0] = tempOutFile + "LeftSpectrumCentroid.png";
+            fullOutFile[1] = tempOutFile + "RightSpectrumCentroid.png";
+            sourceFile = wave.getSourceFile(0,5);
+            ylabel = "Spectrum Centroid";
+            break;
+        }
+        default:
+        {
+            cout << "Invalid algorithm." << endl;
+            break;
+        }
+    }
+ 
+    xlabel = "Left Channel";
+
+    generateScript(fullTitle[0], xlabel, ylabel, fullOutFile[0], sourceFile, 1);
+
+    outFile.open((path + "/" + fileName).c_str(), ios::app);
+    outFile << timestamp() << ":  Plotting " << fullTitle[0] << "..." << endl;
+
+    if (debug)
+        cout << timestamp() << ":  Plotting " << fullTitle[0] << "..." << endl;
+
+    system(plotCommand.c_str());
+
+    // Graph the right channel
+    if (wave.getChannels() == 2)
+    {
+        switch(alg)
+        {
+            case 0:
+            {
+                sourceFile = wave.getSourceFile(1,0);
+                break;
+            }
+            case 1:
+            { 
+                sourceFile = wave.getSourceFile(1,1);
+                break;
+            }
+            case 2:
+            {
+                sourceFile = wave.getSourceFile(1,2);
+                break;
+            }
+            case 3:
+            {
+                sourceFile = wave.getSourceFile(1,3);
+                break;
+            }
+            case 4:
+            {
+                sourceFile = wave.getSourceFile(1,4);
+                break;
+            }
+            case 5:
+            {
+                sourceFile = wave.getSourceFile(1,5);
+                break;
+            }
+            default:
+            {
+                cout << "Invalid algorithm." << endl;
+                break;
+            }
+        }
+
+        xlabel = "Right Channel";
+
+        generateScript(fullTitle[1], xlabel, ylabel, fullOutFile[1], sourceFile, 2);
+
+        outFile << timestamp() << ":  Plotting " << fullTitle[1] << "..." << endl;
+        
+        if (debug)
+            cout << timestamp() << ":  Plotting " << fullTitle[1] << "..." << endl;
+
+        system(plotCommand.c_str());
+    }
+
+    outFile.close();
 
     return;
 }
@@ -292,7 +441,6 @@ void generateScript(string title, string xlabel, string ylabel, string outFileNa
 
     return;
 }
-
 
 // Function timestamp
 // Inputs: None
