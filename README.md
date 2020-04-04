@@ -81,6 +81,7 @@ Week of April 4 2020
 - Added the resource for the new FFT to the works cited.
 - Altered the zeroCross function to use the AudioWave object.
 - Finished altering the codebase to use the AudioWave object.
+- Updated the dev manaul to reflect changes to the codebase.
 
 TO DO
 - Add a working version of cepstrum algorithm to DeepSample
@@ -89,4 +90,3 @@ TO DO
 - Make a powerpoint deck explaining the process for use in presentations
 - Start rough draft of paper for project
 - Enable plotter across all algorithms.
-- Update the dev manual to reflect changes in codebase.
