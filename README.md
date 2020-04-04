@@ -82,6 +82,14 @@ Week of April 4 2020
 - Altered the zeroCross function to use the AudioWave object.
 - Finished altering the codebase to use the AudioWave object.
 - Updated the dev manaul to reflect changes to the codebase.
+- Hue Truong - Worked on cepstrum algorithm
+- Alex Reno - Optimizing code
+- Andrew Moore - Creating audiowave object, updating dev manual to reflect recent changes.
+
+Week of April 11 2020
+-  Hue Truong - Working on cepstrum algorithm and optimizing spectral flux
+-  Alex Reno - Working on Spectrum centroid algorithm
+-  Andrew Moore - Creating sample database and training ANN using the samples.
 
 TO DO
 - Add a working version of cepstrum algorithm to DeepSample
