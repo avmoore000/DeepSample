@@ -17,53 +17,55 @@
 #include "../include/Utilities.h"
 
 using namespace std;
-/*
+
 // Function cepstrum
 // Inputs:
-//    x - A vector of complex numbers describing the audio waveform.
+//    raw - A vector of numbers describing the audio waveform.
+//    windowSize - size of hamming window
 // Outputs:
-//    cep - Returns the inverse fourier transform of the wave in the form of a vector of complex numbers.
-// Purpose:  Perform the cepstrum segmentation algorithm on the given audio sample.
-vector<complex<double>> cCepstrum(vector<complex<double>> x)
+//    finalCepstrum - Returns the inverse fourier transform of the wave in the form of a vector of real numbers.
+// Purpose:  Perform the cepstrum segmentation algorithm on the given audio sample, according to the real cepstrum equation.
+vector<double> cepstrum(vector<complex<double>> raw, double windowSize)
 {
-    //Raw interpretation of complex cepstrum equation
-    vector<complex<double>> absfft = abs(FourierTransform(x)); //absolute value of fft
-    vector<complex<double>> log = log(absfft); //log of the absolute value
 
-    vector<complex<double>> Ccepstrum = inverseFT(log); //applies inverse Fourier Transform
-    return Ccepstrum;
+    vector<double> finalCepstrum = abs(log(inverseFT(windowHamming(raw, windowSize))));
+    return finalCepstrum;
 }
 
-vector<double> realCepstrum(vector<complex<double>> x)
-{ //filters only real numbers to a new vector
-    vector<complex<double>> complexCepstrum = cepstrum(x);
-    vector<double> realnum;
+// Function getSign
+// Inputs:
+//    data - A float containing the current data point.
+//    debug - A flag to enable or disable debug messages.
+// Outputs:
+//    sign - A boolean stating whether the signal has changed from positive to negative or vice versa.
+// Purpose: Determines if a sign change has occured.
+bool getSign(complex<double> data, bool debug, string outputName)
+{
+    bool sign = 0;
 
-    for(int i = 0; i < complex.size(); ++i){
-        if(complexCepstrum.at(i) != isnan){ //If element in complex set is a real number, then push the element into a new set
-            realnum.push_back(real(x.at(i)));
-        }
-    }
+    if (real(data) > 0)
+        sign = 1;
+    else
+        sign = 0;
 
-    return realnum;
+    return sign;
 }
-
 
 // Function windowHamming
 // Inputs:
-//    n - A vector of complex numbers to be used to create the hamming window.
+//    rawCepstrum - A vector of complex numbers to be used to create the hamming window.
+//    windowSize - Size of the hamming window
 // Outputs:
-//    newn - A vector of complex numbers describing the hamming window.
+//    cepstrumHamming - A vector of doubles transformed by the hamming window.
 // Purpose:  Create the hamming window for use in the cepstrum algorithm.
-vector<complex<double>> windowHamming(vector<complex<double>> n)
+vector<double> windowHamming(vector<complex<double>> rawCepstrum, double windowSize)
 {
-       vector<complex<double>> windowed_signal;
-       //arbitrary integer N == fixed window size;
-        double N = 200;
-
-    //Applies the hamming window to every element in the vector list
-    for(int i = 0; i <= n.size(); i++){
-        windowed_signal.at(i) = 0.54 - 0.46 * cos((2 * M_PI * windowed_signal.at(i)) / N - 1.0); //Raw interpretation of Hamming Window equation
+    vector<double> cepstrumHamming;
+    //Runs through loop to take real part of rawCepstrum and push
+    for(int i = 0; i < rawCepstrum.size(); ++i){
+        cepstrumHamming.push_back(real(rawCepstrum.at(i)));
+        //Applies the hamming window to every real part of the element in the vector list
+        cepstrumHamming.at(i) = 0.54 - 0.46 * cos((2 * M_PI * cepstrumHamming.at(i)) / windowSize - 1.0);      
     }
-    return windowed_signal;
-}*/
+    return cepstrumHamming;
+}
