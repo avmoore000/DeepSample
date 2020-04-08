@@ -74,7 +74,7 @@ static void convertSound(AudioWave &wave, string fileName, string audioDir, stri
     wave.setName(sanName);
     wave.setFrames(frames);
 
-    outFile.open((path + "/" + wave.getFileName() + "_converted.txt").c_str(), ios::out);
+    outFile.open((path + "/ConvertedAudio/" + wave.getFileName() + "_converted.txt").c_str(), ios::out);
 
     while ((readcount = sf_readf_float (infile, buf, frames)) > 0)
     {      

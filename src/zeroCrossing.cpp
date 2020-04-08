@@ -44,6 +44,8 @@ void zeroCross(AudioWave &wave, string fileName, string path, bool debug)
     step = wave.getFrames();
     chanSize = 0;
 
+    // Temporarily disable debug
+    debug = 0;
 
     outFile.open((path + "/" + fileName).c_str(), ios::app);
     outFile << timestamp() << ":  ZeroCross Algorithm Called..." << endl;

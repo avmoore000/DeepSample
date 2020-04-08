@@ -86,11 +86,13 @@ Week of April 4 2020
 - Alex Reno - Optimizing code
 - Andrew Moore - Creating audiowave object, updating dev manual to reflect recent changes.
 
-Week of April 11 2020
+Week of April 11 2020 Assigned Tasks
 -  Hue Truong - Working on cepstrum algorithm and optimizing spectral flux
 -  Alex Reno - Working on Spectrum centroid algorithm
 -  Andrew Moore - Creating sample database and training ANN using the samples.
 
+Week of April 11 2020 Completed Tasks
+- Andrew Moore- Fixed a problem with sample generation, wrote a small driver program to generate samples 
 TO DO
 - Add a working version of cepstrum algorithm to DeepSample
 - Download files for training ANNI

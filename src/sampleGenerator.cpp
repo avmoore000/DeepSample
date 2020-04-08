@@ -77,8 +77,8 @@ int main(int argc, char** argv)
     if (argc <= 1)
     {
         cout << endl << endl << "Program Use:" << endl << endl;
-        cout << "./SampleGeneration [resultsDirectory] [inputDirectory] [fileName] [channels {1,2}]"
-             << endl << "   [debugMode {0,1}] [plot {0,1}]" << endl << endl;
+        cout << "./SampleGeneration [path] [inputDirectory] [fileName] [channels {1,2}] [fullPrecision {0,1}]"
+             << endl << "   [debug {0,1}] [plot {0,1}] [graphType {1}], [save {0,1}]" << endl << endl;
         cout << "\tresultsDirectory" << endl << endl << "\t\tUser specified directory where results"
              << " will be stored.  If directory" << endl << "\t\tdoes not exist it will be created." 
              << endl << endl;
@@ -92,6 +92,8 @@ int main(int argc, char** argv)
              << "\t\t1 = On" << endl << "\t\t\t2 = Off" << endl << endl;
         cout << "\tplot" << endl << endl << "\t\tToggle plotting." << endl << endl 
              << "\t\t1 = Plot" << endl << "\t\t2 = No Plot" << endl << endl;
+        cout << "\tgraphType" << endl << endl << "\t\tSelect the type of graph to plot." << endl << endl;
+        cout << "\t\t 1 = Box Graph" << endl << endl;
         cout << "\tsave" << endl << endl << "\t\tToggle Saving" << endl << endl << "\t\t1 = Save"
              << endl << "\t\t2= No Save" << endl << endl;
 
@@ -142,6 +144,11 @@ int main(int argc, char** argv)
                 }
                 case 8:
                 {
+                    graphType = atoi(argv[i]);
+                    break;
+                }
+                case 9:
+                {
                     save = atoi(argv[i]);
                     break;
                 }
@@ -152,15 +159,6 @@ int main(int argc, char** argv)
                 }
             }
         }
-    }
-
-    if (plot)
-    {
-        cout << "What type of graph?" << endl;
-        cout << "\t1. Box Plot" << endl;
-        cout << "Enter Selection:  ";
-        cin >> graphType;
-        cout << endl;
     }
 
     if (startGeneration)
@@ -565,7 +563,7 @@ int main(int argc, char** argv)
                 if (debug)
                     cout << timestamp() << ":  Source files set up." << endl;
    
-            // Plot the results if plot is selected
+                // Plot the results if plot is selected
                 outFile.open((path + "/" + fileName).c_str(), ios::app);
                 outFile << timestamp() << ":  Plotting Data..." << endl << endl;
                 outFile.close();
@@ -589,37 +587,176 @@ int main(int argc, char** argv)
                     cout << timestamp() << ":  Plotting complete." << endl;
             } // End plot
 
-            // Create database files for training ANNI
-            
-
-           outFile.open((path + "/" + fileName).c_str(), ios::app);
-           outFile << timestamp() << ":  Creating databases from results..." << endl;
-           outFile.close();
-
-           if (debug)
-               cout << timestamp() << ":  Creating databases from results..." << endl;
-
-           for (int i = 0; i < waves.size(); i++)
+           if (save)
            {
-               // Create FFT database
+               // Create database files for training ANNI
+           
+               outFile.open((path + "/" + fileName).c_str(), ios::app);
+               outFile << timestamp() << ":  Creating databases from results..." << endl;
+
+               if (debug)
+                   cout << timestamp() << ":  Creating databases from results..." << endl;
+
+               for (int i = 0; i < waves.size(); i++)
+               {
+                   int tempChannel = waves[i].getChannels();
+                   vector<complex<double> > tempFFT;
+      
+                   // Create FFT database
+
+                   if (tempChannel == 1)
+                   {
+                       outFile << timestamp() << ":  Updating monoFFT database..." << endl;
+                       database.open((path + "/Databases/monoFFT.txt").c_str(), ios::app);       
+
+                       if (debug)
+                           cout << timestamp() << ":  Updating monoFFT database..." << endl;
+                   }
+        
+                   else if (tempChannel == 2)
+                   {
+                       outFile << timestamp() << ":  Updating steroFFT database..." << endl;
+                       database.open((path + "/Databases/stereoFFT.txt").c_str(), ios::app);
+
+                       if (debug)
+                           cout << timestamp() << ":  Updating stereoFFT database..." << endl;
+                   }
                
-               // Create ZeroCross database
-
-               // Create Cepstrum database
+                   // Get the left channel FFT
+                   tempFFT = waves[i].getLeftFFT();
+   
+                   for (int j = 0; j < tempFFT.size(); j++)
+                       database << tempFFT[j] << " ";
  
-               // Create Spectrum Flux database
+                   database << endl;
+
+                   if (tempChannel == 2)
+                   {
+                       tempFFT.clear();
+                       tempFFT = waves[i].getRightFFT();
+    
+                       for (int j = 0; j < tempFFT.size(); j++)
+                           database << tempFFT[j] << " ";
+
+                       database << endl;
+                    }
+
+                    database.close();
+
+                    outFile << timestamp() << ":  FFT database updated." << endl;
+
+                    if (debug)
+                        cout << timestamp() << ":  FFT database updated." << endl;
+
+                   // Create ZeroCross database
+
+                   if (tempChannel == 1)
+                   {
+                       database.open((path + "/Databases/monoZeroCross.txt").c_str(), ios::app);
+
+                       outFile << timestamp() << ":  Updating monoZeroCross database..." << endl;
+
+                       if (debug)
+                           cout << timestamp() << ":  Updating monoZeroCrosss database..." << endl;
+                   }
+                   else if (tempChannel == 2)
+                   {
+                       database.open((path + "/Databases/stereoZeroCross.txt").c_str(), ios::app);
+
+                       outFile << timestamp() << ":  Updating stereoZeroCross database..." << endl;
+
+                       if (debug)
+                           cout << timestamp() << ":  Updating stereoZeroCross database..." << endl;
+                   }
+
+                   for (int j = 0; j < waves[i].getZSize(0); j++)
+                       database << waves[i].getZeroDataPoint(0,j);
+
+                   database << endl;
+
+                   if (tempChannel == 2)
+                   {
+                       for (int j = 0; j < waves[i].getZSize(1); j++)
+                           database << waves[i].getZeroDataPoint(1,j);
  
-               // Create Spectrum Centroid database
+                       database << endl;
+                   }
 
-           }// End database loop
+                   database.close();
 
-        outFile.open((path + "/" + fileName).c_str(), ios::app);
-        outFile << timestamp() << ":  Databases created." << endl;
-        outFile.close();
+                   outFile << timestamp() << ":  ZeroCross database updated." << endl;
 
-        if (debug)
-            cout << timestamp() << ":  Databases created." << endl;
+                   if(debug)
+                       cout << timestamp() << ":  ZeroCross database updated." << endl;
 
+                   // Create Cepstrum database
+
+                   outFile << timestamp() << ":  Updating cepstrum database..." << endl;
+
+                   if (debug) 
+                       cout << timestamp() << ":  Updating cepstrum database..." << endl;
+
+                   outFile << timestamp() << ":  Cepstrum database updated." << endl;
+
+                   if (debug)
+                       cout << timestamp() << ":  Cepstrum database updated." << endl;
+ 
+                   // Create Spectrum Flux database
+
+                   if (tempChannel == 1)
+                   {
+                       outFile << timestamp() << ":  Updating monoSpectrumFlux database..." << endl;
+
+                       if (debug)
+                           cout << timestamp() << ":  Updating monoSpectrumFlux database..." << endl;
+
+                       database.open((path + "/Databases/monoSpectrumFlux.txt").c_str(), ios::app);
+                       database << waves[i].getSpectrumDataPoint(0) << endl;
+                       database.close();
+
+                       outFile << timestamp() << ":  monoSpectrumFlux database updated." << endl;
+
+                       if (debug)
+                           cout << timestamp() << ":  monoSpectrumFlux database updated." << endl;
+                   }
+                   else if (tempChannel == 2)
+                   {
+                       outFile << timestamp() << ":  Updating stereoSpectrumFlux database..." << endl;
+
+                       if (debug)
+                           cout << timestamp() << ":  Updating stereoSpectrumFlux database..." << endl;
+
+                       database.open((path + "/Databases/stereoSpectrumFlux.txt").c_str(), ios::app);
+                       database << waves[i].getSpectrumDataPoint(0) << " " << waves[i].getSpectrumDataPoint(1) << endl;
+                       database.close();
+
+                       outFile << timestamp() << ":  stereoSpectrumFlux database updated." << endl;
+
+                       if (debug)
+                           cout << timestamp() << ":  stereoSpectrumFlux database updated." << endl;
+                   }
+
+               
+ 
+                   // Create Spectrum Centroid database
+
+                   outFile << timestamp() << ":  Updating spectrumCentroid database..." << endl;
+
+                   if (debug)
+                       cout << timestamp() << ":  Updating spectrumCentroid database..." << endl;
+
+                   outFile << timestamp() << ":  spectrumCentroid database updated." << endl;
+
+                   if (debug)
+                       cout << timestamp() << ":  spectrumCentroid database updated." << endl;
+               }// End database loop
+
+                outFile << timestamp() << ":  Databases created." << endl;
+                outFile.close();
+  
+                if (debug)
+                    cout << timestamp() << ":  Databases created." << endl;
+           }  
         } // End second generation
     } // End generation
 

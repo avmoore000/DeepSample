@@ -54,6 +54,10 @@ void fft(AudioWave &wave, string fileName, string path, bool debug)
     Complex phiT;
     Complex T;
 
+
+    // Temporarily disable debug
+    debug = 0;
+
     outFile.open((path + "/" + fileName).c_str(), ios::app);
 
     if (debug)
@@ -100,9 +104,15 @@ void fft(AudioWave &wave, string fileName, string path, bool debug)
             if (debug)
             {
                 if (i == 0)
+                {
                     debugFile << timestamp() << "Starting left channnel FFT..." << endl;
+                    debugFile << "Left Channel DFT Results" << endl << endl;
+                }
                 else if (i == 1)
+                {
                     debugFile << timestamp() << "Starting right channel FFT..." << endl;
+                    debugFile << "Right Channel DFT Results" << endl << endl;
+                }
 
                 debugFile << "\tN = " << N << endl;
                 debugFile << "\tk = " << k << endl;
@@ -112,13 +122,6 @@ void fft(AudioWave &wave, string fileName, string path, bool debug)
                 debugFile << "\tResults:  " << endl;
             }
 
-            if (debug)
-            {
-                if (i == 0)
-                    debugFile << "Left Channel DFT Results" << endl << endl;
-                else if (i == 1)
-                    debugFile << "Right Channel DFT Results" << endl << endl;
-            }
             // DFT
             while (k > 1)
             {
@@ -153,7 +156,6 @@ void fft(AudioWave &wave, string fileName, string path, bool debug)
                         
                         if (isnan(real(channelWave[b])))
                             channelWave[b] = (0,0);
-
                         if (debug)
                             debugFile << "channelWave(" << a << "," << b << ") = ("
                                       << channelWave[a] << "," << channelWave[b] << ")" << endl;

@@ -189,7 +189,7 @@ void plotter(AudioWave wave, int graphType, int alg, string fileName, string pat
         }
     }*/
 
-    filePrefix = path + "/Plots/" + wave.getFileName() + "_";
+    filePrefix = path + "/Plots/" + wave.getFileName() + "/";
     switch(alg)
     { 
         case 0: // Plot all algorithms
@@ -280,8 +280,8 @@ void graphAlg(AudioWave wave, string filePrefix, int alg, string fileName, strin
         {
             fullTitle[0] = title + " Left Channel Audio Wave";
             fullTitle[1] = title + " Right Channel Audio Wave";
-            fullOutFile[0] = tempOutFile + "LeftAudioWave.png";
-            fullOutFile[1] = tempOutFile + "RightAudioWave.png";
+            fullOutFile[0] = tempOutFile + "/LeftAudioWave.png";
+            fullOutFile[1] = tempOutFile + "/RightAudioWave.png";
             sourceFile = wave.getSourceFile(0);
             ylabel = "Audio Wave";
 
@@ -291,8 +291,8 @@ void graphAlg(AudioWave wave, string filePrefix, int alg, string fileName, strin
         {
             fullTitle[0] = title + " Left Channel FFT";
             fullTitle[1] = title + " Right Channel FFT";
-            fullOutFile[0] = tempOutFile + "LeftFFT.png";
-            fullOutFile[1] = tempOutFile + "RightFFT.png";
+            fullOutFile[0] = tempOutFile + "/LeftFFT.png";
+            fullOutFile[1] = tempOutFile + "/RightFFT.png";
             sourceFile = wave.getSourceFile(1);
             ylabel = "FFT";
             break;
@@ -301,8 +301,8 @@ void graphAlg(AudioWave wave, string filePrefix, int alg, string fileName, strin
         {
             fullTitle[0] = title + " Left Channel Zero Cross";
             fullTitle[1] = title + " Right Channel Zero Cross";
-            fullOutFile[0] = tempOutFile + "LeftZeroCross.png";
-            fullOutFile[1] = tempOutFile + "RightZeroCross.png";
+            fullOutFile[0] = tempOutFile + "/LeftZeroCross.png";
+            fullOutFile[1] = tempOutFile + "/RightZeroCross.png";
             sourceFile = wave.getSourceFile(2);
             ylabel = "Zero Cross Level";
             break;
@@ -311,18 +311,18 @@ void graphAlg(AudioWave wave, string filePrefix, int alg, string fileName, strin
         {
             fullTitle[0] = title + " Left Channel Spectral Flux";
             fullTitle[1] = title + " Right Channel Spectral Flux";
-            fullOutFile[0] = tempOutFile + "LeftSpectralFlux.png";
-            fullOutFile[1] = tempOutFile + "RightSpectralFlux.png";
+            fullOutFile[0] = tempOutFile + "/LeftSpectralFlux.png";
+            fullOutFile[1] = tempOutFile + "/RightSpectralFlux.png";
             sourceFile = wave.getSourceFile(3);
             ylabel = "Spectral Flux";
             break;
         }
-        case 4: // Graphing cepstrum
+    /*    case 4: // Graphing cepstrum
         {
             fullTitle[0] = title + " Left Channel Cepstrum";
             fullTitle[1] = title + " Right Channel Cepstrum";
-            fullOutFile[0] = tempOutFile + "LeftCepstrum.png";
-            fullOutFile[1] = tempOutFile + "RightCepstrum.png";
+            fullOutFile[0] = tempOutFile + "/LeftCepstrum.png";
+            fullOutFile[1] = tempOutFile + "/RightCepstrum.png";
             sourceFile = wave.getSourceFile(4);
             ylabel = "Cepstrum";
             break;
@@ -331,12 +331,12 @@ void graphAlg(AudioWave wave, string filePrefix, int alg, string fileName, strin
         {
             fullTitle[0] = title + " Left Channel Spectrum Centroid";
             fullTitle[1] = title + " Right Channel Spectrum Centroid";
-            fullOutFile[0] = tempOutFile + "LeftSpectrumCentroid.png";
-            fullOutFile[1] = tempOutFile + "RightSpectrumCentroid.png";
+            fullOutFile[0] = tempOutFile + "/LeftSpectrumCentroid.png";
+            fullOutFile[1] = tempOutFile + "/RightSpectrumCentroid.png";
             sourceFile = wave.getSourceFile(5);
             ylabel = "Spectrum Centroid";
             break;
-        }
+        }*/
         default:
         {
             cout << "Invalid algorithm." << endl;

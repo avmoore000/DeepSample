@@ -37,6 +37,13 @@ AudioWave::AudioWave(string audioName, int chan)
 // Purpose: This is the destructor for an AudioWave object.
 AudioWave::~AudioWave()
 {
+    zeroData.clear();
+    cepstrumData.clear();
+    leftChannel.clear();
+    leftFFT.clear();
+    rightChannel.clear();
+    rightFFT.clear();
+    spectrumData.clear();
 }
 
 // Function setName
