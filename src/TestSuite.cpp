@@ -225,11 +225,11 @@ void spectrumFluxTest(AudioWave &wave, string fileName, string path, bool debug)
     outFile.open((path + "/" + fileName).c_str(), ios::app);
     outFile << timestamp() << ":  Spectrum Flux Test completed in " << duration.count() << " us." << endl;
     outFile << endl << "\tSpectrum Flux Results:" << endl;
-    outFile << endl << "\tTotal Vector Size:  " << wave.getSSize() << endl;
-    outFile << "\tLeft Channel:  " << wave.getSpectrumDataPoint(0) << endl;
+    outFile << endl << "\tTotal Vector Size:  " << wave.getSFSize() << endl;
+    outFile << "\tLeft Channel:  " << wave.getSpectrumFDataPoint(0) << endl;
  
     if (wave.getChannels() == 2)
-        outFile << "\tRight Channel:  " << wave.getSpectrumDataPoint(1) << endl;
+        outFile << "\tRight Channel:  " << wave.getSpectrumFDataPoint(1) << endl;
 
     outFile << endl;
 
@@ -238,10 +238,10 @@ void spectrumFluxTest(AudioWave &wave, string fileName, string path, bool debug)
     if (debug)
     {
         debugFile << "Spectrum Flux Test Results:" << endl;
-        debugFile << "Left Channel:  " << wave.getSpectrumDataPoint(0) << endl;
+        debugFile << "Left Channel:  " << wave.getSpectrumFDataPoint(0) << endl;
 
         if (wave.getChannels() == 2)
-            debugFile << "Right Channel:  " << wave.getSpectrumDataPoint(1) << endl;
+            debugFile << "Right Channel:  " << wave.getSpectrumFDataPoint(1) << endl;
 
         debugFile << endl << "Spectrum Flux test complete." << endl;
 
