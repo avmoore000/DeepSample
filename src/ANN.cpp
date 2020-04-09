@@ -28,16 +28,16 @@ using namespace std;
 //       epochs - An integer indicating the number of epochs to generate data over.
 //       codebooks - An integer indicating the number of codebooks to be used for training / analysis.
 //       alg - An integer indicating the algorithm(s) to use in training / analysis.
+//       channels - An integer indicating the number of channels in the audio samples.
 //       path - A string containing the location of the output files.
 //       debug - A flag that controls debug output.
 // Outputs: None
 // Purpose: ANNI is an artificial neural network that is used to learn the classifications of music.
-void ANNI(int folds, double learnRate, int epochs, int codeBooks, int alg, string path, bool debug)
-void ANNI(vector<vector<float> > zeroCrossResults, double spectrumFluxResults[], string audioName, int channels, string path, bool debug)
+void ANNI(int folds, double learnRate, int epochs, int codeBooks, int alg, int channels, string path, bool debug)
 {
     ofstream outFile;    // A stream pointer for data output.
     ofstream debugFile;  // A stream pointer for debug output.
-    ifsteam inFile;      // A stream pointer for data input.
+    ifstream inFile;      // A stream pointer for data input.
 
     string data;         // A string to hold lines of data.
 
@@ -67,34 +67,72 @@ void ANNI(vector<vector<float> > zeroCrossResults, double spectrumFluxResults[],
         }
         case 1:  // Use FFT
         {
-            inFile.open((path + "/Databases/fft.txt").c_str(), ios::in);
+            if (channels == 1)
+                inFile.open((path + "/Databases/monoFFT.txt").c_str(), ios::in);
+            else if (channels == 2)
+                inFile.open((path + "/Databases/stereoFFT.txt").c_str(), ios::in);
             
             while (inFile >> data)
             {
-                if (line == 0)
-                    cout << "Left Channel:  " << data << endl;
-                else 
-                    cout << "Right Channel:  " << data << endl;
-
-                line = !line;
+                cout << data << endl;
             }
                                   
             break;
         }
         case 2:  // Use Zero Cross
         {
+            if (channels == 1)
+                inFile.open((path + "/Databases/monoZeroCross.txt").c_str(), ios::in);
+            else if (channels == 2)
+                inFile.open((path + "/Databases/stereoZeroCross.txt").c_str(), ios::in);
+
+            while (inFile >> data)
+            {
+                cout << data << endl;
+            }
+
             break;
         }
         case 3:  // Use Spectrum Flux
         {
+            if (channels == 1)
+                inFile.open((path + "/Databases/monoSpectrumFlux.txt").c_str(), ios::in);
+            else if (channels == 2)
+                inFile.open((path + "/Databases/stereoSpectrumFlux.txt").c_str(), ios::in);
+
+            while (inFile >> data)
+            {
+                cout << data << endl;
+            }
+
             break;
         }
         case 4:  // Use Cepstrum
         {
+            if (channels == 1)
+                inFile.open((path + "/Databases/monoCepstrum.txt").c_str(), ios::in);
+            else if (channels == 2)
+                inFile.open((path + "/Databases/stereoCepstrum.txt").c_str(), ios::in);
+
+            while (inFile >> data)
+            {
+                cout << data << endl;
+            }
+
             break;
         }
         case 5:  // Use Spectrum Centroid
         {
+            if (channels == 1)
+                inFile.open((path + "/Databases/monoSpectrumCentroid.txt").c_str(), ios::in);
+            else if (channels == 2)
+                inFil.open((path + "/Databases/stereoSpectrumCentroid.txt").c_str(), ios::in);
+
+            while (inFile >> data)
+            {
+                cout << data << endl;
+            }
+
             break;
         }
         default:
@@ -103,17 +141,6 @@ void ANNI(vector<vector<float> > zeroCrossResults, double spectrumFluxResults[],
             break
         }
     }
-
-    if (debug)
-    {
-        outFile << "ZeroCross size = " << zeroCrossResults.size() << endl;
-        outFile << "SpectrumFlux[0] = " << spectrumFluxResults[0] << endl;
-
-        if (channels == 2)
-            outFile << "SpectrumFlux[1] = " << spectrumFluxResults[1] << endl;
-    }
-
-    outFile << audioName << ":" << endl;
 
     return;
 }
