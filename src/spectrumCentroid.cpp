@@ -1,14 +1,15 @@
 /* 
- *  File:     spectrumFlux.cpp
+ *  File:     spectrumCentroid.cpp
  *  Author:   Andrew Moore, Hue Truong, and Alex Reno
  *
- *  Created:  February 9, 2020, 3:17 PM
+ *  Created:  April 8, 2020, sometime after 3:00 PM
  */
 
 /**************************************Change Log *******************************/
 
-// Created individual source for spectrum flux algorithm - A.M. and H.T. Feb 29 2020
-// Standardized the function argument order - A.M. 30 Mar 2020
+// Copied spectrum flux algorithm source file - A.R. 8 Apr 2020
+// Replaced all instances of "Flux" with "Centroid" - A.R. 9 Apr 2020
+// Actually changed the code to be a Spectrum Centroid algorithm
 
 /**************************************End Change Log ***************************/
 
@@ -16,50 +17,50 @@
 
 /**************************************End To Do List **************************/
 
-#include "../include/spectrumFlux.h"
+#include "../include/spectrumCentroid.h"
 #include "../include/Utilities.h"
 
 using namespace std;
 
-// Function spectrumFlux
+// Function spectralCentroid
 // Inputs:
 //        &wave - An AudioWave object.
 //        fileName - A string indicating the file for data output.
 //        path - A string indicating the path for output files.
 //        debug - A boolean flag that controls the debug output.
 // Outputs: None
-// Purpose:  spectrumFlux calculate the spectral flux between each frame of a given wave.
-void spectralFlux(AudioWave &wave, string fileName, string path, bool debug)
+// Purpose:  spectralCentroid calculates the spectral centroid between each frame of a given wave.
+void spectralCentroid(AudioWave &wave, string fileName, string path, bool debug)
 {
     ofstream outFile;                    // A stream pointer for data output.
     ofstream debugFile;                  // A stream pointer for debug output.
 
-    double sFlux;                        // Will be used when calculating the flux.
+    double sCentroid;                    // Will be used during calculation.
     vector<double> normT;                // A vector of normalized datapoint from a single channel.
     vector<vector<double> > norms;       // A vector of both the right and left normalized channels.
     bool nt;                             // A flag to control the part of the summation being worked.
 
-    sFlux = 0;
+    sCentroid = 0;
     nt = 0;
     
     for (int i = 0; i < 2; i++)
         norms.push_back(normT);
 
     outFile.open((path + "/" + fileName).c_str(), ios::app);
-    outFile << timestamp() << ":  Spectrum Flux Algorithm started..." << endl;
+    outFile << timestamp() << ":  Spectrum Centroid Algorithm started..." << endl;
     outFile.close();
 
     if (debug)
     {
-        debugFile.open((path + "/SpectrumFlux/SpectrumFluxAlgDebug.txt").c_str(), ios::app);  
-        debugFile << "Spectrum Flux Algorithm Debug" << endl << endl;
+        debugFile.open((path + "/SpectrumCentroid/SpectrumCentrAlgDebug.txt").c_str(), ios::app);  
+        debugFile << "Spectrum Centroid Algorithm Debug" << endl << endl;
 
-        cout << timestamp() << ":  Spectrum Flux Algorithm started..." << endl;
+        cout << timestamp() << ":  Spectrum Centroid Algorithm started..." << endl;
     }
 
     normalize(wave, norms, fileName, path, debug);
 
-    // Calculate the spectral flux of all channels in audio signal
+    // Calculate the spectral centroid of all channels in audio signal
     for (int i = 0; i < wave.getChannels(); i++)
     {
 
@@ -67,17 +68,17 @@ void spectralFlux(AudioWave &wave, string fileName, string path, bool debug)
 
         if (i == 0)
         {
-            outFile << timestamp() << ":  Calculating left channel spectral flux..." << endl;
+            outFile << timestamp() << ":  Calculating left channel spectral centroid..." << endl;
 
             if (debug)
-                cout << timestamp() << ":  Calculating left channel spectral flux..." << endl;
+                cout << timestamp() << ":  Calculating left channel spectral centroid..." << endl;
         }
         else if (i == 1)
         {
-            outFile << timestamp() << ":  Calculating right channel spectral flux..." << endl;
+            outFile << timestamp() << ":  Calculating right channel spectral centroid..." << endl;
             
             if (debug)
-                cout << timestamp() << ":  Calculating right channel spectral flux..." << endl;
+                cout << timestamp() << ":  Calculating right channel spectral centroid..." << endl;
         }
 
         outFile.close();
@@ -87,12 +88,12 @@ void spectralFlux(AudioWave &wave, string fileName, string path, bool debug)
             if (i == 0)
             {
                 if (wave.getChannels() > 1)
-                    debugFile << "Left Channel Spectral Flux Calculation:";
+                    debugFile << "Left Channel Spectral Centroid Calculation:";
                 else
-                    debugFile << "Spectral Flux Calculation:";
+                    debugFile << "Spectral Centroid Calculation:";
             }
             else if ( i == 1)
-                debugFile << "Right Channel Spectral Flux Calculation:";
+                debugFile << "Right Channel Spectral Centroid Calculation:";
 
             debugFile << endl << endl << "\t";
         }
@@ -100,9 +101,9 @@ void spectralFlux(AudioWave &wave, string fileName, string path, bool debug)
         for (int j = 0; j < norms[i].size() - 1; j++)
         {
             if (j == 0)
-                sFlux += norms[i].at(j) * norms[i].at(j);    
+                sCentroid += norms[i].at(j) * norms[i].at(j);    
             else
-                sFlux += (norms[i].at(j) - norms[i].at(j-1)) * (norms[i].at(j) - norms[i].at(j-1));
+                sCentroid += (norms[i].at(j) - norms[i].at(j-1)) * (norms[i].at(j) - norms[i].at(j-1));
 
             if (debug)
             {
@@ -121,8 +122,8 @@ void spectralFlux(AudioWave &wave, string fileName, string path, bool debug)
             }
         }
 
-        // Update the spectrum flux database for the wave object
-        wave.pushSpectrumF(sFlux);
+        // Update the spectrum centroid database for the wave object
+        wave.pushSpectrum(sCentroid);
 
         if (debug)
         {
@@ -133,30 +134,30 @@ void spectralFlux(AudioWave &wave, string fileName, string path, bool debug)
         
         if (i == 0)
         {
-            outFile << timestamp() << ":  Left channel spectral flux calculated." << endl;
+            outFile << timestamp() << ":  Left channel spectral centroid calculated." << endl;
 
             if (debug)
-                cout << timestamp() << ":  Left channel spectral flux calculated." << endl;
+                cout << timestamp() << ":  Left channel spectral centroid calculated." << endl;
         }
         else if (i == 1)
         {
-            outFile << timestamp() << ":  Right channel spectral flux calculated." << endl;
+            outFile << timestamp() << ":  Right channel spectral centroid calculated." << endl;
 
             if (debug)
-                cout << timestamp() << ":  Right channel spectral flux calculated." << endl;
+                cout << timestamp() << ":  Right channel spectral centroid calculated." << endl;
         }
     }
 
     outFile.open((path + "/" + fileName).c_str(), ios::app);
-    outFile << timestamp() << ":  Spectrum Flux Algorithm Completed." << endl;
+    outFile << timestamp() << ":  Spectrum Centroid Algorithm Completed." << endl;
     outFile.close();
 
     if (debug)
     {
-        debugFile << "Spectrum Flux Algorithm completed." << endl;
+        debugFile << "Spectrum Centroid Algorithm completed." << endl;
         debugFile.close();
 
-        cout << timestamp() << ":  Spectrum Flux algorithm returning..." << endl;
+        cout << timestamp() << ":  Spectrum Centroid Algorithm returning..." << endl;
     }
 
     return;
