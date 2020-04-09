@@ -244,12 +244,12 @@ void fft(AudioWave &wave, string fileName, string path, bool debug)
 //    fileName - A string containing the name of a user specified output file.
 // Outputs:  None
 // Purpose:  The inverseFT function regenerates the audio wave based on the fft input.
-void inverseFT(vector<complex<double> >& x, string fileName, bool debug)
+void inverseFT(vector<double>& x, string fileName, bool debug)
 {
     //Loops through and conjoins complex numbers
     for(int i = 0; i < x.size(); i++)
     {
-       x.at(i) = std::conj(x.at(i));
+       x.at(i) = real(std::conj(x.at(i)));
     }
 
     //Pushes conjoined vector to fourier
@@ -258,7 +258,7 @@ void inverseFT(vector<complex<double> >& x, string fileName, bool debug)
     //Loops through and conjoins complex numbers again
     for(int i = 0; i < x.size(); i++)
     {
-       x.at(i) = std::conj(x.at(i));
+       x.at(i) = real(std::conj(x.at(i)));
     }
 
     //scales number to (element / ectorsize)th its original size

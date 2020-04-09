@@ -36,7 +36,7 @@ string createString(double,int);
 bool fileExists(string);
 void plotter(AudioWave, int, int, string, string, bool);
 void graphAlg(AudioWave, string, int, string, string, bool);
-void generateScript(string,string,string,string,string,int);
+void generateScript(int,string,string,string,double,double,string,string,int);
 string timestamp();
 bool sortDist(const vector<double>&, const vector<double>&);
 void normalize(AudioWave, vector<vector<double> >&, string, string, bool);

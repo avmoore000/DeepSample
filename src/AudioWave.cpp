@@ -15,6 +15,7 @@
 /**************************************End To Do List **************************/
 
 #include "../include/AudioWave.h"
+#include <sys/stat.h>
 
 // Function AudioWave
 // Inputs:
@@ -29,6 +30,11 @@ AudioWave::AudioWave(string audioName, int chan)
     setFrames(0);
     setZeroData();
     setCepstrumData();
+    leftChannel.clear();
+    rightChannel.clear();
+    string dirName = "temp";
+
+    mkdir(dirName.c_str(), 0777);
 }
 
 // Function ~AudioWave
@@ -68,12 +74,6 @@ void AudioWave::setSourceFiles()
     string dirName;      // The name of the directory to create the source files at.
 
     dirName = "temp";
-
-    // Set up the source file for the left channel
-   
-    system(("mkdir " + dirName).c_str());
-
-//    system(mkdir(dirName.c_str(), 0777));
 
     outFile.open(dirName + "/srcAudioFiles.txt", ios::out);
     sourceFiles.push_back((dirName + "/srcAudioFiles.txt"));
@@ -606,6 +606,331 @@ double AudioWave::getSpectrumDataPoint(int chan)
         dataPoint = spectrumData.at(chan);
 
     return dataPoint;
+}
+
+// Function setYMaximums
+// Inputs: None
+// Outputs: None
+// Purpose: Set up the max values of the data vectors
+void AudioWave::setYMaximums()
+{
+    double tMax;
+
+    tMax = 0;
+
+    // Set up the max of audio wave channels
+    for (int i = 0; i < leftChannel.size(); i++)
+    {
+        if (real(leftChannel.at(i)) > tMax)
+            tMax = real(leftChannel.at(i));
+    }
+
+    max.push_back(tMax);
+    tMax = 0;
+
+    if (channels == 2)
+    {
+        for (int i = 0; i < rightChannel.size(); i++)
+        {
+            if (real(rightChannel.at(i)) > tMax)
+                tMax = real(rightChannel.at(i));
+        }
+
+        max.push_back(tMax);
+        tMax = 0;
+    }
+
+    // Set up the max of fft vector
+   
+    for (int i = 0; i < leftFFT.size(); i++)
+    {
+        if (real(leftFFT.at(i)) > tMax)
+            tMax = real(leftFFT.at(i));
+    }
+    
+    max.push_back(tMax);
+    tMax = 0;
+
+    if (channels == 2)
+    {
+        for (int i = 0; i < rightFFT.size(); i++)
+        {
+            if (real(rightFFT.at(i)) > tMax)
+                tMax = real(rightFFT.at(i));
+        }
+ 
+        max.push_back(tMax);
+        tMax = 0;
+    }
+
+    // Set up max of zeroData
+
+    for (int i = 0; i < zeroData[0].size(); i++)
+    {
+        if (real(zeroData[0].at(i)) > tMax)
+            tMax = real(zeroData[0].at(i));
+    }
+   
+        max.push_back(tMax);
+        tMax = 0;
+
+    if (channels == 2)
+    {
+        for (int i = 0; i < zeroData[1].size(); i++)
+        {
+            if (real(zeroData[1].at(i)) > tMax)
+                tMax = real(zeroData[1].at(i));
+        }
+
+        max.push_back(tMax);
+        tMax = 0;
+    }
+}
+
+// Function setYMinimums
+// Inputs: None
+// Outputs: None
+// Purpose:  Set up the y minimums for datasets
+void AudioWave::setYMinimums()
+{
+    double tMin;    // Will contain the y minimum
+
+    tMin = 0;
+
+    // Set the y-min for the audio waves
+
+    for (int i = 0; i < leftChannel.size(); i++)
+    {
+        if (i == 0)
+            tMin = real(leftChannel.at(i));
+        else if (real(leftChannel.at(i)) < tMin)
+            tMin = real(leftChannel.at(i));
+        
+    }
+
+    min.push_back(tMin);
+    tMin = 0;
+
+    if (channels == 2)
+    {
+        for (int i = 0; i < rightChannel.size(); i++)
+        {
+            if (i == 0)
+                tMin = real(rightChannel.at(i));
+            else if (real(rightChannel.at(i)) < tMin)
+                tMin = real(rightChannel.at(i));
+        }
+
+        min.push_back(tMin);
+        tMin = 0;
+    }
+
+    // Set the y-min for the fft
+
+    for (int i = 0; i < leftFFT.size(); i++)
+    {
+        if (i == 0)
+            tMin = real(leftFFT.at(i));
+        else if (real(leftFFT.at(i)) < tMin)
+            tMin = real(leftFFT.at(i));
+    }
+
+    min.push_back(tMin);
+    tMin = 0;
+ 
+    if (channels == 2)
+    {
+        for (int i = 0; i < rightFFT.size(); i++)
+        {
+            if ((i == 0) || (real(rightFFT.at(i)) < tMin))
+                tMin = real(rightFFT.at(i));
+        }
+
+        min.push_back(tMin);
+        tMin = 0;
+    }
+
+    // Set the y-min for zeroData
+
+    for (int i = 0; i < zeroData[0].size(); i++)
+    {
+        if ((i == 0) || (zeroData[0].at(i) < tMin))
+            tMin = zeroData[0].at(i);
+    }
+ 
+    min.push_back(tMin);
+    tMin = 0;
+
+    if (channels == 2)
+    {
+        for (int i = 0; i < zeroData[1].size(); i++)
+        {
+            if ((i == 0) || (zeroData[1].at(i) < tMin))
+                tMin = zeroData[1].at(i);
+        }
+  
+        min.push_back(tMin);
+        tMin = 0;
+    }
+}
+
+// Function getYMaximum
+// Inputs:
+//       alg - An integer indicating the algorithm to look up.
+//       chan - An integer indicating the channel to look up.
+// Outputs:
+//        maxi - A double containing the maximum of the dataset.
+// Purpose:  Return the maximum of a dataset
+double AudioWave::getYMaximum(int alg, int chan)
+{
+    double maxi;
+
+    switch(alg)
+    {
+        case 0:  // Audio data
+        {
+            if (chan == 1)
+                maxi = max[0];
+            else if (chan == 2)
+            {
+                if (channels == 2)
+                    maxi = max[1];
+                else
+                    cout << "Invalid channel lookup." << endl;
+            }
+
+            break;
+        }
+        case 1: // FFT data
+        {
+            if (chan == 1)
+            {
+                if (channels == 1)
+                    maxi = max[1];
+                else
+                    maxi = max[2];
+            }
+            else if (chan == 2)
+            {
+                if (channels == 2)
+                    maxi = max[3];
+                else
+                    cout << "Invalid channel lookup." << endl;
+            }
+
+            break;
+        }
+        case 2:  // Zerocross data
+        {
+            if (chan == 1)
+            {
+                if (channels == 1)
+                    maxi = max[2];
+                else
+                    maxi = max[4];
+            }
+            if (chan == 2)
+            { 
+                if (channels == 2)
+                    maxi = max[5];
+                else
+                    cout << "Invalid channel lookup." << endl;
+            }
+
+            break;
+        }
+        case 3:  // Spectrum data
+        {
+            if (chan == 1)
+                maxi = spectrumData[0];
+            else if (chan == 2)
+                maxi = spectrumData[1];
+      
+            break;
+        }
+        default:
+        {
+            cout << "Unsupported algorithm for maximum." << endl;
+            break;
+        }
+    } 
+
+    return maxi;
+}
+
+// Function getYMinimum
+// Inputs:
+//       alg - An integer indicating the algorithm to look up.
+//       chan - An integer indicating the channel to look up.
+// Outputs:
+//        mini - A double containing the minimum of a dataset.
+// Purpose:  Return the minimum of a dataset
+double AudioWave::getYMinimum(int alg, int chan)
+{
+    double mini;
+
+    switch(alg)
+    {
+        case 0:  // Audio data
+        {
+            if (chan == 1)
+                mini = min[0];
+            else if (chan == 2)
+            { 
+                if (channels == 2)
+                    mini = min[1];
+                else
+                    cout << "Invalid channel lookup." << endl;
+            }
+            
+            break;
+        }
+        case 1: // FFT
+        {
+            if (chan == 1)
+            {
+                if (channels == 1)
+                    mini = min[1];
+                else if (channels == 2)
+                    mini = min[2];
+            }
+            else if (chan == 2)
+            { 
+                if (channels == 2)
+                    mini = min[3];
+                else
+                    cout << "Invalid channel lookup." << endl;
+            }
+
+            break;
+        }
+        case 2: // Zero cross
+        {
+            if (chan == 1)
+            {
+                if (channels == 1)
+                    mini = min[2];
+                else if (channels == 2)
+                    mini = min[4];
+            }
+            else if (chan == 2)
+            {
+                if (channels == 2)
+                    mini = min[5];
+                else
+                    cout << "Invalid channel lookup." << endl;
+            }
+
+            break;
+        }
+        default:
+        {
+            cout << "Unsupported algorithm for y minimum" << endl;
+            break;
+        }
+    }
+
+    return mini;
 }
 
 // Function getCepstrumDataPoint

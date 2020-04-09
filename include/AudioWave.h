@@ -39,6 +39,8 @@ class AudioWave
         void setName(string);                                  // Initialize the fileName member
         void setLeftFFT(vector<complex<double> >);             // Initialize the leftFFT member
         void setRightFFT(vector<complex<double> >);            // Initialize the rightFFT member
+        void setYMaximums();                                   // Initialize the max member
+        void setYMinimums();                                   // Initialize the min member
         void setZeroData();                                    // Initialize the zeroData member
         void setSourceFiles();                                 // Initialize the sourceFiles member
 
@@ -60,6 +62,8 @@ class AudioWave
         double getCepstrumDataPoint(int);                      // Return value from cepstrumData
         double getFFTDataPoint(int,int);                       // Return value from FFT data
         double getSpectrumDataPoint(int);                      // Return value from spectrumData
+        double getYMaximum(int, int);                          // Return maximum value of a dataset.
+        double getYMinimum(int, int);                          // Return minimum value of a dataset.
         double getZeroDataPoint(int, int);                     // Return value from zeroData
         int getChannels();                                     // Return channels
         int getChannelSize(int);                               // Return size of channel
@@ -86,5 +90,8 @@ class AudioWave
         vector<double>  spectrumData;                          // Spectrum Flux data
         int channels;                                          // Number of channels
         int frames;                                            // Number of frames
+
+        vector<double> max;                                    // Maximums of the data vectors
+        vector<double> min;                                    // Minimums of the data vectors
 };
 #endif

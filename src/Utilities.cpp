@@ -19,6 +19,7 @@
 /**************************************End To Do List **************************/
 
 #include "../include/Utilities.h"
+#include <sys/stat.h>
 
 // Function printer
 // Inputs:  
@@ -189,7 +190,12 @@ void plotter(AudioWave wave, int graphType, int alg, string fileName, string pat
         }
     }*/
 
-    filePrefix = path + "/Plots/" + wave.getFileName() + "/";
+    string plotPath = path + "/Plots/" + wave.getFileName();
+
+    mkdir(plotPath.c_str(), 0777);
+
+    filePrefix = path + "/Plots/" + wave.getFileName();
+
     switch(alg)
     { 
         case 0: // Plot all algorithms
@@ -264,12 +270,14 @@ void graphAlg(AudioWave wave, string filePrefix, int alg, string fileName, strin
     string fullTitle[2];                // Will hold the full title for each plot.
     string fullOutFile[2];              // Will hold the full output path for the plot
     
+    vector<double> yMin;                // Will hold the minimum value for y-axis
+    vector<double> yMax;                // Will hold the maximum value for y-axis
+
     ofstream outFile;                   // Stream pointer for data output.
 
     title = wave.getFileName();
     tempOutFile = filePrefix;
 
-    
 
     plotCommand = "gnuplot -c 'gnuScript.txt'";
 
@@ -284,6 +292,14 @@ void graphAlg(AudioWave wave, string filePrefix, int alg, string fileName, strin
             fullOutFile[1] = tempOutFile + "/RightAudioWave.png";
             sourceFile = wave.getSourceFile(0);
             ylabel = "Audio Wave";
+            yMax.push_back(wave.getYMaximum(0,1));
+            yMin.push_back(wave.getYMinimum(0,1));
+
+            if (wave.getChannels() == 2)
+            {
+                yMax.push_back(wave.getYMaximum(0,2));            
+                yMin.push_back(wave.getYMinimum(0,2));
+            }
 
             break;
         }
@@ -295,6 +311,15 @@ void graphAlg(AudioWave wave, string filePrefix, int alg, string fileName, strin
             fullOutFile[1] = tempOutFile + "/RightFFT.png";
             sourceFile = wave.getSourceFile(1);
             ylabel = "FFT";
+            yMax.push_back(wave.getYMaximum(1,1));
+            yMin.push_back(wave.getYMaximum(1,1));
+
+            if (wave.getChannels() == 2)
+            {
+                yMax.push_back(wave.getYMaximum(1,2));
+                yMin.push_back(wave.getYMinimum(1,2));
+            }
+
             break;
         }
         case 2: // Graphing zero cross
@@ -305,6 +330,15 @@ void graphAlg(AudioWave wave, string filePrefix, int alg, string fileName, strin
             fullOutFile[1] = tempOutFile + "/RightZeroCross.png";
             sourceFile = wave.getSourceFile(2);
             ylabel = "Zero Cross Level";
+            yMax.push_back(wave.getYMaximum(2,1));
+            yMin.push_back(wave.getYMinimum(2,1));
+
+            if (wave.getChannels() == 2)
+            {
+                yMax.push_back(wave.getYMaximum(2,2));
+                yMin.push_back(wave.getYMinimum(2,2));
+            }
+
             break;
         }
         case 3: // Graphing spectral flux
@@ -315,28 +349,45 @@ void graphAlg(AudioWave wave, string filePrefix, int alg, string fileName, strin
             fullOutFile[1] = tempOutFile + "/RightSpectralFlux.png";
             sourceFile = wave.getSourceFile(3);
             ylabel = "Spectral Flux";
+            yMax.push_back(wave.getYMaximum(3,1));
+            
+            if (yMax[0] < 0)
+                yMin.push_back((yMax[0] - 100));
+            else
+                yMin.push_back(0);
+
+            if (wave.getChannels() == 2)
+            {
+                yMax.push_back(wave.getYMaximum(3,2));
+ 
+                if (yMax[0] < 0)
+                    yMin.push_back((yMax[0] - 100));
+                else
+                    yMin.push_back(0);
+            }
+
             break;
         }
-    /*    case 4: // Graphing cepstrum
-        {
+        case 4: // Graphing cepstrum
+        {/*
             fullTitle[0] = title + " Left Channel Cepstrum";
             fullTitle[1] = title + " Right Channel Cepstrum";
             fullOutFile[0] = tempOutFile + "/LeftCepstrum.png";
             fullOutFile[1] = tempOutFile + "/RightCepstrum.png";
             sourceFile = wave.getSourceFile(4);
-            ylabel = "Cepstrum";
+            ylabel = "Cepstrum";*/
             break;
         }
         case 5: // Graphing spectrum centroid
-        {
+        {/*
             fullTitle[0] = title + " Left Channel Spectrum Centroid";
             fullTitle[1] = title + " Right Channel Spectrum Centroid";
             fullOutFile[0] = tempOutFile + "/LeftSpectrumCentroid.png";
             fullOutFile[1] = tempOutFile + "/RightSpectrumCentroid.png";
             sourceFile = wave.getSourceFile(5);
-            ylabel = "Spectrum Centroid";
+            ylabel = "Spectrum Centroid";*/
             break;
-        }*/
+        }
         default:
         {
             cout << "Invalid algorithm." << endl;
@@ -348,7 +399,8 @@ void graphAlg(AudioWave wave, string filePrefix, int alg, string fileName, strin
  
     xlabel = "Left Channel";
 
-    generateScript(fullTitle[0], xlabel, ylabel, fullOutFile[0], sourceFile, 1);
+    if ((alg != 4) && (alg != 5))
+        generateScript(alg,fullTitle[0], xlabel, ylabel, yMin[0], yMax[0], fullOutFile[0], sourceFile, 1);
 
     outFile.open((path + "/" + fileName).c_str(), ios::app);
     outFile << timestamp() << ":  Plotting " << fullTitle[0] << "..." << endl;
@@ -356,21 +408,24 @@ void graphAlg(AudioWave wave, string filePrefix, int alg, string fileName, strin
     if (debug)
         cout << timestamp() << ":  Plotting " << fullTitle[0] << "..." << endl;
 
-    system(plotCommand.c_str());
+    if ((alg != 4) && (alg != 5))
+        system(plotCommand.c_str());
 
     // Graph the right channel
     if (wave.getChannels() == 2)
     {
         xlabel = "Right Channel";
 
-        generateScript(fullTitle[1], xlabel, ylabel, fullOutFile[1], sourceFile, 2);
+        if ((alg != 4) && (alg != 5))
+            generateScript(alg,fullTitle[1], xlabel, ylabel, yMin[1], yMax[1], fullOutFile[1], sourceFile, 2);
 
         outFile << timestamp() << ":  Plotting " << fullTitle[1] << "..." << endl;
         
         if (debug)
             cout << timestamp() << ":  Plotting " << fullTitle[1] << "..." << endl;
 
-        system(plotCommand.c_str());
+        if ((alg != 4) && (alg != 5))
+            system(plotCommand.c_str());
     }
 
     outFile.close();
@@ -383,22 +438,30 @@ void graphAlg(AudioWave wave, string filePrefix, int alg, string fileName, strin
 //       title - A string containing the title of the graph.
 //       xlabel - A string containing the x label for the graph.
 //       ylabel - A string containing the y label for the graph.
+//       yMin - A double indicating the minimum value for the y-axis
+//       yMax - A double indicating the maximum value for the y-axis
 //       outFileName - A string containing the name of the file to output the graph to.
 //       sourceFile - A string containing the name of the source data file
 //       channel - An integer describing which audio channel we are graphing
 // Outputs: None
 // Purpose:  Automates the generation of the gnuplot script file.
-void generateScript(string title, string xlabel, string ylabel, string outFileName, string sourceFile, int channel)
+void generateScript(int alg, string title, string xlabel, string ylabel, double yMin, double yMax, string outFileName, string sourceFile, int channel)
 {
     ofstream outFile;
 
     outFile.open("gnuScript.txt",ios::out);
- 
+
     outFile << "set terminal png \n";
     outFile << "set output '" << outFileName << "'\n";
     outFile << "set title '" << title << "'\n";
     outFile << "set ylabel '" << ylabel << "'\n";
     outFile << "set xlabel '" << xlabel << "'\n";
+
+    if (alg == 1)
+        outFile << "set yrange[-10000:10000]\n";
+    else if (alg == 2)
+        outFile << "set yrange [" << yMin << ":" << yMax << "]\n";
+
     outFile << "plot '" << sourceFile << "' using " << channel << " with boxes \n";
 
     outFile.close();

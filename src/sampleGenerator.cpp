@@ -414,11 +414,10 @@ int main(int argc, char** argv)
 		outFile << timestamp() << ":  Loading audio file..." << endl;
                 outFile.close();
 
-                AudioWave wave("test", 2);  // An AudioWave object
+                AudioWave wave("test", channels);  // An AudioWave object
 
                 if (debug)
                 {
-                    cout << "Sample [" << (i + 1) << "]" << endl;
                     cout << timestamp() << ":  Performing analysis of " << scrubbedAudioNames[i] << endl;
                     cout << timestamp() << ":  Loading audio file..." << endl;
                 }
@@ -508,6 +507,26 @@ int main(int argc, char** argv)
 
                outFile.open((path + "/" + fileName).c_str(), ios::app);
                outFile << timestamp() << ":  Spectrum Centroid complete." << endl;
+               outFile.close();
+
+               // Generate the yMax and yMin for plotting
+               if (plot)
+               {
+                   outFile.open((path + "/" + fileName).c_str(), ios::app);
+                   outFile << timestamp() << ":  Generating Y maximums..." << endl;
+
+                   wave.setYMaximums();
+
+                   outFile << timestamp() << ":  Y maximums generated." << endl;
+                   outFile << timestamp() << ":  Generating Y minimums..." << endl;
+
+                   wave.setYMinimums();
+
+                   outFile << timestamp() << ":  Y minimums generated." << endl;
+                   outFile.close();
+               } 
+               
+               outFile.open((path + "/" + fileName).c_str(), ios::app);
                outFile << timestamp() << ":  Audio Algorithms completed for sample " << (i+1) << "." << endl << endl;
                outFile << "\tTiming Data:" << endl << endl;
                outFile << "\tFFT:  Completed in " << FFTDuration.count() << " \u03bc" << "s" << endl;
@@ -735,9 +754,7 @@ int main(int argc, char** argv)
                        if (debug)
                            cout << timestamp() << ":  stereoSpectrumFlux database updated." << endl;
                    }
-
                
- 
                    // Create Spectrum Centroid database
 
                    outFile << timestamp() << ":  Updating spectrumCentroid database..." << endl;

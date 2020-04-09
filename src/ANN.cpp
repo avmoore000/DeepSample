@@ -17,38 +17,91 @@
 
 #include "../include/ANN.h"
 #include "../include/Utilities.h"
+#include <time.h>
 
 using namespace std;
 
 // Function ANNI
 // Inputs:
-//       zeroCrossResults - An n-dimensional vector containing the zero cross of the audio file.
-//       spectrumFluxResults - An array of doubles containing the spectral flux of the audio file.
+//       folds - An integer indicating the number of folds to create from the wave object.
+//       learnRate - A double indicating the learning rate to apply to the algorithm.
+//       epochs - An integer indicating the number of epochs to generate data over.
+//       codebooks - An integer indicating the number of codebooks to be used for training / analysis.
+//       alg - An integer indicating the algorithm(s) to use in training / analysis.
 //       path - A string containing the location of the output files.
-//       audioName - A string containing the name of the current audio file.
-//       channels - The number of channels in the audio file.
 //       debug - A flag that controls debug output.
 // Outputs: None
 // Purpose: ANNI is an artificial neural network that is used to learn the classifications of music.
+void ANNI(int folds, double learnRate, int epochs, int codeBooks, int alg, string path, bool debug)
 void ANNI(vector<vector<float> > zeroCrossResults, double spectrumFluxResults[], string audioName, int channels, string path, bool debug)
 {
-    ofstream outFile;    // File pointer for outputting results and debug information.
-    string fileName;     // Name of the output file for ANNI to use.
-    
-    fileName = path + "/" + "ANNIResults.txt";
+    ofstream outFile;    // A stream pointer for data output.
+    ofstream debugFile;  // A stream pointer for debug output.
+    ifsteam inFile;      // A stream pointer for data input.
 
-    if (fileExists(fileName))
-        outFile.open(fileName, ios::app);
-    else
-    {
-        outFile.open(fileName, ios::out);
-   
-        outFile << "ANNI Results" << endl << endl;
+    string data;         // A string to hold lines of data.
 
-        for (int i = 0; i < 100; i++)
-            outFile << "*";
+    vector<vector<complex<double> > > foldedLeftFFT;
+    vector<vector<complex<double> > > foldedRightFFT;
+    vector<vector<float> > foldedZeroCross;
+    vector<double> foldedSpectrumFlux;
+
+    bool line;
+
+    outFile.open((path + "/ANNIResults.txt").c_str(), ios::app);
+
+    outFile << timestamp() << ":  ANNI RUN" << endl << endl;
+
+    for (int i = 0; i < 100; i++)
+        outFile << "*";
   
-        outFile << endl << endl;
+    outFile << endl << endl;
+
+    line = 0; 
+
+    switch(alg)
+    {
+        case 0:  // Use all algorithms
+        {
+            break;
+        }
+        case 1:  // Use FFT
+        {
+            inFile.open((path + "/Databases/fft.txt").c_str(), ios::in);
+            
+            while (inFile >> data)
+            {
+                if (line == 0)
+                    cout << "Left Channel:  " << data << endl;
+                else 
+                    cout << "Right Channel:  " << data << endl;
+
+                line = !line;
+            }
+                                  
+            break;
+        }
+        case 2:  // Use Zero Cross
+        {
+            break;
+        }
+        case 3:  // Use Spectrum Flux
+        {
+            break;
+        }
+        case 4:  // Use Cepstrum
+        {
+            break;
+        }
+        case 5:  // Use Spectrum Centroid
+        {
+            break;
+        }
+        default:
+        {
+            cout << "Invalid algorithm." << endl;
+            break
+        }
     }
 
     if (debug)

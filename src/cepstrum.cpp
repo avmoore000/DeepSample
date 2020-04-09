@@ -14,8 +14,9 @@
 /**************************************End To Do List **************************/
 
 #include "../include/cepstrum.h"
+#include "../include/FourierTransform.h"
 #include "../include/Utilities.h"
-
+#include <math.h>
 using namespace std;
 
 // Function cepstrum
@@ -25,11 +26,11 @@ using namespace std;
 // Outputs:
 //    finalCepstrum - Returns the inverse fourier transform of the wave in the form of a vector of real numbers.
 // Purpose:  Perform the cepstrum segmentation algorithm on the given audio sample, according to the real cepstrum equation.
-vector<double> cepstrum(vector<complex<double>> raw, double windowSize)
+vector<double> rCepstrum(vector<complex<double> >& raw, double windowSize)
 {
 
-    vector<double> finalCepstrum = abs(log(inverseFT(windowHamming(raw, windowSize))));
-    return finalCepstrum;
+    //vector<double> finalCepstrum = abs(log(inverseFT(windowHamming(raw, windowSize),"",0)));
+    //return finalCepstrum;
 }
 
 // Function getSign
@@ -58,7 +59,7 @@ bool getSign(complex<double> data, bool debug, string outputName)
 // Outputs:
 //    cepstrumHamming - A vector of doubles transformed by the hamming window.
 // Purpose:  Create the hamming window for use in the cepstrum algorithm.
-vector<double> windowHamming(vector<complex<double>> rawCepstrum, double windowSize)
+vector<double> windowHamming(vector<complex<double> > rawCepstrum, double windowSize)
 {
     vector<double> cepstrumHamming;
     //Runs through loop to take real part of rawCepstrum and push

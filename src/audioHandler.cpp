@@ -16,6 +16,7 @@
 /**************************************End To Do List **************************/
 
 #include "../include/audioHandler.h"
+using namespace std;
 
 #define BLOCKSIZE 4096
 
@@ -52,7 +53,7 @@ static void convertSound(AudioWave &wave, string fileName, string audioDir, stri
     int readcount;                // Keep track of whether there is a frame to be counted.
     ofstream outFile;             // Stream pointer for data output.
     ofstream debugFile;           // Stream pointer for debug output.
-   
+
     if (debug)
     {
         debugFile.open((path + "/Debug/convertSoundDebug.txt").c_str(), ios::app);
@@ -79,24 +80,24 @@ static void convertSound(AudioWave &wave, string fileName, string audioDir, stri
     while ((readcount = sf_readf_float (infile, buf, frames)) > 0)
     {      
         for (int i = 0; i < readcount; i++)
-        {       
+        {      
             for (int j = 0; j < channels; j++)
             {
 
                 dataPoint[j] = buf[i * channels + j];
 
-                    if (fullPrecision)
-                        outFile << OP_DBL_Digs-1 << ", " << buf[i * channels + j] << endl;
-                    else
-                        outFile << buf[i * channels + j] << endl;
-                        //fprintf (outFile, " % 12.10f", buf [i * channels + j]);
+                if (fullPrecision)
+                    outFile << OP_DBL_Digs-1 << ", " << buf[i * channels + j] << endl;
+                else
+                    outFile << buf[i * channels + j] << endl;
+                    //fprintf (outFile, " % 12.10f", buf [i * channels + j]);
             }
 
             // Always get channel 1
             if (dataPoint[0] < 0)
-                tempSig = -polar(dataPoint[0], 0.0);
+                tempSig = -polar(abs(dataPoint[0]), 0.0);
             else
-                tempSig = polar(dataPoint[0], 0.0);
+                tempSig = polar(abs(dataPoint[0]), 0.0);
 
             wave.pushLeftChannel(tempSig);
 
@@ -113,6 +114,7 @@ static void convertSound(AudioWave &wave, string fileName, string audioDir, stri
 
             if (debug)
                 debugFile << endl;
+
         } 
     }
 
@@ -135,8 +137,7 @@ static void convertSound(AudioWave &wave, string fileName, string audioDir, stri
 // Purpose:  loadAudio is wrapper function for the convertSound function
 void loadAudio(AudioWave &wave, string fileName, string audioDir, string sanName, int channels, bool fullPrecision, string path, bool debug)
 {
-    convertSound(wave, fileName, audioDir, sanName, channels, fullPrecision, path, debug);
-
+    convertSound(wave, fileName, audioDir, sanName, 2, fullPrecision, path, debug);
     return;
 
 }

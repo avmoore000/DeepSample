@@ -27,7 +27,7 @@ using namespace std;
 #define FourierTransform
 
 void fft(AudioWave &, string, string, bool);
-void inverseFT(vector<complex<double> >, string, bool);
+void inverseFT(vector<double>, string, bool);
 
 #endif
 
