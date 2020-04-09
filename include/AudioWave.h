@@ -8,6 +8,7 @@
 /**************************************Change Log *******************************/
 
 // Created the initial header for the AudioWave class - A.M. 27 Mar 2020
+// Renamed Spectral Flux related functions and added Spectral Centroid functions - A.R. 9 Apr 2020
 
 /**************************************End Change Log ***************************/
 
@@ -48,7 +49,8 @@ class AudioWave
         void pushCepstrum(int, double);                        // Push a value to cepstrumData
         void pushLeftChannel(complex<double>);                 // Push a value to leftChannel
         void pushRightChannel(complex<double>);                // Push a value to rightChannel
-        void pushSpectrum(double);                             // Push a value to spectrumData
+        void pushSpectrumF(double);                            // Push a value to spectrumFData
+        void pushSpectrumC(double);                            // Push a value to spectrumCData
         void pushZero(int, double);                            // Push a value to zeroData
 
         // Getters
@@ -61,7 +63,8 @@ class AudioWave
         complex<double> getChannelData(int, int);              // Return value from channel
         double getCepstrumDataPoint(int);                      // Return value from cepstrumData
         double getFFTDataPoint(int,int);                       // Return value from FFT data
-        double getSpectrumDataPoint(int);                      // Return value from spectrumData
+        double getSpectrumFDataPoint(int);                     // Return value from spectrumFData
+        double getSpectrumCDataPoint(int);                     // Return value from spectrumCData
         double getYMaximum(int, int);                          // Return maximum value of a dataset.
         double getYMinimum(int, int);                          // Return minimum value of a dataset.
         double getZeroDataPoint(int, int);                     // Return value from zeroData
@@ -71,7 +74,8 @@ class AudioWave
         int getCSize(int);                                     // Return cepstrumData size
         int getLeftSize();                                     // Return leftChannel size
         int getRightSize();                                    // Return rightChannel size
-        int getSSize();                                        // Return spectrumData size
+        int getSFSize();                                       // Return spectrumFData size
+        int getSCSize();                                       // Return spectrumCData size
         int getZSize(int);                                     // Return zeroData size     
       
     private:
@@ -87,7 +91,8 @@ class AudioWave
         vector<complex<double> > leftFFT;                      // Left channel FFT
         vector<complex<double> > rightChannel;                 // Right channel.
         vector<complex<double> > rightFFT;                     // Right channel FFT
-        vector<double>  spectrumData;                          // Spectrum Flux data
+        vector<double>  spectrumFData;                         // Spectrum Flux data
+        vector<double>  spectrumCData;                         // Spectrum Centroid data
         int channels;                                          // Number of channels
         int frames;                                            // Number of frames
 

@@ -8,6 +8,7 @@
 /**************************************Change Log *******************************/
 
 // Created the initial implementation for the AudioWave class - A.M. 27 Mar 2020
+// Renamed Spectral Flux related functions and added Spectral Centroid functions - A.R. 9 Apr 2020
 
 /**************************************End Change Log ***************************/
 
@@ -49,7 +50,8 @@ AudioWave::~AudioWave()
     leftFFT.clear();
     rightChannel.clear();
     rightFFT.clear();
-    spectrumData.clear();
+    spectrumFData.clear();
+    spectrumCData.clear();
 }
 
 // Function setName
@@ -254,14 +256,14 @@ void AudioWave::pushZero(int chan, double data)
     return;
 }
 
-// Function pushSpectrum
+// Function pushSpectrumF
 // Inputs:
 //       data - A double containing the data to add.
 // Outputs: None
-// Purpose:  Push new data onto the spectrumData vector.
-void AudioWave::pushSpectrum(double data)
+// Purpose:  Push new data onto the spectrumFData vector.
+void AudioWave::pushSpectrumF(double data)
 {
-    spectrumData.push_back(data);
+    spectrumFData.push_back(data);
 
     return;
 }
@@ -274,6 +276,18 @@ void AudioWave::pushSpectrum(double data)
 // Purpose:  Push new data onto the cepstrumData vector.
 void AudioWave::pushCepstrum(int chan, double data)
 {
+    return;
+}
+
+// Function pushSpectrumC
+// Inputs:
+//       data - A double containing the data to add.
+// Outputs: None
+// Purpose:  Push new data onto the spectrumCData vector.
+void AudioWave::pushSpectrumC(double data)
+{
+    spectrumCData.push_back(data);
+
     return;
 }
 
@@ -433,13 +447,13 @@ int AudioWave::getZSize(int chan)
     return size;
 }
 
-// Function  getSSize
+// Function  getSFSize
 // Inputs: None
 // Outputs: size - An integer describing the size.
-// Purpose:  Return the size of the spectrumData vector
-int AudioWave::getSSize()
+// Purpose:  Return the size of the spectrumFData vector
+int AudioWave::getSFSize()
 {
-    return spectrumData.size();
+    return spectrumFData.size();
 }
 
 // Function getCSize
@@ -479,6 +493,15 @@ int AudioWave::getCSize(int chan)
     }
 
     return size;
+}
+
+// Function  getSCSize
+// Inputs: None
+// Outputs: size - An integer describing the size.
+// Purpose:  Return the size of the spectrumCData vector
+int AudioWave::getSCSize()
+{
+    return spectrumCData.size();
 }
 
 // Function getLeftChannel
@@ -591,19 +614,19 @@ double AudioWave::getZeroDataPoint(int chan, int index)
     return dataPoint; 
 }
 
-// Function getSpectrumDataPoint
+// Function getSpectrumFDataPoint
 // Inputs:
 //       chan - An integer indicating which channel to pull the data from.
 // Outputs: dataPoint - A double containing the datapoint.
 // Purpose: Returns the datapoint from the indicated channel and location.
-double AudioWave::getSpectrumDataPoint(int chan)
+double AudioWave::getSpectrumFDataPoint(int chan)
 {
     double dataPoint;
 
     dataPoint = NULL;
 
-    if (chan < spectrumData.size())
-        dataPoint = spectrumData.at(chan);
+    if (chan < spectrumFData.size())
+        dataPoint = spectrumFData.at(chan);
 
     return dataPoint;
 }
@@ -946,6 +969,23 @@ double AudioWave::getCepstrumDataPoint(int chan)
     dataPoint = NULL;
 
     cout << "The cepstrum function is still being developed." << endl;
+
+    return dataPoint;
+}
+
+// Function getSpectrumCDataPoint
+// Inputs:
+//       chan - An integer indicating which channel to pull the data from.
+// Outputs: dataPoint - A double containing the datapoint.
+// Purpose: Returns the datapoint from the indicated channel and location.
+double AudioWave::getSpectrumCDataPoint(int chan)
+{
+    double dataPoint;
+
+    dataPoint = NULL;
+
+    if (chan < spectrumCData.size())
+        dataPoint = spectrumCData.at(chan);
 
     return dataPoint;
 }
