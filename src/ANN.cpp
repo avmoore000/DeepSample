@@ -126,7 +126,7 @@ void ANNI(int folds, double learnRate, int epochs, int codeBooks, int alg, int c
             if (channels == 1)
                 inFile.open((path + "/Databases/monoSpectrumCentroid.txt").c_str(), ios::in);
             else if (channels == 2)
-                inFil.open((path + "/Databases/stereoSpectrumCentroid.txt").c_str(), ios::in);
+                inFile.open((path + "/Databases/stereoSpectrumCentroid.txt").c_str(), ios::in);
 
             while (inFile >> data)
             {
@@ -138,7 +138,7 @@ void ANNI(int folds, double learnRate, int epochs, int codeBooks, int alg, int c
         default:
         {
             cout << "Invalid algorithm." << endl;
-            break
+            break;
         }
     }
 
