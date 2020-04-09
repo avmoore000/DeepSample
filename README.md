@@ -92,7 +92,12 @@ Week of April 11 2020 Assigned Tasks
 -  Andrew Moore - Creating sample database and training ANN using the samples.
 
 Week of April 11 2020 Completed Tasks
-- Andrew Moore- Fixed a problem with sample generation, wrote a small driver program to generate samples 
+- Andrew Moore
+	- Fixed a problem with sample generation, wrote a small driver program to generate samples.
+	- Reworked sample generation to use less memory when running.
+	- Changed sample generation and test functions to use new SpectrumFlux functions/vectors.
+	- Fixed the plotter to display large graphs properly.
+
 TO DO
 - Add a working version of cepstrum algorithm to DeepSample
 - Download files for training ANNI
