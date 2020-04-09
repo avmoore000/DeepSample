@@ -134,10 +134,10 @@ void AudioWave::setSourceFiles()
     outFile.open((dirName + "/srcSFlux.txt").c_str(), ios::out);
     sourceFiles.push_back((dirName + "/srcSFlux.txt"));
 
-    outFile <<  spectrumData[0];
+    outFile <<  spectrumFData[0];
 
     if (channels == 2)
-        outFile << " " << spectrumData[1];
+        outFile << " " << spectrumFData[1];
 
     outFile << endl;
 
@@ -865,9 +865,9 @@ double AudioWave::getYMaximum(int alg, int chan)
         case 3:  // Spectrum data
         {
             if (chan == 1)
-                maxi = spectrumData[0];
+                maxi = spectrumFData[0];
             else if (chan == 2)
-                maxi = spectrumData[1];
+                maxi = spectrumFData[1];
       
             break;
         }

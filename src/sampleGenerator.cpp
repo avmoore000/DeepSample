@@ -707,7 +707,7 @@ int main(int argc, char** argv)
 
                             database.open((path + "/Databases/monoSpectrumFlux.txt").c_str(), ios::app);
                             database << audioName << endl;
-                            database << wave.getSpectrumDataPoint(0) << endl << endl;
+                            database << wave.getSpectrumFDataPoint(0) << endl << endl;
                             database.close();
                         }
                         if (tChannel == 2)
@@ -719,8 +719,8 @@ int main(int argc, char** argv)
  
                             database.open((path + "/Databases/stereoSpectrumFlux.txt").c_str(), ios::app);
                             database << audioName << endl;
-                            database << wave.getSpectrumDataPoint(0) << " " 
-                                     << wave.getSpectrumDataPoint(1) << endl << endl;
+                            database << wave.getSpectrumFDataPoint(0) << " " 
+                                     << wave.getSpectrumFDataPoint(1) << endl << endl;
                             database.close();
                         }
 
