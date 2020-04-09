@@ -122,7 +122,7 @@ void spectralFlux(AudioWave &wave, string fileName, string path, bool debug)
         }
 
         // Update the spectrum flux database for the wave object
-        wave.pushSpectrum(sFlux);
+        wave.pushSpectrumF(sFlux);
 
         if (debug)
         {
