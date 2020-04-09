@@ -9,11 +9,11 @@
 
 // Copied spectrum flux algorithm source file - A.R. 8 Apr 2020
 // Replaced all instances of "Flux" with "Centroid" - A.R. 9 Apr 2020
-// Actually changed the code to be a Spectrum Centroid algorithm
 
 /**************************************End Change Log ***************************/
 
 /**************************************To Do List ******************************/
+// Actually change the code to be a Spectrum Centroid algorithm
 
 /**************************************End To Do List **************************/
 
