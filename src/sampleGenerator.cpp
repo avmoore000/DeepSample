@@ -730,7 +730,7 @@ int main(int argc, char** argv)
                            cout << timestamp() << ":  Updating monoSpectrumFlux database..." << endl;
 
                        database.open((path + "/Databases/monoSpectrumFlux.txt").c_str(), ios::app);
-                       database << waves[i].getSpectrumDataPoint(0) << endl;
+                       database << waves[i].getSpectrumFDataPoint(0) << endl;
                        database.close();
 
                        outFile << timestamp() << ":  monoSpectrumFlux database updated." << endl;
@@ -746,7 +746,7 @@ int main(int argc, char** argv)
                            cout << timestamp() << ":  Updating stereoSpectrumFlux database..." << endl;
 
                        database.open((path + "/Databases/stereoSpectrumFlux.txt").c_str(), ios::app);
-                       database << waves[i].getSpectrumDataPoint(0) << " " << waves[i].getSpectrumDataPoint(1) << endl;
+                       database << waves[i].getSpectrumFDataPoint(0) << " " << waves[i].getSpectrumFDataPoint(1) << endl;
                        database.close();
 
                        outFile << timestamp() << ":  stereoSpectrumFlux database updated." << endl;
