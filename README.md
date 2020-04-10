@@ -100,7 +100,6 @@ Week of April 11 2020 Completed Tasks
 
 TO DO
 - Add a working version of cepstrum algorithm to DeepSample
-- Download files for training ANNI
 - Start training ANNI
 - Make a powerpoint deck explaining the process for use in presentations
 - Start rough draft of paper for project
