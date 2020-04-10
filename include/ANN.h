@@ -25,18 +25,20 @@
 #include <string>
 #include <algorithm>
 #include <time.h>
+#include "AudioWave.h"
 using namespace std;
 
 #ifndef ANN
 #define ANN
 
 // Neural network functions
-void ANNI(vector<vector<float> >, double[], string, int, string, bool);
+void ANNI(int, double, int, int, int, int, string, bool);
 
 // Helper utilities
 double euclideanDistance(vector<double>, vector<double>, string, bool);
 int getBestMatch(vector<vector<float> >, vector<float>, int, string, bool);
 int getBestMatch(vector<vector<double> >, vector<double>, int, string, bool);
+void prepareFolds(int, int, int, string, vector<vector<double> > &);
 void randomDatabase(vector<vector<double> >, vector<vector<double> >&, string,bool);
 void trainCodeBooks(vector<vector<double> >, vector<vector<double> >&, int, double, int, int, string, bool);
 

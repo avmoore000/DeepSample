@@ -607,7 +607,7 @@ int main(int argc, char** argv)
                             tempFFT = wave.getRightFFT();
 
                         for (int j = 0; j < tempFFT.size(); j++)
-                            database << tempFFT[j] << " ";
+                            database << real(tempFFT[j]) << " ";
                         
                         database << endl;
                         database.close();
@@ -648,7 +648,7 @@ int main(int argc, char** argv)
                         for (int j = 0; j < tChannel; j++)
                         {
                             for (int k = 0; k < wave.getZSize(j); k++)
-                                database << wave.getZeroDataPoint(j,k);
+                                database << real(wave.getZeroDataPoint(j,k));
 
                             database << endl;
                         }

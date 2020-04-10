@@ -40,17 +40,31 @@ void ANNI(int folds, double learnRate, int epochs, int codeBooks, int alg, int c
     ifstream inFile;      // A stream pointer for data input.
 
     string data;         // A string to hold lines of data.
+    string fileName;     // A string to hold the name of the input file.
 
-    vector<vector<complex<double> > > foldedLeftFFT;
-    vector<vector<complex<double> > > foldedRightFFT;
-    vector<vector<float> > foldedZeroCross;
+    vector<vector<double> > foldedLeftFFT;
+    vector<vector<double> > foldedRightFFT;
+    vector<vector<double> > foldedZeroCross;
     vector<double> foldedSpectrumFlux;
 
     bool line;
 
+    cout << "ANNI called..." << endl;
+    cout << "\tfolds = " << folds << endl;
+    cout << "\tlearnRate = " << learnRate << endl;
+    cout << "\tepochs = " << epochs << endl;
+    cout << "\tcodeBooks = " << codeBooks << endl;
+    cout << "\talg = " << alg << endl;
+    cout << "\tchannels = " << channels << endl;
+    cout << "\tpath = " << path << endl;
+    cout << "\tdebug = " << debug << endl;
+
     outFile.open((path + "/ANNIResults.txt").c_str(), ios::app);
 
     outFile << timestamp() << ":  ANNI RUN" << endl << endl;
+
+    if (debug)
+        cout << timestamp() << ":  ANNI RUN" << endl << endl;
 
     for (int i = 0; i < 100; i++)
         outFile << "*";
@@ -59,7 +73,7 @@ void ANNI(int folds, double learnRate, int epochs, int codeBooks, int alg, int c
 
     line = 0; 
 
-    switch(alg)
+    switch(alg) // Prepare the data vectors
     {
         case 0:  // Use all algorithms
         {
@@ -68,15 +82,18 @@ void ANNI(int folds, double learnRate, int epochs, int codeBooks, int alg, int c
         case 1:  // Use FFT
         {
             if (channels == 1)
-                inFile.open((path + "/Databases/monoFFT.txt").c_str(), ios::in);
-            else if (channels == 2)
-                inFile.open((path + "/Databases/stereoFFT.txt").c_str(), ios::in);
-            
-            while (inFile >> data)
             {
-                cout << data << endl;
+                fileName = path + "/Databases/monoFFT.txt";
+                prepareFolds(folds, 0, channels, fileName, foldedLeftFFT);
             }
-                                  
+            else if (channels == 2)
+            {
+                fileName= path + "/Databases/stereoFFT.txt";
+                
+                prepareFolds(folds, 0, channels, fileName, foldedLeftFFT);
+                prepareFolds(folds, 1, channels, fileName, foldedRightFFT);
+            }
+           
             break;
         }
         case 2:  // Use Zero Cross
@@ -85,11 +102,6 @@ void ANNI(int folds, double learnRate, int epochs, int codeBooks, int alg, int c
                 inFile.open((path + "/Databases/monoZeroCross.txt").c_str(), ios::in);
             else if (channels == 2)
                 inFile.open((path + "/Databases/stereoZeroCross.txt").c_str(), ios::in);
-
-            while (inFile >> data)
-            {
-                cout << data << endl;
-            }
 
             break;
         }
@@ -100,11 +112,6 @@ void ANNI(int folds, double learnRate, int epochs, int codeBooks, int alg, int c
             else if (channels == 2)
                 inFile.open((path + "/Databases/stereoSpectrumFlux.txt").c_str(), ios::in);
 
-            while (inFile >> data)
-            {
-                cout << data << endl;
-            }
-
             break;
         }
         case 4:  // Use Cepstrum
@@ -113,11 +120,6 @@ void ANNI(int folds, double learnRate, int epochs, int codeBooks, int alg, int c
                 inFile.open((path + "/Databases/monoCepstrum.txt").c_str(), ios::in);
             else if (channels == 2)
                 inFile.open((path + "/Databases/stereoCepstrum.txt").c_str(), ios::in);
-
-            while (inFile >> data)
-            {
-                cout << data << endl;
-            }
 
             break;
         }
@@ -128,11 +130,6 @@ void ANNI(int folds, double learnRate, int epochs, int codeBooks, int alg, int c
             else if (channels == 2)
                 inFile.open((path + "/Databases/stereoSpectrumCentroid.txt").c_str(), ios::in);
 
-            while (inFile >> data)
-            {
-                cout << data << endl;
-            }
-
             break;
         }
         default:
@@ -141,6 +138,116 @@ void ANNI(int folds, double learnRate, int epochs, int codeBooks, int alg, int c
             break;
         }
     }
+
+    return;
+}
+
+void prepareFolds(int folds, int curChan, int channels, string fileName, vector<vector<double> > &fft)
+{
+    int foldSize;                         // The size of each fold
+    int start;                            // Index to start making fold
+    int currentFold;                      // Current fold to add data
+    vector<double> dataFold;              // A vector to hold the new fold of data
+    string line;                          // A string to hold line of data.
+    string data;                          // Will hold the complex number as a string
+    ifstream inFile;                      // A stream pointer for data input.
+
+    start = 0;
+    currentFold = 0;
+
+    // Initialize the fft 
+    for (int i = 0; i < folds; i++)
+    {
+        fft.push_back(dataFold);
+    }
+
+    // Grab the line of data
+    inFile.open((fileName).c_str(), ios::in);
+
+    if (channels == 1)
+    {
+        std::getline(inFile, line);  // Get rid of the first name
+   
+        while (std::getline(inFile, line))
+        {
+            data = "";
+            foldSize = line.size() / folds;
+
+            for (int i = 0; i < line.size(); i++)
+            {
+                if (line[i] != ' ')
+                {
+                    data += line[i];
+                }
+                else
+                {
+                    if ( (i + 1) < (start + foldSize))
+                    {
+
+                        fft[currentFold].push_back(stod(data));
+                        data = "";
+                    }
+                    else
+                    {
+                        start += foldSize;
+                        currentFold++;
+
+                        if (currentFold > (fft.size() - 1))
+                            currentFold = fft.size() - 1;
+                    }
+                }
+                    
+            }
+
+            std::getline(inFile, line);
+        }
+    }
+    else if (channels == 2)
+    {
+        std::getline(inFile, line);
+
+        while (std::getline(inFile, line))
+        {
+            data = "";
+
+            cout << "Fold Size:  " << foldSize << endl;
+            cout << "Line Size:  " << line.size() << endl;
+ 
+            if (curChan == 2)
+                std::getline(inFile, line);
+
+            foldSize = line.size() / folds;
+
+            for (int i = 0; i < line.size(); i++)
+            {
+                if ((line[i] != ' '))
+                {
+                    data += line[i];
+                }
+                else 
+                {
+                    if ((i + 1) < (start + foldSize) )
+                    {
+                        fft[currentFold].push_back(stod(data));
+                        data = "";
+                    }
+                    else
+                    {
+                        start += foldSize;
+                        currentFold++;
+
+                        if (currentFold > fft.size() - 1)
+                            currentFold = fft.size() - 1;
+                    }
+                }
+            }
+
+            std::getline(inFile, line);
+        }
+    }
+
+    for (int i = 0; i < fft.size(); i++)
+        cout << "fft[" << i << "].size() = " << fft[i].size() << endl;
 
     return;
 }
