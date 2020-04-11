@@ -99,7 +99,7 @@ Week of April 4 2020
 
 Week of April 11 2020 Assigned Tasks
 -  Hue Truong 
-	-Working on cepstrum algorithm and optimizing spectral flux
+	- Working on cepstrum algorithm and optimizing spectral flux
 -  Alex Reno
 	- Working on Spectrum centroid algorithm
 -  Andrew Moore
