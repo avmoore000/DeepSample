@@ -9,11 +9,11 @@
 
 // Copied spectrum flux algorithm source file - A.R. 8 Apr 2020
 // Replaced all instances of "Flux" with "Centroid" - A.R. 9 Apr 2020
+// Changed the code to be a Spectral Centroid algorithm - A.R. 11 Apr 2020
 
 /**************************************End Change Log ***************************/
 
 /**************************************To Do List ******************************/
-// Actually change the code to be a Spectrum Centroid algorithm
 
 /**************************************End To Do List **************************/
 
@@ -34,17 +34,23 @@ void spectralCentroid(AudioWave &wave, string fileName, string path, bool debug)
 {
     ofstream outFile;                    // A stream pointer for data output.
     ofstream debugFile;                  // A stream pointer for debug output.
+    ostringstream debugDenominator;      // A second stream for debug output.
+    string debdenom;                     // The contents of debugDenominator to be combined into debugFile.
 
-    double sCentroid;                    // Will be used during calculation.
-    vector<double> normT;                // A vector of normalized datapoint from a single channel.
-    vector<vector<double> > norms;       // A vector of both the right and left normalized channels.
+    double sCentroid;                    //*
+    double scNumerator;                  //* Will be used during calculation.
+    double scDenominator;                //*/
+
+    vector<double> magT;                 // A vector of datapoint magnitudes from a single channel.
+    vector<vector<double> > mags;        // A vector of both the right and left magnitude channels.
     bool nt;                             // A flag to control the part of the summation being worked.
 
-    sCentroid = 0;
+    sCNumerator = 0;
+    sCDenominator = 0;
     nt = 0;
     
     for (int i = 0; i < 2; i++)
-        norms.push_back(normT);
+        mags.push_back(magT);
 
     outFile.open((path + "/" + fileName).c_str(), ios::app);
     outFile << timestamp() << ":  Spectrum Centroid Algorithm started..." << endl;
@@ -58,7 +64,7 @@ void spectralCentroid(AudioWave &wave, string fileName, string path, bool debug)
         cout << timestamp() << ":  Spectrum Centroid Algorithm started..." << endl;
     }
 
-    normalize(wave, norms, fileName, path, debug);
+    magnitude(wave, mags, fileName, path, debug);
 
     // Calculate the spectral centroid of all channels in audio signal
     for (int i = 0; i < wave.getChannels(); i++)
@@ -85,6 +91,7 @@ void spectralCentroid(AudioWave &wave, string fileName, string path, bool debug)
 
         if (debug)
         {
+            debugDenominator.str(string());
             if (i == 0)
             {
                 if (wave.getChannels() > 1)
@@ -96,37 +103,39 @@ void spectralCentroid(AudioWave &wave, string fileName, string path, bool debug)
                 debugFile << "Right Channel Spectral Centroid Calculation:";
 
             debugFile << endl << endl << "\t";
+            debugFile << "( ";
+            debugDenominator << "( ";
         }
 
-        for (int j = 0; j < norms[i].size() - 1; j++)
+        for (int j = 0; j < mags[i].size() - 1; j++)
         {
-            if (j == 0)
-                sCentroid += norms[i].at(j) * norms[i].at(j);    
-            else
-                sCentroid += (norms[i].at(j) - norms[i].at(j-1)) * (norms[i].at(j) - norms[i].at(j-1));
+            sCNumerator += mags[i].at(j) * i;  
+            sCDenominator += mags[i].at(j);
 
             if (debug)
             {
-                if (j == 0)
-                    debugFile << "(" << norms[i].at(j) << " * " << norms[i].at(j) << ") ";
-                else
-                    debugFile << "( (" << norms[i].at(j) << " - " << norms[i].at(j-1)
-                              << ") * (" << norms[i].at(j) << " - " << norms[i].at(j-1)
-                              << ") )";
+                debugFile << "(" << mags[i].at(j) << " * " << i << ") ";
+                debugDenominator << "(" << mags[i].at(j) << ")";
 
-                if (j != norms[i].size() - 1)
+                if (j != mags[i].size() - 1)
                     debugFile << " + ";
+                    debugDenominator << " + ";
 
                 if (j % 10)
                     debugFile << endl << "\t";
+                    debugDenominator << endl << "\t";
             }
         }
 
         // Update the spectrum centroid database for the wave object
-        wave.pushSpectrum(sCentroid);
+        sCentroid = sCNumerator / sCDenominator;
+        wave.pushSpectrumC(sCentroid);
 
         if (debug)
         {
+            debugDenominator << " )";
+            debdenom = debugDenominator.str();
+            debugFile << " ) / " << debugDenominator;
             debugFile << endl << "]" << endl << endl;
         }
 
