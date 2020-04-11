@@ -111,6 +111,7 @@ Week of April 11 2020 Completed Tasks
 	- Reworked sample generation to use less memory when running.
 	- Changed sample generation and test functions to use new SpectrumFlux functions/vectors.
 	- Fixed the plotter to display large graphs properly.
+	- Generated sample plots and uploaded them in an archive to the repo (Plots.zip).
 	- Updated the README.md file to reflect what is being done / was done by each person during the project.
 
 
