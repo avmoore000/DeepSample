@@ -55,7 +55,7 @@ use these as the basis of our research.
 
 03/01/2020 - 03/07/2020
 
-- TO DO:  
+TO DO:  
 	- Update ANN to process data from the audio segmentation algorithms
 	- Research graph design
 	- Look into 2D FFT
@@ -107,6 +107,7 @@ use these as the basis of our research.
 04/05/2020 - 04/11/2020
 
 Assigned Tasks:
+
 	-  Hue Truong 
 		- Working on cepstrum algorithm and optimizing spectral flux
 
@@ -117,6 +118,7 @@ Assigned Tasks:
 		- Creating sample database and training ANN using the samples.
 
 Completed Tasks
+
 	- Andrew Moore
 		- Fixed a problem with sample generation, wrote a small driver program to generate samples.
 		- Reworked sample generation to use less memory when running.
