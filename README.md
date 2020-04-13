@@ -106,26 +106,26 @@ TO DO:
 
 04/05/2020 - 04/11/2020
 
-Assigned Tasks:
+Assigned Tasks (04/05/2020 - 04/11/2020)
 
-	-  Hue Truong 
-		- Working on cepstrum algorithm and optimizing spectral flux
+-  Hue Truong 
+	- Working on cepstrum algorithm and optimizing spectral flux
 
-	-  Alex Reno
-		- Working on Spectrum centroid algorithm
+-  Alex Reno
+	- Working on Spectrum centroid algorithm
 
-	-  Andrew Moore
-		- Creating sample database and training ANN using the samples.
+-  Andrew Moore
+	- Creating sample database and training ANN using the samples.
 
-Completed Tasks
+Completed Tasks (04/05/2020 - 04/11/2020)
 
-	- Andrew Moore
-		- Fixed a problem with sample generation, wrote a small driver program to generate samples.
-		- Reworked sample generation to use less memory when running.
-		- Changed sample generation and test functions to use new SpectrumFlux functions/vectors.
-		- Fixed the plotter to display large graphs properly.
-		- Generated sample plots and uploaded them in an archive to the repo (Plots.zip).
-		- Updated the README.md file to reflect what is being done / was done by each person during the project.
+- Andrew Moore
+	- Fixed a problem with sample generation, wrote a small driver program to generate samples.
+	- Reworked sample generation to use less memory when running.
+	- Changed sample generation and test functions to use new SpectrumFlux functions/vectors.
+	- Fixed the plotter to display large graphs properly.
+	- Generated sample plots and uploaded them in an archive to the repo (Plots.zip).
+	- Updated the README.md file to reflect what is being done / was done by each person during the project.
 
 04/12/2020 - 04/18/2020
 
