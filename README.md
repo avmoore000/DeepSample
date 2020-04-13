@@ -127,6 +127,10 @@ Completed Tasks
 
 04/12/2020 - 04/18/2020
 
+Completed Tasks
+
+	- Andrew Moore
+		- Altered spectrumFlux to use the FFT properly.
 
 TO DO LIST
 

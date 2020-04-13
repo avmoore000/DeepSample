@@ -57,6 +57,12 @@ void spectralFlux(AudioWave &wave, string fileName, string path, bool debug)
         cout << timestamp() << ":  Spectrum Flux Algorithm started..." << endl;
     }
 
+    // Make sure we have an fft to work wiht
+    if (wave.getLeftFFTSize() == 0)
+    {
+        fft(wave, fileName, path, debug);
+    }
+
     normalize(wave, norms, fileName, path, debug);
 
     // Calculate the spectral flux of all channels in audio signal

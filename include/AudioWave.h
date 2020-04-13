@@ -74,6 +74,8 @@ class AudioWave
         int getCSize(int);                                     // Return cepstrumData size
         int getLeftSize();                                     // Return leftChannel size
         int getRightSize();                                    // Return rightChannel size
+        int getLeftFFTSize();                                  // Return size of left fft
+        int getRightFFTSize();                                 // Return size of right fft
         int getSFSize();                                       // Return spectrumFData size
         int getSCSize();                                       // Return spectrumCData size
         int getZSize(int);                                     // Return zeroData size     
