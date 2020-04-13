@@ -55,7 +55,7 @@ use these as the basis of our research.
 
 03/01/2020 - 03/07/2020
 
-- TO DO:  
+TO DO:  
 	- Update ANN to process data from the audio segmentation algorithms
 	- Research graph design
 	- Look into 2D FFT
@@ -106,24 +106,26 @@ use these as the basis of our research.
 
 04/05/2020 - 04/11/2020
 
-Assigned Tasks:
-	-  Hue Truong 
-		- Working on cepstrum algorithm and optimizing spectral flux
+Assigned Tasks (04/05/2020 - 04/11/2020)
 
-	-  Alex Reno
-		- Working on Spectrum centroid algorithm
+-  Hue Truong 
+	- Working on cepstrum algorithm and optimizing spectral flux
 
-	-  Andrew Moore
-		- Creating sample database and training ANN using the samples.
+-  Alex Reno
+	- Working on Spectrum centroid algorithm
 
-Completed Tasks
-	- Andrew Moore
-		- Fixed a problem with sample generation, wrote a small driver program to generate samples.
-		- Reworked sample generation to use less memory when running.
-		- Changed sample generation and test functions to use new SpectrumFlux functions/vectors.
-		- Fixed the plotter to display large graphs properly.
-		- Generated sample plots and uploaded them in an archive to the repo (Plots.zip).
-		- Updated the README.md file to reflect what is being done / was done by each person during the project.
+-  Andrew Moore
+	- Creating sample database and training ANN using the samples.
+
+Completed Tasks (04/05/2020 - 04/11/2020)
+
+- Andrew Moore
+	- Fixed a problem with sample generation, wrote a small driver program to generate samples.
+	- Reworked sample generation to use less memory when running.
+	- Changed sample generation and test functions to use new SpectrumFlux functions/vectors.
+	- Fixed the plotter to display large graphs properly.
+	- Generated sample plots and uploaded them in an archive to the repo (Plots.zip).
+	- Updated the README.md file to reflect what is being done / was done by each person during the project.
 
 04/12/2020 - 04/18/2020
 
