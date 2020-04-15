@@ -133,6 +133,7 @@ Completed Tasks
 
 	- Andrew Moore
 		- Altered spectrumFlux to use the FFT properly.
+		- Worked on adding FFT support to ANNI
 
 TO DO LIST
 
