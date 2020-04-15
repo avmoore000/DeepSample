@@ -531,12 +531,13 @@ int sign(double test)
 // Purpose:  This is a function that normalizes a vector
 void normalize(AudioWave wave, vector<vector<double> > &normals, string outputFile, string path, bool debug)
 {
-    ofstream outFile;     // A stream pointer for data output.
-    ofstream debugFile;   // A stream pointer for debug output.
+    ofstream outFile;                  // A stream pointer for data output.
+    ofstream debugFile;                // A stream pointer for debug output.
 
-    double mag;           // Will hold the magnitude of the vector.
-    double tempMag;       // Will hold the intermediate calculation of the magnitude.
-    int step;             // Will control the size of the step in the summation.
+    double mag;                        // Will hold the magnitude of the vector.
+    double tempMag;                    // Will hold the intermediate calculation of the magnitude.
+    int step;                          // Will control the size of the step in the summation.
+    vector<complex<double> > tempFFT;  // Will hold the FFT for normalization
 
     mag = 0;
     tempMag = 0;
@@ -562,12 +563,17 @@ void normalize(AudioWave wave, vector<vector<double> > &normals, string outputFi
 
     for (int i = 0; i < wave.getChannels(); i++)
     {
-        for (int j = 0; j < wave.getChannelSize(i+1); j += step)
+        if (i == 0)
+            tempFFT = wave.getLeftFFT();
+        else if (i == 1)
+            tempFFT = wave.getRightFFT();
+
+        for (int j = 0; j < tempFFT.size(); j += step)
         {
             tempMag = 0;
             int bound = 0;
 
-            if ((j + step) >= wave.getChannelSize(i+1))
+            if ((j + step) >= (tempFFT.size()-1))
                 bound = (j + step) - wave.getChannelSize(i+1);
             else
                 bound = j + step;
@@ -575,8 +581,8 @@ void normalize(AudioWave wave, vector<vector<double> > &normals, string outputFi
             // Calculate the inside of the magnitude
             for (int k = j; k <= bound; k++)
             {
-                double n1 = real(wave.getChannelData(i,k));
-                double n2 = real(wave.getChannelData(i,k));
+                double n1 = real(tempFFT[k]);
+                double n2 = real(tempFFT[k]);
 
                 if (isnan(n1))
                     n1 = 1;
@@ -589,10 +595,10 @@ void normalize(AudioWave wave, vector<vector<double> > &normals, string outputFi
             // Calculate the magnitude
             mag = sqrt(abs(tempMag));
 
-            // Calculate the normals of the windoow
+            // Calculate the normals of the window
             for (int k = j; k <= bound; k++)
             {
-                double n = real(wave.getChannelData(i,k));
+                double n = real(tempFFT[k]);
 
                 if(isnan(n))
                     n = 1;

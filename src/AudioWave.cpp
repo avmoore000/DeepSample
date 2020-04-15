@@ -346,6 +346,26 @@ int AudioWave::getChannels()
     return channels;
 }
 
+// Function getLeftFFTSize
+// Inputs: None
+// Outputs:
+//        size - The size of the left fft
+// Purpose:  Return the size fo the left fft
+int AudioWave::getLeftFFTSize()
+{
+    return leftFFT.size();
+}
+
+// Function getRightFFTSize
+// Inputs: None
+// Ouputs:
+//       size - The size of the right fft
+// Purpos:  Return the size of the right fft
+int AudioWave::getRightFFTSize()
+{
+    return rightFFT.size();
+}
+
 // Function getFrames
 // Inputs: None
 // Outputs:
@@ -576,6 +596,7 @@ complex<double> AudioWave::getChannelData(int channel, int index)
 
     return value;
 }
+
     
 // Function getZeroDataPoint
 // Inputs:

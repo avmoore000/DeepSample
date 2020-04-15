@@ -374,7 +374,7 @@ int main(int argc, char** argv)
                     cout << "\tFile Name = " << converted << endl;
             }
 
-            outFile << "\tTotal Audio Samples:  " << audioNames.size() << endl << endl;
+            outFile << endl << "\tTotal Audio Samples:  " << audioNames.size() << endl << endl;
 
             if (debug)
                 cout << "\tTotal Audio Samples:  " << audioNames.size() << endl << endl;
@@ -796,7 +796,7 @@ int main(int argc, char** argv)
             } // Finished algorithm loop
 
             outFile.open((path + "/" + fileName).c_str(), ios::app);
-            outFile << timestamp() << ":  Finished processing audio files." << endl;
+            outFile << timestamp() << ":  Finished processing audio files." << endl << endl;
             outFile.close();
 
             if (debug)
@@ -805,13 +805,6 @@ int main(int argc, char** argv)
             
         } // End second generation
     } // End generation
-
-    outFile.open((path + "/" + fileName).c_str(), ios::app);
-    outFile << timestamp() << ":  SampleGenerator completed." << endl;
-    outFile.close();
-
-    if (debug)
-        cout << timestamp() << ":  SampleGenerator completed." << endl << endl;
 
     // Clean up trash files
     if (remove("*.txt") != 0)
