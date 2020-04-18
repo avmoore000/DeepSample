@@ -1,3 +1,4 @@
+w
 #DeepSample
 Audio Processing Project
 
@@ -137,6 +138,7 @@ Completed Tasks
 	- Started testing ANN Learning Vector Quantization function
 	- Started generating samples using the updated FFT code, so the graphs will be correct.
 	- Enabled plotting for all existing algorithms.
+	- Updated the Developer Handbook to reflect current codebase.
 
 TO DO LIST
 
