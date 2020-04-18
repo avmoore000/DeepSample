@@ -84,32 +84,64 @@ void ANNI(int folds, double learnRate, int epochs, int codeBooks, int alg, int c
             if (channels == 1)
             {
                 fileName = path + "Databases/monoFFT.txt";
+
+                outFile.open((path + "ANNIResults.txt").c_str(), ios::app);
+                outFile << timestamp() << "Preparing " << fileName << " with " << folds << " folds..." << endl;
+                outFile.close();
+
                 prepareFolds(folds, 0, channels, fileName, foldedLeftFFT, path, debug);
             }
             else if (channels == 2)
             {
                 fileName= path + "Databases/stereoFFT.txt";
+
+                outFile.open((path + "ANNIResults.txt").c_str(), ios::app);
+                outFile << timestamp() << ":  Preparing Left Channel of " << fileName << " with " 
+                        << folds << " folds..." << endl;
+                outFile.close();
+
+                if (debug)
+                    cout << timestamp() << ":  Preparing Left Channel of " << fileName << " with " 
+                         << folds << " folds..." << endl;
                 
                 prepareFolds(folds, 0, channels, fileName, foldedLeftFFT, path, debug);
+
+                outFile.open((path + "ANNIResults.txt").c_str(), ios::app);
+                outFile << timestamp() << ":  Finished Preparing Left Channel." << endl;
+                outFile << timestamp() << ":  Preparing Right Channel of " << fileName << " with "
+                        << folds << " folds..." << endl;
+                outFile.close();
+
+                if (debug)
+                {
+                    cout << timestamp() << ":  Finished Preparing Left Channel." << endl;
+                    cout << timestamp() << ":  Preparing Right Channel of " << fileName << " with " 
+                         << folds << " folds..." << endl;
+                }
+
                 prepareFolds(folds, 1, channels, fileName, foldedRightFFT, path, debug);
 
                 outFile.open((path + "ANNIResults.txt").c_str(), ios::app);
-                outFile << timestamp() << ": Performing Learning Vector Quantization on left FFT..." << endl;
+                outFile << timestamp() << ":  Finished Preparing Right Channel." << endl;
+                outFile << timestamp() << ":  Performing Learning Vector Quantization on left FFT..." << endl << endl;
                 outFile.close();
 
                 if (debug) 
-                    cout << timestamp() << ":  Preparing Learning Vector Quantization on left FFT..." << endl;
+                { 
+                    cout << timestamp() << ":  Finished Preparing Right Channel." << endl;
+                    cout << timestamp() << ":  Preparing Learning Vector Quantization on left FFT..." << endl << endl;
+                }
 
                 // Train on the left fold
                 for (int i = 0; i < foldedLeftFFT.size(); i++)
                 {
 
                     outFile.open((path + "ANNIResults.txt").c_str(), ios::app);
-                    outFile << "\t" << timestamp() << ":  Creating training set for left FFT..." << endl;
+                    outFile << "\t" << timestamp() << ":  Creating training set for folded left FFT..." << endl;
                     outFile.close();
 
                     if (debug)
-                        cout << "\t" << timestamp() << ":  Creating training set for left FFT..." << endl;
+                        cout << "\t" << timestamp() << ":  Creating training set for folded left FFT..." << endl;
 
                     // Create a training set based on the whole set of folds
                     for (int j = 0; j < foldedLeftFFT.size(); j++)
@@ -148,11 +180,11 @@ void ANNI(int folds, double learnRate, int epochs, int codeBooks, int alg, int c
                 }
 
                 outFile.open((path + "ANNIResults.txt").c_str(), ios::app);
-                outFile << timestamp() << ":  Learning Vector Quantization complete." << endl << endl;
+                outFile << endl << timestamp() << ":  Learning Vector Quantization complete." << endl << endl;
                 outFile.close();
 
                 if (debug)
-                    cout << timestamp() << ":  Learning Vector Quantization complete." << endl << endl;
+                    cout << endl << timestamp() << ":  Learning Vector Quantization complete." << endl << endl;
             }
  
             break;
@@ -237,13 +269,6 @@ void prepareFolds(int folds, int curChan, int channels, string fileName, vector<
     // Grab the line of data
     inFile.open((fileName).c_str(), ios::in);
 
-    outFile.open((path + "/ANNIResults.txt").c_str(), ios::app);
-    outFile << timestamp() << ":  Preparing " << fileName << " with " << folds << " folds..." << endl << endl;
-    outFile.close();
-
-    if (debug)
-         cout << timestamp() << ":  Preparing " << fileName << " with " << folds << " folds..." << endl << endl;
-
     if (channels == 1)
     {
         std::getline(inFile, line);  // Get rid of the first name
@@ -287,13 +312,6 @@ void prepareFolds(int folds, int curChan, int channels, string fileName, vector<
 
                         if (currentFold > (fft.size() - 1))
                             currentFold = fft.size() - 1;
-
-                        outFile.open((path + "/ANNIResults.txt").c_str(), ios::app);
-                        outFile << "\tCurrent Fold:  (" << (currentFold + 1) << " / " << folds << ")" << endl;
-                        outFile.close();
-
-                        if (debug)
-                            cout << "\tCurrent Fold:  (" << (currentFold + 1) << " / " << folds << ")" << endl;
                     }
                 }
                     
@@ -348,13 +366,6 @@ void prepareFolds(int folds, int curChan, int channels, string fileName, vector<
 
                         if (currentFold > fft.size() - 1)
                             currentFold = fft.size() - 1;
-
-                        outFile.open((path + "/ANNIResults.txt").c_str(), ios::app);
-                        outFile << "\tCurrent Fold:  (" << (currentFold + 1) << " / " << folds << ")" << endl;
-                        outFile.close();
-
-                        if (debug)
-                            cout << "\tCurrent Fold:  (" << (currentFold + 1) << " / " << folds << ")" << endl;
                     }
                 }
             }
@@ -362,13 +373,6 @@ void prepareFolds(int folds, int curChan, int channels, string fileName, vector<
             std::getline(inFile, line);
         }
     }
-
-    outFile.open((path + "/ANNIResults.txt").c_str(), ios::app);
-    outFile << endl << timestamp() << ":  Prepared " << fileName << " with " << folds << " folds." << endl << endl;
-    outFile.close();
-
-    if (debug)
-        cout << endl << timestamp() << ":  Prepared " << fileName << " with " << folds << " folds." << endl << endl;
 
     return;
 }
@@ -391,20 +395,20 @@ void learningVectorQuantization(vector<vector<double> > trainSet, vector<vector<
     ofstream outFile;                           // A stream pointer for data output
 
     outFile.open((path + "ANNIResults.txt").c_str(), ios::app);
-    outFile << "\t" << timestamp() << ":  Training codebooks..." << endl;
+    outFile << "\t" << timestamp() << ":  Training codebooks..." << endl << endl;
     outFile.close();
 
     if (debug)
-        cout << "\t" << timestamp() << ":  Training codebooks..." << endl;
+        cout << "\t" << timestamp() << ":  Training codebooks..." << endl << endl;
 
     trainCodeBooks(trainSet, codeBookSet, codeBooks, learnRate, epochs, fileName, path, debug); 
 
     outFile.open((path + "ANNIResults.txt").c_str(), ios::app);
-    outFile << "\t" << timestamp() << ":  Codebooks trained." << endl;
+    outFile << endl << "\t" << timestamp() << ":  Codebooks trained." << endl;
     outFile.close();
 
     if (debug)
-        cout << "\t" << timestamp() << ":  Codebooks trained." << endl;
+        cout << endl << "\t" << timestamp() << ":  Codebooks trained." << endl;
 
     return;
 }
@@ -518,10 +522,28 @@ void trainCodeBooks(vector<vector<double> > database, vector<vector<double> > &t
     sumError = 0;
     bmu = 0;
 
+    outFile.open((path + "ANNIResult.txt").c_str(), ios::app);
+    outFile << "\t\t" << timestamp() << ":  Creating " << nBooks << " codebooks from training set..." << endl;
+    outFile.close();
+
+    if (debug)
+        cout << "\t\t" << timestamp() << ":  Creating " << nBooks << " codebooks from training set..." << endl;
+
     // Generate the codebooks
     for (int i = 0; i < nBooks; i++)
     {
         randomDatabase(database, trainSet, path, debug);
+    }
+
+    outFile.open((path + "ANNIResult.txt").c_str(), ios::app);
+    outFile << "\t\t" << timestamp() << ":  " << nBooks << " codebooks created." << endl;
+    outFile << "\t\t" << timestamp() << ":  Training codebooks over " << epochs << " epochs..." << endl;
+    outFile.close();
+
+    if (debug)
+    {
+        cout << "\t\t" << timestamp() << ":  " << nBooks << " codebooks created." << endl;
+        cout << "\t\t" << timestamp() << ":  Training codebooks over " << epochs << " epochs..." << endl;
     }
 
     // Train the codebooks over the specified number of epochs
@@ -546,7 +568,14 @@ void trainCodeBooks(vector<vector<double> > database, vector<vector<double> > &t
             }
         }
 
-        cout << "Epoch: " << i << " LRate:  " << rate << "  Error:  " << sumError << endl;
+        outFile.open((path + "ANNIResults.txt").c_str(), ios::app);
+        outFile << endl << "\t\t\t" << "Epoch:  " << i << endl << "\t\t\tLearning Rate:  " << rate
+                << endl << "\t\t\tError:  " << sumError << endl;
+        outFile.close();
+
+        if (debug)
+            cout << endl << "\t\t\tEpoch: " << i << endl << "\t\t\tLearning Rate:  " << rate 
+                 << endl << "\t\t\tError:  " << sumError << endl;
     }
          
     return;
