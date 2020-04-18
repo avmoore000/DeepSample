@@ -281,14 +281,14 @@ void prepareFolds(int folds, int curChan, int channels, string fileName, vector<
             outFile.open((path + "/ANNIResults.txt").c_str(), ios::app);
             outFile << "\tSize of data line:  " << line.size() << endl;
             outFile << "\tFold Size:  " << foldSize << endl;
-            outFile << "\tCurrent Fold:  (" << (currentFold + 1) <<" / " << folds << ")" << endl;
+            outFile << "\tCurrent Fold:  (" << (currentFold + 1) <<" / " << folds << ")" << endl << endl;
             outFile.close();
 
             if (debug)
             {
                 cout << "\tSize of data line:  " << line.size() << endl;
                 cout << "\tFold Size:  " << foldSize << endl;
-                cout << "\tCurrent Fold:  (" << (currentFold + 1) << " / " << folds << ")" << endl;
+                cout << "\tCurrent Fold:  (" << (currentFold + 1) << " / " << folds << ")" << endl << endl;
             }
 
             for (int i = 0; i < line.size(); i++)
@@ -336,14 +336,14 @@ void prepareFolds(int folds, int curChan, int channels, string fileName, vector<
             outFile.open((path + "/ANNIResults.txt").c_str(), ios::app);
             outFile << "\tSize of data line:  " << line.size() << endl;
             outFile << "\tFold Size:  " << foldSize << endl;
-            outFile << "\tCurrent Fold:  (" << (currentFold + 1) << " / " << folds << ")" << endl;
+            outFile << "\tCurrent Fold:  (" << (currentFold + 1) << " / " << folds << ")" << endl << endl;
             outFile.close();
 
             if (debug)
             {
                 cout << "\tSize of data line:  " << line.size() << endl;
                 cout << "\tFold Size:  " << foldSize << endl;
-                cout << "\tCurrent Fold:  (" << (currentFold + 1) << " / " << folds << ")" << endl;
+                cout << "\tCurrent Fold:  (" << (currentFold + 1) << " / " << folds << ")" << endl << endl;
             }
 
             for (int i = 0; i < line.size(); i++)
@@ -522,7 +522,7 @@ void trainCodeBooks(vector<vector<double> > database, vector<vector<double> > &t
     sumError = 0;
     bmu = 0;
 
-    outFile.open((path + "ANNIResult.txt").c_str(), ios::app);
+    outFile.open((path + "ANNIResults.txt").c_str(), ios::app);
     outFile << "\t\t" << timestamp() << ":  Creating " << nBooks << " codebooks from training set..." << endl;
     outFile.close();
 
@@ -535,7 +535,7 @@ void trainCodeBooks(vector<vector<double> > database, vector<vector<double> > &t
         randomDatabase(database, trainSet, path, debug);
     }
 
-    outFile.open((path + "ANNIResult.txt").c_str(), ios::app);
+    outFile.open((path + "ANNIResults.txt").c_str(), ios::app);
     outFile << "\t\t" << timestamp() << ":  " << nBooks << " codebooks created." << endl;
     outFile << "\t\t" << timestamp() << ":  Training codebooks over " << epochs << " epochs..." << endl;
     outFile.close();
