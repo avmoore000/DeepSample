@@ -131,12 +131,12 @@ Completed Tasks (04/05/2020 - 04/11/2020)
 
 Completed Tasks
 
-	- Andrew Moore
-		- Altered spectrumFlux to use the FFT properly.
-		- Worked on adding FFT support to ANNI
-		- Started testing ANN Learning Vector Quantization function
-		- Started generating samples using the updated FFT code, so the graphs will be correct.
-		- Enabled plotting for all existing algorithms.
+- Andrew Moore
+	- Altered spectrumFlux to use the FFT properly.
+	- Worked on adding FFT support to ANNI
+	- Started testing ANN Learning Vector Quantization function
+	- Started generating samples using the updated FFT code, so the graphs will be correct.
+	- Enabled plotting for all existing algorithms.
 
 TO DO LIST
 
