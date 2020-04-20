@@ -114,7 +114,7 @@ int main(int argc, char** argv)
         }
     }
 
-    cout << "Callin ANNI.." << endl;
+    cout << "Calling ANNI.." << endl;
 
     ANNI(folds, learnRate, epochs, codeBooks, alg, channels, path, debug);
  

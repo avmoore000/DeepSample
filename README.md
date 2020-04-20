@@ -1,3 +1,4 @@
+w
 #DeepSample
 Audio Processing Project
 
@@ -131,8 +132,20 @@ Completed Tasks (04/05/2020 - 04/11/2020)
 
 Completed Tasks
 
-	- Andrew Moore
-		- Altered spectrumFlux to use the FFT properly.
+- Andrew Moore
+	- Altered spectrumFlux to use the FFT properly.
+	- Worked on adding FFT support to ANNI
+	- Started testing ANN Learning Vector Quantization function
+	- Started generating samples using the updated FFT code, so the graphs will be correct.
+	- Enabled plotting for all existing algorithms.
+	- Updated the Developer Handbook to reflect current codebase.
+
+04/19/2020 - 04/25/2020
+
+Completed Tasks
+
+- Alex Reno
+	- Figured out what part of Spectral Centroid I didn't understand
 
 TO DO LIST
 
@@ -140,4 +153,3 @@ TO DO LIST
 - Start training ANNI
 - Make a powerpoint deck explaining the process for use in presentations
 - Start rough draft of paper for project
-- Enable plotter across all algorithms.

@@ -33,14 +33,15 @@ using namespace std;
 
 // Neural network functions
 void ANNI(int, double, int, int, int, int, string, bool);
+void learningVectorQuantization(vector<vector<double> >, vector<vector<double> >, int, double, int, string, string, bool);
 
 // Helper utilities
 double euclideanDistance(vector<double>, vector<double>, string, bool);
-int getBestMatch(vector<vector<float> >, vector<float>, int, string, bool);
-int getBestMatch(vector<vector<double> >, vector<double>, int, string, bool);
-void prepareFolds(int, int, int, string, vector<vector<double> > &);
+int getBestMatch(vector<vector<float> >, vector<float>, string, string, bool);
+int getBestMatch(vector<vector<double> >, vector<double>, string, string, bool);
+void prepareFolds(int, int, int, string, vector<vector<double> > &, string, bool);
 void randomDatabase(vector<vector<double> >, vector<vector<double> >&, string,bool);
-void trainCodeBooks(vector<vector<double> >, vector<vector<double> >&, int, double, int, int, string, bool);
+void trainCodeBooks(vector<vector<double> >, vector<vector<double> >&, int, double, int, string, string, bool);
 
 #endif
 
