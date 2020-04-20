@@ -657,3 +657,119 @@ void normalize(AudioWave wave, vector<vector<double> > &normals, string outputFi
 
     return;
 }
+
+// Function realify
+// Inputs:
+//       wave - An AudioWave object containing the audio wave being analyzed.
+//       outputFile - A string describing the name of the file for output.
+//       reals - A 2D vector of doubles that will contain the FFT magnitudes
+//       path - A string describing the output directory
+//       debug - A boolean flag that controls the debug output.
+// Outputs: None
+// Purpose:  This function converts the Fourier Transform results to real numbers for use in Spectral Centroid
+void realify(AudioWave wave, vector<vector<double> > &reals, string outputFile, string path, bool debug)
+{
+    ofstream outFile;                  // A stream pointer for data output.
+    ofstream debugFile;                // A stream pointer for debug output.
+
+    double mag;                        // Will hold the magnitude of the vector.
+    double tempMag;                    // Will hold the intermediate calculation of the magnitude.
+    int step;                          // Will control the size of the step in the summation.
+    vector<complex<double> > tempFFT;  // Will hold the FFT for normalization
+
+    mag = 0;
+    tempMag = 0;
+    step = wave.getFrames();
+
+    outFile.open((path + "/" + outputFile).c_str(), ios::app);
+    outFile << timestamp() << ":  Realifying FFT..." << endl;
+    outFile.close();
+
+    if (debug)
+        cout << timestamp() << ":  Realifying FFT..." << endl;
+
+    // Clear out the reals vector(s)
+    for (int i = 0; i < reals.size(); i++)
+        reals[i].clear();
+
+    if (debug)
+    {
+        debugFile.open((path + "/SpectrumCentroid/reals.txt").c_str(), ios::app);
+
+        debugFile << "Frames = " << wave.getFrames() << endl;
+    }
+
+    for (int i = 0; i < wave.getChannels(); i++)
+    {
+        if (i == 0)
+            tempFFT = wave.getLeftFFT();
+        else if (i == 1)
+            tempFFT = wave.getRightFFT();
+
+        for (int j = 0; j < tempFFT.size(); j += step)
+        {
+            tempMag = 0;
+            int bound = 0;
+
+            if ((j + step) >= (tempFFT.size()-1))
+                bound = (j + step) - wave.getChannelSize(i+1);
+            else
+                bound = j + step;
+
+            // Calculate the inside of the magnitude
+            for (int k = j; k <= bound; k++)
+            {            
+                double n = real(tempFFT[k]);
+
+                if(isnan(n))
+                    n = 1;
+
+                reals[i].push_back(n);
+            }
+        
+            if ( (step >= 1) && ((i + (wave.getFrames() - 1)) < (wave.getChannelSize(i+1) - 1)))
+                step = wave.getFrames() - 1;
+            else
+                step = 1;
+        }
+    }
+
+    outFile.open((path + "/" + outputFile).c_str(), ios::app);
+    outFile << timestamp() << ":  Finished realifying FFT." << endl;
+    outFile.close();
+
+    if (debug)
+    {
+        for (int i = 0; i < reals.size(); i++)
+        {
+            if (i == 0)
+            {
+                debugFile << "Left Channel contains " << reals[i].size() << " reals." << endl << endl;
+                debugFile << "Reals:" << endl << endl;
+            }
+            else if (i == 1)
+            {
+                debugFile << "Right Channel contains " << reals[i].size() << " reals." << endl << endl;
+                debugFile << "Reals:" << endl << endl << "\t";
+            }
+
+            debugFile << "[" << endl;
+
+            for (int j = 0; j < reals[i].size() - 1; j++)
+            {
+                debugFile << reals[i].at(j) << " ";
+
+                if (((i % 20) == 0) && (i != 0))
+                    debugFile << endl << "\t";
+            }
+
+            debugFile << endl << "]" << endl << endl;
+        }
+
+        cout << timestamp() << ":  FFT realified." << endl;
+    }
+
+    debugFile.close();
+
+    return;
+}
