@@ -57,7 +57,7 @@ void spectralFlux(AudioWave &wave, string fileName, string path, bool debug)
         cout << timestamp() << ":  Spectrum Flux Algorithm started..." << endl;
     }
 
-    // Make sure we have an fft to work wiht
+    // Make sure we have an fft to work with
     if (wave.getLeftFFTSize() == 0)
     {
         fft(wave, fileName, path, debug);
