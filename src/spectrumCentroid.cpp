@@ -10,6 +10,7 @@
 // Copied spectrum flux algorithm source file - A.R. 8 Apr 2020
 // Replaced all instances of "Flux" with "Centroid" - A.R. 9 Apr 2020
 // Changed the code to be a Spectral Centroid algorithm - A.R. 11 Apr 2020
+// Reviewed code and edited to use the new helper function - A.R. 20 Apr 2020
 
 /**************************************End Change Log ***************************/
 
@@ -41,8 +42,8 @@ void spectralCentroid(AudioWave &wave, string fileName, string path, bool debug)
     double scNumerator;                  //* Will be used during calculation.
     double scDenominator;                //*/
 
-    vector<double> magT;                 // A vector of datapoint magnitudes from a single channel.
-    vector<vector<double> > mags;        // A vector of both the right and left magnitude channels.
+    vector<double> realT;                // The Fourier Transform magnitudes of a single channel.
+    vector<vector<double> > reals;       // A vector of both the right and left fft magnitudes.
     bool nt;                             // A flag to control the part of the summation being worked.
 
     sCNumerator = 0;
@@ -50,7 +51,7 @@ void spectralCentroid(AudioWave &wave, string fileName, string path, bool debug)
     nt = 0;
     
     for (int i = 0; i < 2; i++)
-        mags.push_back(magT);
+        reals.push_back(realT);
 
     outFile.open((path + "/" + fileName).c_str(), ios::app);
     outFile << timestamp() << ":  Spectrum Centroid Algorithm started..." << endl;
@@ -64,7 +65,13 @@ void spectralCentroid(AudioWave &wave, string fileName, string path, bool debug)
         cout << timestamp() << ":  Spectrum Centroid Algorithm started..." << endl;
     }
 
-    magnitude(wave, mags, fileName, path, debug);
+    // Make sure we have an fft to work with
+    if (wave.getLeftFFTSize() == 0)
+    {
+        fft(wave, fileName, path, debug);
+    }
+
+    realify(wave, reals, fileName, path, debug);
 
     // Calculate the spectral centroid of all channels in audio signal
     for (int i = 0; i < wave.getChannels(); i++)
@@ -107,17 +114,17 @@ void spectralCentroid(AudioWave &wave, string fileName, string path, bool debug)
             debugDenominator << "( ";
         }
 
-        for (int j = 0; j < mags[i].size() - 1; j++)
+        for (int j = 0; j < reals[i].size() - 1; j++)
         {
-            sCNumerator += mags[i].at(j) * i;  
-            sCDenominator += mags[i].at(j);
+            sCNumerator += reals[i].at(j) * j;  
+            sCDenominator += reals[i].at(j);
 
             if (debug)
             {
-                debugFile << "(" << mags[i].at(j) << " * " << i << ") ";
-                debugDenominator << "(" << mags[i].at(j) << ")";
+                debugFile << "(" << reals[i].at(j) << " * " << i << ")";
+                debugDenominator << "(" << reals[i].at(j) << ")";
 
-                if (j != mags[i].size() - 1)
+                if (j != reals[i].size() - 1)
                     debugFile << " + ";
                     debugDenominator << " + ";
 
@@ -135,7 +142,7 @@ void spectralCentroid(AudioWave &wave, string fileName, string path, bool debug)
         {
             debugDenominator << " )";
             debdenom = debugDenominator.str();
-            debugFile << " ) / " << debugDenominator;
+            debugFile << " ) / " << debdenom;
             debugFile << endl << "]" << endl << endl;
         }
 
