@@ -128,6 +128,9 @@ Completed Tasks (04/05/2020 - 04/11/2020)
 	- Generated sample plots and uploaded them in an archive to the repo (Plots.zip).
 	- Updated the README.md file to reflect what is being done / was done by each person during the project.
 
+- Alex Reno
+	- Mostly implemented Spectrum Centroid [added to this file retroactively as of April 20]
+
 04/12/2020 - 04/18/2020
 
 Completed Tasks
@@ -146,6 +149,7 @@ Completed Tasks
 
 - Alex Reno
 	- Figured out what part of Spectral Centroid I didn't understand
+	- Finished implementing SpectrumCentroid
 
 TO DO LIST
 
