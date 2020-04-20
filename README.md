@@ -140,6 +140,13 @@ Completed Tasks
 	- Enabled plotting for all existing algorithms.
 	- Updated the Developer Handbook to reflect current codebase.
 
+04/19/2020 - 04/25/2020
+
+Completed Tasks
+
+- Alex Reno
+	- Figured out what part of Spectral Centroid I didn't understand
+
 TO DO LIST
 
 - Add a working version of cepstrum algorithm to DeepSample
