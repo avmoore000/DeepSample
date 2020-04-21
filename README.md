@@ -150,10 +150,18 @@ Completed Tasks
 - Alex Reno
 	- Figured out what part of Spectral Centroid I didn't understand
 	- Finished implementing SpectrumCentroid
+- Andrew Moore
+	- Started rough draft of research paper
+	- Reworked abstract 
+	- Wrote introduction for research paper
+	- Wrote the background for zero crossing and spectral flux in research paper.
+	- Created block diagram for general audio segmentation algorithm and placed in introduction section of paper.
+	- Created block diagram for Deep Sample and placed in introduction section of paper.
+	- Started writing research paper
+	- Updated user manual with spectrum centroid documentation.
 
 TO DO LIST
 
 - Add a working version of cepstrum algorithm to DeepSample
 - Start training ANNI
 - Make a powerpoint deck explaining the process for use in presentations
-- Start rough draft of paper for project
