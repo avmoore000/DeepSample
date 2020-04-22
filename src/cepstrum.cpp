@@ -26,11 +26,11 @@ using namespace std;
 // Outputs:
 //    finalCepstrum - Returns the inverse fourier transform of the wave in the form of a vector of real numbers.
 // Purpose:  Perform the cepstrum segmentation algorithm on the given audio sample, according to the real cepstrum equation.
-vector<double> rCepstrum(vector<complex<double> >& raw, double windowSize)
+vector<double> rCepstrum(vector<double>& raw, double windowSize)
 {
 
-    //vector<double> finalCepstrum = abs(log(inverseFT(windowHamming(raw, windowSize),"",0)));
-    //return finalCepstrum;
+    vector<double> finalCepstrum = abs(log(inverseFT(windowHamming(raw, windowSize),"",0)));
+    return finalCepstrum;
 }
 
 // Function getSign
@@ -59,12 +59,11 @@ bool getSign(complex<double> data, bool debug, string outputName)
 // Outputs:
 //    cepstrumHamming - A vector of doubles transformed by the hamming window.
 // Purpose:  Create the hamming window for use in the cepstrum algorithm.
-vector<double> windowHamming(vector<complex<double> > rawCepstrum, double windowSize)
+vector<double> windowHamming(vector<double>& raw, double windowSize)
 {
     vector<double> cepstrumHamming;
-    //Runs through loop to take real part of rawCepstrum and push
-    for(int i = 0; i < rawCepstrum.size(); ++i){
-        cepstrumHamming.push_back(real(rawCepstrum.at(i)));
+    //Runs through loop to apply hamming window
+    for(int i = 0; i < raw.size(); ++i){
         //Applies the hamming window to every real part of the element in the vector list
         cepstrumHamming.at(i) = 0.54 - 0.46 * cos((2 * M_PI * cepstrumHamming.at(i)) / windowSize - 1.0);      
     }
