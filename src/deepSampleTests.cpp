@@ -83,7 +83,8 @@ int main(int argc, char** argv)
         cout << "\t     3: Run only zero-cross test." << endl;
         cout << "\t     4: Run only spectrum flux test." << endl;
         cout << "\t     5: Run only cepstrum test." << endl;
-        cout << "\t     6: Run only ANNI test." << endl;
+        cout << "\t     6: Run only spectrum centroid test." << endl;
+        cout << "\t     7: Run only ANNI test." << endl;
         cout << endl;
 	return 0;
     }
@@ -257,7 +258,7 @@ int main(int argc, char** argv)
 
             break;
         }
-        case 7:        // Run spectrum centroid test
+        case 6:        // Run spectrum centroid test
         {
             if (debug)
             {
@@ -281,7 +282,7 @@ int main(int argc, char** argv)
 
             break;
         }
-        case 6:  // Run ANNI test (runs all tests)
+        case 7:  // Run ANNI test (runs all tests)
         case 0:
         {
             // Do the prep work for ANNI
