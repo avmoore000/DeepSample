@@ -136,7 +136,7 @@ void AudioWave::setSourceFiles()
 
     outFile <<  spectrumFData[0];
 
-    if (channels == 2)
+    if (channels == 2)
         outFile << " " << spectrumFData[1];
 
     outFile << endl;
