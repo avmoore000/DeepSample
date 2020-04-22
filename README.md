@@ -150,6 +150,7 @@ Completed Tasks
 - Alex Reno
 	- Figured out what part of Spectral Centroid I didn't understand
 	- Finished implementing SpectrumCentroid
+	- Implemented the test for Spectrum Centroid
 - Andrew Moore
 	- Started rough draft of research paper
 	- Reworked abstract 
