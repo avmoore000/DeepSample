@@ -155,11 +155,12 @@ Completed Tasks
 	- Started rough draft of research paper
 	- Reworked abstract 
 	- Wrote introduction for research paper
-	- Wrote the background for zero crossing and spectral flux in research paper.
+	- Wrote the background for zero crossing, spectral flux, and Deep Sample in research paper.
 	- Created block diagram for general audio segmentation algorithm and placed in introduction section of paper.
 	- Created block diagram for Deep Sample and placed in introduction section of paper.
 	- Started writing research paper
 	- Updated user manual with spectrum centroid documentation.
+	- Updated Makefile to include spectrumCentroid in the build.
 
 TO DO LIST
 
