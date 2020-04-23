@@ -39,8 +39,8 @@ void spectralCentroid(AudioWave &wave, string fileName, string path, bool debug)
     string debdenom;                     // The contents of debugDenominator to be combined into debugFile.
 
     double sCentroid;                    //*
-    double scNumerator;                  //* Will be used during calculation.
-    double scDenominator;                //*/
+    double sCNumerator;                  //* Will be used during calculation.
+    double sCDenominator;                //*/
 
     vector<double> realT;                // The Fourier Transform magnitudes of a single channel.
     vector<vector<double> > reals;       // A vector of both the right and left fft magnitudes.
