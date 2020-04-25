@@ -28,6 +28,7 @@ using namespace std;
 // Purpose:  Perform the cepstrum segmentation algorithm on the given audio sample, according to the real cepstrum equation.
 vector<double> rCepstrum(vector<double>& raw, double windowSize)
 {
+<<<<<<< HEAD
     vector<double> realCepstrum;
     for(int i = 0; i < raw.size(); ++i){
 
@@ -36,6 +37,17 @@ vector<double> rCepstrum(vector<double>& raw, double windowSize)
 
     }
     return realCepstrum;
+=======
+    vector<double> rawWave;
+
+    rawWave = raw; 
+
+    inverseFT(windowHamming(rawWave, windowSize), "", 0);
+
+    vector<double> finalCepstrum = abs(log(rawWave));
+
+    return finalCepstrum;
+>>>>>>> f69189a65d944d7deda1d338be970858dd10e1ab
 }
 
 // Function getSign

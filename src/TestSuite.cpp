@@ -13,6 +13,7 @@
 // Edited all tests to use the AudioWave object. - A.M. 30 Mar 2020
 // Added testing for audio loading and the fft algorithm - A.M. 30 Mar 2020
 // Standardized order of function arguments.  - A.M. 30 Mar 2020
+// Added testing for Spectrum Centroid. -A.R. 22 Apr 2020
 
 /**************************************End Change Log ***************************/
 
@@ -292,6 +293,64 @@ void cepstrumTest(AudioWave &wave, string fileName, string path, bool debug)
         debugFile << "Cepstrum Test Suite complete." << endl;
         debugFile.close();
     }
+
+    return;
+}
+
+// Function spectrumCentroidTest
+// Inputs:
+//       &wave - An AudioWave object.
+//       fileName - A string indicating the file for data output.
+//       path - A string indicating the path for output files.
+//       debug - A boolean flag that controls the debug output.
+// Outputs:  None
+// Purpose:  This function tests the spectrum centroid algorithm.
+void spectrumCentroidTest(AudioWave &wave, string fileName, string path, bool debug)
+{
+    ofstream outFile;                  // A stream pointer for data output.
+    ofstream debugFile;                // A stream pointer for debug output.
+
+    outFile.open((path + "/" + fileName).c_str(), ios::app);
+    outFile << timestamp() << ":  Starting Spectrum Centroid Test..." << endl;
+    outFile.close();
+
+    if (debug)
+    {
+        debugFile.open((path + "/spectrumCentroidTestDebug.txt").c_str(), ios::app);
+        debugFile << "Spectrum Centroid Test Suite:  " << endl << endl;
+    }
+
+    auto start = high_resolution_clock::now();
+    spectralCentroid(wave, fileName, path, debug);
+    auto stop = high_resolution_clock::now();
+    auto duration = duration_cast<microseconds>(stop - start);
+
+    outFile.open((path + "/" + fileName).c_str(), ios::app);
+    outFile << timestamp() << ":  Spectrum Centroid Test completed in " << duration.count() << " us." << endl;
+    outFile << endl << "\tSpectrum Centroid Results:" << endl;
+    outFile << endl << "\tTotal Vector Size:  " << wave.getSCSize() << endl;
+    outFile << "\tLeft Channel:  " << wave.getSpectrumCDataPoint(0) << endl;
+ 
+    if (wave.getChannels() == 2)
+        outFile << "\tRight Channel:  " << wave.getSpectrumCDataPoint(1) << endl;
+
+    outFile << endl;
+
+    outFile.close();
+
+    if (debug)
+    {
+        debugFile << "Spectrum Centroid Test Results:" << endl;
+        debugFile << "Left Channel:  " << wave.getSpectrumCDataPoint(0) << endl;
+
+        if (wave.getChannels() == 2)
+            debugFile << "Right Channel:  " << wave.getSpectrumCDataPoint(1) << endl;
+
+        debugFile << endl << "Spectrum Centroid test complete." << endl;
+
+        debugFile.close();
+    }
+
 
     return;
 }

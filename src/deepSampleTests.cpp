@@ -16,6 +16,7 @@
 // Added in the chrono library for tracking completion time of algorithms - A.M. - Feb 26 2020
 // Added seperate vectors for left and right waves - A.M. - Feb 27 2020
 // Modified the program to use the new AudioWave class - A.M. - 29 Mar 2020
+// Added the Spectrum Centroid test - A.R. - 22 Apr 2020
 /*!*************************************End Change Log ***************************/
 
 /*!*************************************To Do List ******************************/
@@ -82,7 +83,8 @@ int main(int argc, char** argv)
         cout << "\t     3: Run only zero-cross test." << endl;
         cout << "\t     4: Run only spectrum flux test." << endl;
         cout << "\t     5: Run only cepstrum test." << endl;
-        cout << "\t     6: Run only ANNI test." << endl;
+        cout << "\t     6: Run only spectrum centroid test." << endl;
+        cout << "\t     7: Run only ANNI test." << endl;
         cout << endl;
 	return 0;
     }
@@ -256,7 +258,31 @@ int main(int argc, char** argv)
 
             break;
         }
-        case 6:  // Run ANNI test (runs all tests)
+        case 6:        // Run spectrum centroid test
+        {
+            if (debug)
+            {
+                cout << timestamp() << ":  Doing prep work for Spectrum Centroid Test..." << endl;
+                cout << timestamp() << ":  Loading Audio..." << endl;
+            }
+          
+                loadAudio(waves[0], inputFile, "", "", channels, 1, filePath, debug);
+
+            if (debug)
+            {
+                cout << timestamp() << ":  Audio loaded." << endl;
+                cout << timestamp() << ":  Prep work complete." << endl;
+                cout << timestamp() << ":  Starting Spectrum Centroid Test..." << endl;
+            }
+
+            spectrumCentroidTest(waves[0], outputFile, filePath, debug);
+
+            if (debug)
+                cout << timestamp() << ":  Spectrum Centroid Test complete." << endl;
+
+            break;
+        }
+        case 7:  // Run ANNI test (runs all tests)
         case 0:
         {
             // Do the prep work for ANNI
@@ -308,6 +334,15 @@ int main(int argc, char** argv)
             if (debug)
             {
                 cout << timestamp() << ":  Cepstrum generation complete." << endl;
+                cout << timestamp() << ":  Generating Spectrum Centroid..." << endl;
+            }
+
+            // Generate spectrum centroid
+            spectrumCentroidTest(waves[0], outputFile, filePath, debug);
+
+            if (debug)
+            {
+                cout << timestamp() << ":  Spectrum Centroid generation complete." << endl;
                 cout << timestamp() << ":  Prep work complete." << endl;
                 cout << timestamp() << ":  Starting ANNI Test..." << endl;
             }

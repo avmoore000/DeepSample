@@ -36,18 +36,19 @@ anni:
 	make ANN;
 
 # Just make the test binary
-tests: src/deepSampleTests.o src/FourierTransform.o src/zeroCrossing.o src/spectrumFlux.o src/cepstrum.o src/audioHandler.o src/Utilities.o src/ANN.o src/TestSuite.o src/AudioWave.o
-	$(CC) $(CFLAGS) -o DeepSampleTests src/deepSampleTests.o src/FourierTransform.o src/zeroCrossing.o src/spectrumFlux.o src/cepstrum.o src/audioHandler.o src/Utilities.o src/ANN.o src/TestSuite.o src/AudioWave.o $(LIBS)
+tests: src/deepSampleTests.o src/FourierTransform.o src/zeroCrossing.o src/spectrumFlux.o src/spectrumCentroid.o src/cepstrum.o src/audioHandler.o src/Utilities.o src/ANN.o src/TestSuite.o src/AudioWave.o
+	$(CC) $(CFLAGS) -o DeepSampleTests src/deepSampleTests.o src/FourierTransform.o src/zeroCrossing.o src/spectrumFlux.o src/spectrumCentroid.o src/cepstrum.o src/audioHandler.o src/Utilities.o src/ANN.o src/TestSuite.o src/AudioWave.o $(LIBS)
 	$(RM) src/*.o;
 
 # Just make the sample binary, first making sure the source files aren't stail.
-Samples: src/sampleGenerator.o src/FourierTransform.o src/zeroCrossing.o src/spectrumFlux.o src/cepstrum.o src/audioHandler.o src/Utilities.o src/AudioWave.o 
-	$(CC) $(CFLAGS) -o SampleGenerator src/sampleGenerator.o src/FourierTransform.o src/zeroCrossing.o src/spectrumFlux.o src/cepstrum.o src/audioHandler.o src/Utilities.o src/AudioWave.o $(LIBS)
+Samples: src/sampleGenerator.o src/FourierTransform.o src/zeroCrossing.o src/spectrumFlux.o src/spectrumCentroid.o src/cepstrum.o src/audioHandler.o src/Utilities.o src/AudioWave.o 
+	$(CC) $(CFLAGS) -o SampleGenerator src/sampleGenerator.o src/FourierTransform.o src/zeroCrossing.o src/spectrumFlux.o src/spectrumCentroid.o src/cepstrum.o src/audioHandler.o src/Utilities.o src/AudioWave.o $(LIBS)
 	$(RM) src/*.o
 
 # Make ANNI binary
 ANN: src/anniDriver.o src/ANN.o src/AudioWave.o src/Utilities.o 
 	$(CC) $(CFLAGS) -o ANNI src/anniDriver.o src/ANN.o src/AudioWave.o src/Utilities.o $(LIBS)
+	$(RM) src/*.o
 
 # Clean up the directory
 clean:
@@ -74,6 +75,9 @@ zeroCrossing.o: src/zeroCrossing.cpp include/zeroCrossing.h
 
 spectrumFlux.o: src/spectrumFlux.cpp include/spectrumFlux.h
 	$(CC) $(CFLAGS) -c src/spectrumFlux.cpp
+
+spectrumCentroid.o: src/sprectrumCentroid.cpp include/spectrumCentroid.h
+	$(CC) $(CFLAGS) -c src/spectrumCentroid.cpp
 
 cepstrum.o: src/cepstrum.cpp include/cepstrum.h
 	$(CC) $(CFLAGS) -c src/cepstrum.cpp
