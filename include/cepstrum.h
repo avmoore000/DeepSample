@@ -34,7 +34,7 @@ using namespace std;
 vector<double> Rcepstrum(vector<complex<double> >&, double);
 
 // Helper utilities
-vector<double> windowHamming(vector<complex<double> >, double);
+vector<double> windowHamming(vector<double>&, double);
 bool getSign(complex<double>, bool, string);
 
 #endif
