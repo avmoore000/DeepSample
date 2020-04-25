@@ -31,10 +31,10 @@ using namespace std;
 #define cepstrum
 
 // Audio segmentation algorithms
-vector<double> Rcepstrum(vector<complex<double> >&, double);
+vector<double> Rcepstrum(vector<double>&, double);
 
 // Helper utilities
-vector<double> windowHamming(vector<double>&, double);
+double windowHamming(double, double);
 bool getSign(complex<double>, bool, string);
 
 #endif

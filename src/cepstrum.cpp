@@ -28,26 +28,22 @@ using namespace std;
 // Purpose:  Perform the cepstrum segmentation algorithm on the given audio sample, according to the real cepstrum equation.
 vector<double> rCepstrum(vector<double>& raw, double windowSize)
 {
-<<<<<<< HEAD
+    vector<double> tempRaw;
     vector<double> realCepstrum;
-    for(int i = 0; i < raw.size(); ++i){
 
-        //pushes transformed element, based on cepstrum equation, to a new vector list
-        realCepstrum.push_back(abs(log(inverseFT(windowHamming(raw.at(i), windowSize),"",0)))); 
+    for(int i = 0; i < raw.size(); ++i)
+    {
+        tempRaw.push_back(windowHamming(raw.at(i), windowSize)); 
+    }
+    
+    inverseFT(tempRaw, "", 0);
 
+    for (int i = 0; i < tempRaw.size(); ++i) 
+    {
+	// pushes transformed element, based on cepstrum equation, to a new vector list.
+        realCepstrum.push_back(abs(log(tempRaw.at(i))));    
     }
     return realCepstrum;
-=======
-    vector<double> rawWave;
-
-    rawWave = raw; 
-
-    inverseFT(windowHamming(rawWave, windowSize), "", 0);
-
-    vector<double> finalCepstrum = abs(log(rawWave));
-
-    return finalCepstrum;
->>>>>>> f69189a65d944d7deda1d338be970858dd10e1ab
 }
 
 // Function getSign
@@ -81,7 +77,7 @@ double windowHamming(double rawElement, double windowSize)
     double cepstrumHamming;
     
         //Applies the hamming window to every real part of the element in the vector list
-        cepstrumHamming = 0.54 - 0.46 * cos((2 * M_PI * rawElement / windowSize - 1.0);      
+        cepstrumHamming = 0.54 - 0.46 * cos((2 * M_PI * rawElement / windowSize - 1.0));      
 
     return cepstrumHamming;
 }
