@@ -161,6 +161,10 @@ Completed Tasks
 	- Started writing research paper
 	- Updated user manual with spectrum centroid documentation.
 	- Updated Makefile to include spectrumCentroid in the build.
+- Hue Truong
+	- Revised statistical testing procedures for algorithm comparisons.
+	- Revised statistical testing procedures for DeepSample accuracy.
+	- Finished cepstrum part in research paper.
 
 TO DO LIST
 
