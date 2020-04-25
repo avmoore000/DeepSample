@@ -24,13 +24,18 @@ using namespace std;
 //    raw - A vector of numbers describing the audio waveform.
 //    windowSize - size of hamming window
 // Outputs:
-//    finalCepstrum - Returns the inverse fourier transform of the wave in the form of a vector of real numbers.
+//    realCepstrum - Returns the inverse fourier transform of the wave in the form of a vector of real numbers.
 // Purpose:  Perform the cepstrum segmentation algorithm on the given audio sample, according to the real cepstrum equation.
 vector<double> rCepstrum(vector<double>& raw, double windowSize)
 {
+    vector<double> realCepstrum;
+    for(int i = 0; i < raw.size(); ++i){
 
-    vector<double> finalCepstrum = abs(log(inverseFT(windowHamming(raw, windowSize),"",0)));
-    return finalCepstrum;
+        //pushes transformed element, based on cepstrum equation, to a new vector list
+        realCepstrum.push_back(abs(log(inverseFT(windowHamming(raw.at(i), windowSize),"",0)))); 
+
+    }
+    return realCepstrum;
 }
 
 // Function getSign
@@ -54,18 +59,17 @@ bool getSign(complex<double> data, bool debug, string outputName)
 
 // Function windowHamming
 // Inputs:
-//    rawCepstrum - A vector of complex numbers to be used to create the hamming window.
+//    rawElement - A single element of a vector to be transformed through the hamming window.
 //    windowSize - Size of the hamming window
 // Outputs:
 //    cepstrumHamming - A vector of doubles transformed by the hamming window.
 // Purpose:  Create the hamming window for use in the cepstrum algorithm.
-vector<double> windowHamming(vector<double>& raw, double windowSize)
+double windowHamming(vector<double>& rawElement, double windowSize)
 {
-    vector<double> cepstrumHamming;
-    //Runs through loop to apply hamming window
-    for(int i = 0; i < raw.size(); ++i){
+    double cepstrumHamming;
+    
         //Applies the hamming window to every real part of the element in the vector list
-        cepstrumHamming.at(i) = 0.54 - 0.46 * cos((2 * M_PI * cepstrumHamming.at(i)) / windowSize - 1.0);      
-    }
+        cepstrumHamming = 0.54 - 0.46 * cos((2 * M_PI * rawElement / windowSize - 1.0);      
+
     return cepstrumHamming;
 }
