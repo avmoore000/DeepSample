@@ -76,7 +76,7 @@ bool getSign(complex<double> data, bool debug, string outputName)
 // Outputs:
 //    cepstrumHamming - A vector of doubles transformed by the hamming window.
 // Purpose:  Create the hamming window for use in the cepstrum algorithm.
-double windowHamming(vector<double>& rawElement, double windowSize)
+double windowHamming(double rawElement, double windowSize)
 {
     double cepstrumHamming;
     
