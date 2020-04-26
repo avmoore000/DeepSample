@@ -151,6 +151,7 @@ Completed Tasks
 	- Figured out what part of Spectral Centroid I didn't understand
 	- Finished implementing SpectrumCentroid
 	- Implemented the test for Spectrum Centroid
+
 - Andrew Moore
 	- Started rough draft of research paper
 	- Reworked abstract 
@@ -158,16 +159,24 @@ Completed Tasks
 	- Wrote the background for zero crossing, spectral flux, and Deep Sample in research paper.
 	- Created block diagram for general audio segmentation algorithm and placed in introduction section of paper.
 	- Created block diagram for Deep Sample and placed in introduction section of paper.
-	- Started writing research paper
 	- Updated user manual with spectrum centroid documentation.
 	- Updated Makefile to include spectrumCentroid in the build.
+
 - Hue Truong
 	- Revised statistical testing procedures for algorithm comparisons.
 	- Revised statistical testing procedures for DeepSample accuracy.
 	- Finished cepstrum part in research paper.
 
+4/26/2020 - 5/2/2020
+
+Completed Tasks
+
+-  Andrew Moore
+	- Research Big-O analysis for analyzing algorithm performance.
+	- Generated final data set for training DeepSample
+	
+	
 TO DO LIST
 
-- Add a working version of cepstrum algorithm to DeepSample
 - Start training ANNI
 - Make a powerpoint deck explaining the process for use in presentations
