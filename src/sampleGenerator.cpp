@@ -417,7 +417,7 @@ int main(int argc, char** argv)
 
                 if (debug)
                 {
-                    cout << "Sample [" << (i + 1) << "]" << endl;
+                    cout << "Sample [" << (i + 1) << " / " << (audioNames.size()) << "]" << endl;
                     cout << timestamp() << ":  Performing analysis of " << scrubbedAudioNames[i] << endl;
                     cout << timestamp() << ":  Loading audio file..." << endl;
                 }
