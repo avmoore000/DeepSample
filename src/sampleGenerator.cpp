@@ -484,11 +484,47 @@ int main(int argc, char** argv)
                     cout << timestamp() << ":  Performing Cepstrum..." << endl;
                 }
 
+		vector<double> rawL;
+		vector<double> rawR;
+		vector<double> cepstrumResult;
+                vector<complex<double> > tempV;
+
+		tempV = wave.getLeftChannel();
+
+		for (int i = 0; i < tempV.size(); i++)
+                {
+                    rawL.push_back(real(tempV[i]));
+		}
+
+		if (wave.getChannels() == 2)
+                {
+                    tempV = wave.getRightChannel();
+
+		    for (int i = 0; i < tempV.size(); i++)
+	            {
+		        rawR.push_back(real(tempV[i]));
+		    }
+		}
+
                 start = high_resolution_clock::now();
-                // cepstrum()
+                cepstrumResult = rCepstrum(rawL, 2.0);
                 stop = high_resolution_clock::now();
                 auto cDuration = duration_cast<microseconds>(stop - start);
 
+		for (int i = 0; i < cepstrumResult.size(); i++)
+		    wave.pushCepstrum(0,cepstrumResult[i]);
+
+		if (wave.getChannels() == 2)
+		{
+		    cepstrumResult.clear();
+		    start = high_resolution_clock::now();
+		    cepstrumResult = rCepstrum(rawR, 2.0);
+		    stop = high_resolution_clock::now();
+		    cDuration += duration_cast<microseconds>(stop - start);
+
+		    for (int i = 0; i < cepstrumResult.size(); i++)
+		        wave.pushCepstrum(1, cepstrumResult[i]);
+		}
                 outFile.open((path + "/" + fileName).c_str(), ios::app);
                 outFile << timestamp() << ":  Cepstrum complete." << endl;
                 outFile << timestamp() << ":  Performing Spectrum Centroid..." << endl;
@@ -501,7 +537,7 @@ int main(int argc, char** argv)
                 }
 
                 start = high_resolution_clock::now();
-                // spectrumCentroid()
+                spectrumCentroid(wave, fileName, path, debug);
                 stop = high_resolution_clock::now();
                 auto SCDuration = duration_cast<microseconds>(stop - start);
 
@@ -740,7 +776,7 @@ int main(int argc, char** argv)
                                 cout << timestamp() << ":  Creating / updating monoSpectrumCentroid database..." << endl;
                             database.open((path + "/Databases/monoSpectrumCentroid.txt").c_str(), ios::app);
                             database << audioName << endl;
-                            //database << wave.getSpectrumCentroidDataPoint(0) << endl << endl;
+                            database << wave.getSpectrumCDataPoint(0) << endl << endl;
                             database.close();
                         }
                         else if (tChannel == 2)
@@ -752,8 +788,8 @@ int main(int argc, char** argv)
 
                             database.open((path + "/Databases/stereoSpectrumCentroid.txt").c_str(), ios::app);
                             database << audioName << endl;
-                            //database << wave.getSpectrumCentroidDataPoint(0) << " "
-                            //         << wave.getSpectrumCentroidDataPoint(1) << endl << endl;
+                            database << wave.getSpectrumCDataPoint(0) << " "
+                                     << wave.getSpectrumCDataPoint(1) << endl << endl;
                             database.close();
                         }
 

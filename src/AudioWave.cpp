@@ -729,6 +729,29 @@ void AudioWave::setYMaximums()
         max.push_back(tMax);
         tMax = 0;
     }
+
+    // Set up max of Real Cepstrum
+    for (int i = 0; i < cepstrumData[0].size(); i++)
+    {
+        if (real(zeroData[i].at(i)) > tMax)
+            tMax = cepstrumData[0].at(i);
+    }
+
+    max.push_back(tMax);
+    tMax = 0;
+
+    if (channels == 2)
+    {
+        for (int i = 0; i < cepstrumData[1].size(); i++)
+        {
+            if (cepstrumData[1].at(i) > tMax) 
+                tMax = cepstrumData[1].at(i);
+        }
+
+        max.push_back(tMax);
+        tMax = 0;
+    }	
+
 }
 
 // Function setYMinimums
@@ -816,6 +839,29 @@ void AudioWave::setYMinimums()
         min.push_back(tMin);
         tMin = 0;
     }
+
+    // Set the y-min for Real Cepstrum
+    
+    for (int i = 0; i < cepstrumData[0].size(); i++)
+    {
+        if ((i == 0) || (cepstrumData[0].at(i) < tMin))
+            tMin = cepstrumData[0].at(i);
+    }
+
+    min.push_back(tMin);
+    tMin = 0;
+
+    if (channels == 0)
+    {
+        for (int i = 0; i < cepstrumData[1].size(); i++)
+        {
+            if ((i == 0) || (cepstrumData[1].at(i) < tMin))
+                tMin = cepstrumData[1].at(i);
+        }
+  
+        min.push_back(tMin);
+        tMin = 0;
+    }
 }
 
 // Function getYMaximum
@@ -889,7 +935,39 @@ double AudioWave::getYMaximum(int alg, int chan)
                 maxi = spectrumFData[0];
             else if (chan == 2)
                 maxi = spectrumFData[1];
+            else
+                cout << "Invalid channel lookup." << endl;
       
+            break;
+        }
+        case 4:  // Cepstrum data
+        {
+            if (chan == 1)
+            {
+                if (channels == 1)
+                    maxi = max[3];
+                else
+                    maxi = max[6];
+            }
+            else if (chan == 2)
+            {
+                if (channels == 2)
+                    maxi = max[7];
+                else
+                    cout << "Invalid channel lookup." << endl;
+            }
+
+            break;
+        }
+        case 5: // Spectrum Centroid data
+        {
+            if (chan == 1)
+                maxi = spectrumCData[0];
+            else if (chan == 2)
+                maxi = spectrumCData[1];
+            else
+                cout << "Invalid channel lookup." << endl;
+
             break;
         }
         default:
@@ -961,6 +1039,25 @@ double AudioWave::getYMinimum(int alg, int chan)
             {
                 if (channels == 2)
                     mini = min[5];
+                else
+                    cout << "Invalid channel lookup." << endl;
+            }
+
+            break;
+        }
+        case 4: // Real Cepstrum
+        {
+            if (chan == 1)
+            {
+                if (channels == 1)
+                    mini = min[3];
+                else
+                    mini = min[6];
+            }
+            else if (chan == 2)
+            {
+                if (channels == 2)
+                    mini = min[7];
                 else
                     cout << "Invalid channel lookup." << endl;
             }

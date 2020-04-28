@@ -31,7 +31,7 @@ using namespace std;
 #define cepstrum
 
 // Audio segmentation algorithms
-vector<double> Rcepstrum(vector<double>&, double);
+vector<double> rCepstrum(vector<double>&, double);
 
 // Helper utilities
 double windowHamming(double, double);

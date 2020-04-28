@@ -222,18 +222,18 @@ void plotter(AudioWave wave, int graphType, int alg, string fileName, string pat
             graphAlg(wave, filePrefix, 2, fileName, path, debug);
             break;
         }
-        case 4:
+        case 4: // Graph Spectral Flux
         {
             graphAlg(wave, filePrefix, 3, fileName, path, debug);
             break;
         }
-        case 5:
+        case 5: // Graph Real Cepstrum
         {
             graphAlg(wave, filePrefix, 4, fileName, path, debug);
  
             break;
         }
-        case 6:
+        case 6: // Graph Spectrum Centroid
         {
             graphAlg(wave, filePrefix, 5, fileName, path, debug);
 
@@ -360,8 +360,8 @@ void graphAlg(AudioWave wave, string filePrefix, int alg, string fileName, strin
             {
                 yMax.push_back(wave.getYMaximum(3,2));
  
-                if (yMax[0] < 0)
-                    yMin.push_back((yMax[0] - 100));
+                if (yMax[1] < 0)
+                    yMin.push_back((yMax[1] - 100));
                 else
                     yMin.push_back(0);
             }
@@ -369,24 +369,50 @@ void graphAlg(AudioWave wave, string filePrefix, int alg, string fileName, strin
             break;
         }
         case 4: // Graphing cepstrum
-        {/*
+        {
             fullTitle[0] = title + " Left Channel Cepstrum";
             fullTitle[1] = title + " Right Channel Cepstrum";
             fullOutFile[0] = tempOutFile + "/LeftCepstrum.png";
             fullOutFile[1] = tempOutFile + "/RightCepstrum.png";
             sourceFile = wave.getSourceFile(4);
-            ylabel = "Cepstrum";*/
+            ylabel = "Cepstrum";
+	    yMax.push_back(wave.getYMaximum(4,1));
+	    yMin.push_back(wave.getYMinimum(4,1));
+
+	    if (wave.getChannels() == 2)
+            {
+	        yMax.push_back(wave.getYMaximum(4,2));
+		yMin.push_back(wave.getYMinimum(4,2));
+            }
+
             break;
         }
         case 5: // Graphing spectrum centroid
-        {/*
+        {
             fullTitle[0] = title + " Left Channel Spectrum Centroid";
             fullTitle[1] = title + " Right Channel Spectrum Centroid";
             fullOutFile[0] = tempOutFile + "/LeftSpectrumCentroid.png";
             fullOutFile[1] = tempOutFile + "/RightSpectrumCentroid.png";
             sourceFile = wave.getSourceFile(5);
-            ylabel = "Spectrum Centroid";*/
-            break;
+            ylabel = "Spectrum Centroid";
+            yMax.push_back(wave.getYMaximum(5,1));
+
+	    if (yMax[0] < 0)
+	        yMin.push_back((yMax[0] - 100));
+	    else
+                yMin.push_back(0);
+
+	    if (wave.getChannels() == 2)
+            {
+	        yMax.push_back(wave.getYMaximum(5,2));
+
+                if (yMax[1] < 0)
+                    yMin.push_back((yMax[1] - 100));
+		else
+	            yMin.push_back(0);
+            }
+            
+	    break;
         }
         default:
         {
@@ -408,8 +434,7 @@ void graphAlg(AudioWave wave, string filePrefix, int alg, string fileName, strin
     if (debug)
         cout << timestamp() << ":  Plotting " << fullTitle[0] << "..." << endl;
 
-    if ((alg != 4) && (alg != 5))
-        system(plotCommand.c_str());
+    system(plotCommand.c_str());
 
     // Graph the right channel
     if (wave.getChannels() == 2)
@@ -424,8 +449,7 @@ void graphAlg(AudioWave wave, string filePrefix, int alg, string fileName, strin
         if (debug)
             cout << timestamp() << ":  Plotting " << fullTitle[1] << "..." << endl;
 
-        if ((alg != 4) && (alg != 5))
-            system(plotCommand.c_str());
+        system(plotCommand.c_str());
     }
 
     outFile.close();

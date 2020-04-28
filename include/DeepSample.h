@@ -20,6 +20,7 @@
 #include "zeroCrossing.h"
 #include "cepstrum.h"
 #include "spectrumFlux.h"
+#include "spectrumCentroid.h"
 #include "ANN.h"
 #include "Utilities.h"
 

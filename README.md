@@ -173,6 +173,7 @@ Completed Tasks
 
 -  Andrew Moore
 	- Research Big-O analysis for analyzing algorithm performance.
+	- Enabled plotting / sample generation using the Real Cepstrum and Spectrum Centroid implementations provided by Hue and Alex.
 	- Generated final data set for training DeepSample
 	
 	
