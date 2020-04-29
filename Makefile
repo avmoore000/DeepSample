@@ -24,6 +24,10 @@ test:
 #	$(FILES);
 	make tests;
 
+# Make directory test
+directoryTest:
+	make directoryTest;
+
 # Make the SampleGenerator binary
 
 sample: 
@@ -40,6 +44,10 @@ anni:
 tests: src/deepSampleTests.o src/FourierTransform.o src/zeroCrossing.o src/spectrumFlux.o src/spectrumCentroid.o src/cepstrum.o src/audioHandler.o src/Utilities.o src/ANN.o src/TestSuite.o src/AudioWave.o
 	$(CC) $(CFLAGS) -o DeepSampleTests src/deepSampleTests.o src/FourierTransform.o src/zeroCrossing.o src/spectrumFlux.o src/spectrumCentroid.o src/cepstrum.o src/audioHandler.o src/Utilities.o src/ANN.o src/TestSuite.o src/AudioWave.o $(LIBS)
 	$(RM) src/*.o;
+
+# Just make the directory test
+directoryTest: src/directoryTest.o 
+	$(CC) $(CFLAGS) -o directoryTest src/directoryTest.o $(LIBS)
 
 # Just make the sample binary, first making sure the source files aren't stail.
 Samples: src/sampleGenerator.o src/FourierTransform.o src/zeroCrossing.o src/spectrumFlux.o src/spectrumCentroid.o src/cepstrum.o src/audioHandler.o src/Utilities.o src/AudioWave.o 
@@ -95,6 +103,9 @@ anniDriver.o: src/anniDriver.cpp
 
 driver.o: src/driver.cpp
 	$(CC) $(CFLAGS) -c src/driver.cpp
+
+directoryTest.o: src/directoryTest.cpp
+	$(CC) $(CFLAGS) -c directoryTest.cpp $(LIBS)
 
 TestSuite.o: src/TestSuite.cpp include/TestSuite.h
 	$(CC) $(CFLAGS) -c src/TestSuite.cpp
