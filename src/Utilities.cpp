@@ -389,8 +389,6 @@ void graphAlg(AudioWave wave, string filePrefix, int alg, string fileName, strin
         }
         case 5: // Graphing spectrum centroid
         {
-            cout << "Spectrum Centroid is not working." << endl;
-           /*
             fullTitle[0] = title + " Left Channel Spectrum Centroid";
             fullTitle[1] = title + " Right Channel Spectrum Centroid";
             fullOutFile[0] = tempOutFile + "/LeftSpectrumCentroid.png";
@@ -413,7 +411,7 @@ void graphAlg(AudioWave wave, string filePrefix, int alg, string fileName, strin
 		else
 	            yMin.push_back(0);
             }
-         */   
+            
 	    break;
         }
         default:
@@ -427,7 +425,7 @@ void graphAlg(AudioWave wave, string filePrefix, int alg, string fileName, strin
  
     xlabel = "Left Channel";
 
-    if (alg != 5)
+    //if (alg != 5)
         generateScript(alg,fullTitle[0], xlabel, ylabel, yMin[0], yMax[0], fullOutFile[0], sourceFile, 1);
 
     outFile.open((path + "/" + fileName).c_str(), ios::app);
@@ -443,7 +441,7 @@ void graphAlg(AudioWave wave, string filePrefix, int alg, string fileName, strin
     {
         xlabel = "Right Channel";
 
-        if (alg != 5)
+      //  if (alg != 5)
             generateScript(alg,fullTitle[1], xlabel, ylabel, yMin[1], yMax[1], fullOutFile[1], sourceFile, 2);
 
         outFile << timestamp() << ":  Plotting " << fullTitle[1] << "..." << endl;

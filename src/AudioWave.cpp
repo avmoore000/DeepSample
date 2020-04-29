@@ -163,18 +163,18 @@ void AudioWave::setSourceFiles()
 
     // Set up the source file for the spectrum centroid
     outFile.close();
-    //outFile.open((dirName + "/srcSCentroid.txt").c_str(), ios::out);
-    //sourceFiles.push_back((dirName + "/srcSCentroid.txt"));
+    outFile.open((dirName + "/srcSCentroid.txt").c_str(), ios::out);
+    sourceFiles.push_back((dirName + "/srcSCentroid.txt"));
 
-    //cout << "spec size = " << spectrumCData.size() << endl;
+    cout << "Spectrum Centroid size = " << spectrumCData.size() << endl;
 
-    //outFile << spectrumCData[0];
+    outFile << spectrumCData[0];
 
-    //if (channels == 2)
-      //  outFile << " " << spectrumCData[1];
+    if (channels == 2)
+        outFile << " " << spectrumCData[1];
 
-    //outFile << endl;
-   // outFile.close();
+    outFile << endl;
+    outFile.close();
 
     return;
 }

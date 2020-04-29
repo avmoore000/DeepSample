@@ -537,7 +537,7 @@ int main(int argc, char** argv)
                 }
 
                 start = high_resolution_clock::now();
-//                spectrumCentroid(wave, fileName, path, debug);
+                spectralCentroid(wave, fileName, path, debug);
                 stop = high_resolution_clock::now();
                 auto SCDuration = duration_cast<microseconds>(stop - start);
 
