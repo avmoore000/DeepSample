@@ -28,7 +28,8 @@ test:
 
 sample: 
 #	$(FILES);
-	make Samples;
+	make Samples;\
+	make driver;
 
 # Make the ANNI binary
 anni:
@@ -44,6 +45,10 @@ tests: src/deepSampleTests.o src/FourierTransform.o src/zeroCrossing.o src/spect
 Samples: src/sampleGenerator.o src/FourierTransform.o src/zeroCrossing.o src/spectrumFlux.o src/spectrumCentroid.o src/cepstrum.o src/audioHandler.o src/Utilities.o src/AudioWave.o 
 	$(CC) $(CFLAGS) -o SampleGenerator src/sampleGenerator.o src/FourierTransform.o src/zeroCrossing.o src/spectrumFlux.o src/spectrumCentroid.o src/cepstrum.o src/audioHandler.o src/Utilities.o src/AudioWave.o $(LIBS)
 	$(RM) src/*.o
+
+# Make driver binary
+driver: src/driver.o 
+	$(CC) $(CFLAGS) -o a.out src/driver.o $(LIBS)
 
 # Make ANNI binary
 ANN: src/anniDriver.o src/ANN.o src/AudioWave.o src/Utilities.o 
@@ -86,7 +91,10 @@ ANN.o: src/ANN.cpp include/ANN.h
 	$(CC) $(CFLAGS) -c src/ANN.cpp
 
 anniDriver.o: src/anniDriver.cpp
-	$(CC) $CFLAGS) -c src/anniDriver.cpp
+	$(CC) $(CFLAGS) -c src/anniDriver.cpp
+
+driver.o: src/driver.cpp
+	$(CC) $(CFLAGS) -c src/driver.cpp
 
 TestSuite.o: src/TestSuite.cpp include/TestSuite.h
 	$(CC) $(CFLAGS) -c src/TestSuite.cpp
