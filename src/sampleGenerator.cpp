@@ -511,7 +511,7 @@ int main(int argc, char** argv)
                 stop = high_resolution_clock::now();
                 auto cDuration = duration_cast<microseconds>(stop - start);
 
-		for (int i = 0; i < cepstrumResult.size(); i++)
+		for (int i = 0; i < cepstrumResult.size()-1; i++)
 		    wave.pushCepstrum(0,cepstrumResult[i]);
 
 		if (wave.getChannels() == 2)
@@ -522,7 +522,7 @@ int main(int argc, char** argv)
 		    stop = high_resolution_clock::now();
 		    cDuration += duration_cast<microseconds>(stop - start);
 
-		    for (int i = 0; i < cepstrumResult.size(); i++)
+		    for (int i = 0; i < cepstrumResult.size()-1; i++)
 		        wave.pushCepstrum(1, cepstrumResult[i]);
 		}
                 outFile.open((path + "/" + fileName).c_str(), ios::app);
@@ -537,7 +537,7 @@ int main(int argc, char** argv)
                 }
 
                 start = high_resolution_clock::now();
-                spectrumCentroid(wave, fileName, path, debug);
+//                spectrumCentroid(wave, fileName, path, debug);
                 stop = high_resolution_clock::now();
                 auto SCDuration = duration_cast<microseconds>(stop - start);
 

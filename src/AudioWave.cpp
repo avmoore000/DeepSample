@@ -77,6 +77,7 @@ void AudioWave::setSourceFiles()
 
     dirName = "temp";
 
+    // Set up the source file for the audio wave
     outFile.open(dirName + "/srcAudioFiles.txt", ios::out);
     sourceFiles.push_back((dirName + "/srcAudioFiles.txt"));
 
@@ -93,7 +94,7 @@ void AudioWave::setSourceFiles()
         outFile << endl;
     }
 
-    // Set up the source file for the left channel FFT
+    // Set up the source file for the  FFT
     outFile.close();
     outFile.open((dirName + "/srcFFT.txt").c_str(), ios::out);
     sourceFiles.push_back((dirName + "/srcFFT.txt"));
@@ -111,7 +112,7 @@ void AudioWave::setSourceFiles()
         outFile << endl;
     }
 
-    // Set up the source file for the left zero cross
+    // Set up the source file for the zero cross
     outFile.close();
     outFile.open((dirName + "/srcZeroCross.txt").c_str(), ios::out);
     sourceFiles.push_back((dirName + "/srcZeroCross.txt"));
@@ -129,7 +130,7 @@ void AudioWave::setSourceFiles()
         outFile << endl;
     }
 
-    // Set up the source file for the left spectrum flux
+    // Set up the source file for the spectrum flux
     outFile.close();
     outFile.open((dirName + "/srcSFlux.txt").c_str(), ios::out);
     sourceFiles.push_back((dirName + "/srcSFlux.txt"));
@@ -141,7 +142,7 @@ void AudioWave::setSourceFiles()
 
     outFile << endl;
 
-    // Set up the source file for the left cepstrum
+    // Set up the source file for the cepstrum
     outFile.close();
     outFile.open((dirName + "/srcCepstrum.txt").c_str(), ios::out);
     sourceFiles.push_back((dirName + "/srcCepstrum.txt"));
@@ -149,6 +150,7 @@ void AudioWave::setSourceFiles()
     for (int i = 0; i < cepstrumData[0].size(); i++)
     {
         outFile << cepstrumData[0].at(i);
+        
 
         if (channels == 2)
         {
@@ -159,10 +161,20 @@ void AudioWave::setSourceFiles()
         outFile << endl;
     }
 
-    // Set up the source file for the left spectrum centroid
+    // Set up the source file for the spectrum centroid
     outFile.close();
-    outFile.open((dirName + "/srcLeftSCentroid.txt").c_str(), ios::out);
-    sourceFiles.push_back((dirName + "/srcSCentroid.txt"));
+    //outFile.open((dirName + "/srcSCentroid.txt").c_str(), ios::out);
+    //sourceFiles.push_back((dirName + "/srcSCentroid.txt"));
+
+    //cout << "spec size = " << spectrumCData.size() << endl;
+
+    //outFile << spectrumCData[0];
+
+    //if (channels == 2)
+      //  outFile << " " << spectrumCData[1];
+
+    //outFile << endl;
+   // outFile.close();
 
     return;
 }
@@ -276,6 +288,7 @@ void AudioWave::pushSpectrumF(double data)
 // Purpose:  Push new data onto the cepstrumData vector.
 void AudioWave::pushCepstrum(int chan, double data)
 {
+    cepstrumData[chan].push_back(data);
     return;
 }
 
@@ -733,7 +746,7 @@ void AudioWave::setYMaximums()
     // Set up max of Real Cepstrum
     for (int i = 0; i < cepstrumData[0].size(); i++)
     {
-        if (real(zeroData[i].at(i)) > tMax)
+        if (cepstrumData[0].at(i) > tMax)
             tMax = cepstrumData[0].at(i);
     }
 
