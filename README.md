@@ -174,7 +174,8 @@ Completed Tasks
 -  Andrew Moore
 	- Research Big-O analysis for analyzing algorithm performance.
 	- Enabled plotting / sample generation using the Real Cepstrum and Spectrum Centroid implementations provided by Hue and Alex.
-	- Finished FFT and Zero Cross sections of the ANN.	
+	- Finished ANN implementation.
+	- Added methods for Zero Cross, Spectrum Flux and the ANN to research paper.	
 	
 TO DO LIST
 
