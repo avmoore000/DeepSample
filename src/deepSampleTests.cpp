@@ -62,7 +62,7 @@ int main(int argc, char** argv)
     {
         cout << endl << endl << "Program Use:  " << endl << endl;
 	cout << "./DeepSample [resultsDirectory] [inputFile] [outputFile] [channels {1,2}]"
-             << endl << "   [debugMode {0,1}] tests{0,1,2,3,4}" << endl << endl;
+             << endl << "   [debugMode {0,1}] tests{0,1,2,3,4,5,6,7}" << endl << endl;
         cout << "\tresultsDirectory:"
              << endl << endl << "\t     User specified directory where results will be stored.  If directory" 
              << endl << "\t     does not exist it will be created" << endl << endl; 

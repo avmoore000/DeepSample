@@ -18,6 +18,7 @@
 #include "../include/ANN.h"
 #include "../include/Utilities.h"
 #include <time.h>
+#include <algorithm>
 
 using namespace std;
 
@@ -37,15 +38,12 @@ void ANNI(int folds, double learnRate, int epochs, int codeBooks, int alg, int c
 {
     ofstream outFile;                         // A stream pointer for data output.
     ofstream debugFile;                       // A stream pointer for debug output.
-    ifstream inFile;                          // A stream pointer for data input.
 
-    string data;                              // A string to hold lines of data.
-    string fileName;                          // A string to hold the name of the input file.
+    string outFileName;                       // Will hold the output file name with the path
 
-    vector<vector<double> > foldedLeftFFT;    // Will hold the leftFFT split into folds
-    vector<vector<double> > foldedRightFFT;   // Will hold the rightFFT split into folds.
-    vector<vector<double> > fftTrainSet;      // Will hold a FFT training set.
-    vector<vector<double> > fftTestSet;       // Will hold a FFT test set.
+    path += "/";
+
+    outFileName = path + "ANNIResults.txt";
 
     if (debug)
     {
@@ -77,157 +75,226 @@ void ANNI(int folds, double learnRate, int epochs, int codeBooks, int alg, int c
     {
         case 0:  // Use all algorithms
         {
+            // Analyze the FFT
+            twoDVectorLVQ("FFT", outFileName, folds, learnRate, epochs, codeBooks, channels, path, debug);
+
+            // Analyze the Zero Cross
+            twoDVectorLVQ("Zero Cross", outFileName, folds, learnRate, epochs, codeBooks, channels, path, debug);
+
+            // Analyze the Cepstrum
+ 
+            // Analyze the Spectrum Flux
+ 
+            // Analyzed the Spectrum Centroid
+
             break;
         }
         case 1:  // Use FFT
         {
-            if (channels == 1)
-            {
-                fileName = path + "Databases/monoFFT.txt";
-
-                outFile.open((path + "ANNIResults.txt").c_str(), ios::app);
-                outFile << timestamp() << "Preparing " << fileName << " with " << folds << " folds..." << endl;
-                outFile.close();
-
-                prepareFolds(folds, 0, channels, fileName, foldedLeftFFT, path, debug);
-            }
-            else if (channels == 2)
-            {
-                fileName= path + "Databases/stereoFFT.txt";
-
-                outFile.open((path + "ANNIResults.txt").c_str(), ios::app);
-                outFile << timestamp() << ":  Preparing Left Channel of " << fileName << " with " 
-                        << folds << " folds..." << endl;
-                outFile.close();
-
-                if (debug)
-                    cout << timestamp() << ":  Preparing Left Channel of " << fileName << " with " 
-                         << folds << " folds..." << endl;
-                
-                prepareFolds(folds, 0, channels, fileName, foldedLeftFFT, path, debug);
-
-                outFile.open((path + "ANNIResults.txt").c_str(), ios::app);
-                outFile << timestamp() << ":  Finished Preparing Left Channel." << endl;
-                outFile << timestamp() << ":  Preparing Right Channel of " << fileName << " with "
-                        << folds << " folds..." << endl;
-                outFile.close();
-
-                if (debug)
-                {
-                    cout << timestamp() << ":  Finished Preparing Left Channel." << endl;
-                    cout << timestamp() << ":  Preparing Right Channel of " << fileName << " with " 
-                         << folds << " folds..." << endl;
-                }
-
-                prepareFolds(folds, 1, channels, fileName, foldedRightFFT, path, debug);
-
-                outFile.open((path + "ANNIResults.txt").c_str(), ios::app);
-                outFile << timestamp() << ":  Finished Preparing Right Channel." << endl;
-                outFile << timestamp() << ":  Performing Learning Vector Quantization on left FFT..." << endl << endl;
-                outFile.close();
-
-                if (debug) 
-                { 
-                    cout << timestamp() << ":  Finished Preparing Right Channel." << endl;
-                    cout << timestamp() << ":  Preparing Learning Vector Quantization on left FFT..." << endl << endl;
-                }
-
-                // Train on the left fold
-                for (int i = 0; i < foldedLeftFFT.size(); i++)
-                {
-
-                    outFile.open((path + "ANNIResults.txt").c_str(), ios::app);
-                    outFile << "\t" << timestamp() << ":  Creating training set for folded left FFT..." << endl;
-                    outFile.close();
-
-                    if (debug)
-                        cout << "\t" << timestamp() << ":  Creating training set for folded left FFT..." << endl;
-
-                    // Create a training set based on the whole set of folds
-                    for (int j = 0; j < foldedLeftFFT.size(); j++)
-                    {
-                        if (j != i)
-                            fftTrainSet.push_back(foldedLeftFFT[j]);
-                    }
-
-                    outFile.open((path + "ANNIResults.txt").c_str(), ios::app);
-                    outFile << "\t" << timestamp() << ":  Training set created." << endl;
-                    outFile.close();
-
-                    if (debug)
-                        cout << "\t" << timestamp() << ":  Training set created." << endl;
-
-                    outFile.open((path + "ANNIResults.txt").c_str(), ios::app);
-                    outFile << "\t" << timestamp() << ":  Creating test set from folded left FFT..." << endl;
-                    outFile.close();
-
-                    if (debug)
-                        cout << "\t" << timestamp() << ":  Creating test set from folded left FFT..." << endl;
-      
-                    for (int j = 0; j < foldedLeftFFT.size(); j++)
-                        fftTestSet.push_back(foldedLeftFFT[j]);
-
-                    outFile.open((path + "ANNIResults.txt").c_str(), ios::app);
-                    outFile << "\t" << timestamp() << ":  Test set created." << endl;
-                    outFile.close();
-
-                    if (debug)
-                        cout << "\t" << timestamp() << ":  Test set created." << endl;
-
-                    // Make a prediction based on the training set
-                    learningVectorQuantization(fftTrainSet, fftTestSet, codeBooks, learnRate, epochs, fileName, path, debug);
-
-                }
-
-                outFile.open((path + "ANNIResults.txt").c_str(), ios::app);
-                outFile << endl << timestamp() << ":  Learning Vector Quantization complete." << endl << endl;
-                outFile.close();
-
-                if (debug)
-                    cout << endl << timestamp() << ":  Learning Vector Quantization complete." << endl << endl;
-            }
+            twoDVectorLVQ("FFT", outFileName, folds, learnRate, epochs, codeBooks, channels, path, debug);
  
             break;
         }
         case 2:  // Use Zero Cross
         {
-            if (channels == 1)
-                inFile.open((path + "/Databases/monoZeroCross.txt").c_str(), ios::in);
-            else if (channels == 2)
-                inFile.open((path + "/Databases/stereoZeroCross.txt").c_str(), ios::in);
+            twoDVectorLVQ("Zero Cross", outFileName, folds, learnRate, epochs, codeBooks, channels, path, debug);
 
             break;
         }
         case 3:  // Use Spectrum Flux
         {
-            if (channels == 1)
-                inFile.open((path + "/Databases/monoSpectrumFlux.txt").c_str(), ios::in);
-            else if (channels == 2)
-                inFile.open((path + "/Databases/stereoSpectrumFlux.txt").c_str(), ios::in);
-
             break;
         }
         case 4:  // Use Cepstrum
         {
-            if (channels == 1)
-                inFile.open((path + "/Databases/monoCepstrum.txt").c_str(), ios::in);
-            else if (channels == 2)
-                inFile.open((path + "/Databases/stereoCepstrum.txt").c_str(), ios::in);
-
             break;
         }
         case 5:  // Use Spectrum Centroid
         {
-            if (channels == 1)
-                inFile.open((path + "/Databases/monoSpectrumCentroid.txt").c_str(), ios::in);
-            else if (channels == 2)
-                inFile.open((path + "/Databases/stereoSpectrumCentroid.txt").c_str(), ios::in);
-
             break;
         }
         default:
         {
             cout << "Invalid algorithm." << endl;
+            break;
+        }
+    }
+
+    return;
+}
+
+// Function twoDVectorLVQ
+// Inputs:
+//       algorithm - A string containing the name of the algorithm being run against.
+//       resultsOutput - A string containing the full path to the output file.
+//       learnRate - A double indicating the learning rate to apply to the algorithm.
+//       folds - An integer indicating the niumber of folds to create from the wave object
+//       epochs - An integer indicating the number of epochs to generate data over
+//       codebooks - An integer indicating the number of codebooks to be used for training / analysis
+//       channels - An integer indicating the number of channels in the audio samples
+//       path - A string containing the location of the output files
+//       debug - A flag that controls debug output.
+// Outputs:
+// Purpose:  Peforms ths LVQ on a two dimensional vector of doubles.
+void twoDVectorLVQ(string algorithm, string resultsOutput, int folds, double learnRate, int epochs, int codeBooks, int channels, string path, bool debug)
+{
+    ofstream outFile;                          // A stream pointer for data output
+    ofstream debugFile;                        // A stream pointer for debug output
+
+    string fileName;                           // Will contain the name of the database file
+   
+    vector<vector<double> > foldedLeft;        // Will hold the left channel split into folds
+    vector<vector<double> > foldedRight;       // Will hold the right channel split into folds
+    vector<vector<double> > trainSet;          // Will hold the training set
+    vector<vector<double> > testSet;           // Will hold the test set
+
+   
+    switch(channels)
+    {
+        case 1:
+        {
+            break;
+        }
+        case 2:
+        {
+            if (algorithm.compare("FFT") == 0)
+                fileName = path + "Databases/stereoFFT.txt";
+            else if (algorithm.compare("Zero Cross") == 0)
+                fileName = path + "Databases/stereoZeroCross.txt";
+
+            outFile.open(resultsOutput, ios::app);
+            outFile << timestamp() << ":  Preparing left channel of " << fileName << " with "
+                    << folds << " folds..." << endl;
+            outFile.close();
+
+            if (debug)
+                cout << timestamp() << ":  Preparing left channel of " << fileName << " with "
+                     << folds << " folds..." << endl;
+
+            prepareFolds(folds, 0, channels, fileName, foldedLeft, path, debug);
+
+            outFile.open(resultsOutput, ios::app);
+            outFile << timestamp() << ":  Finished preparing left channel." << endl;
+            outFile << timestamp() << ":  Preparing right channel of " << fileName << " with "
+                    << folds << " folds..." << endl;
+            outFile.close();
+
+            if (debug)
+            {
+                cout << timestamp() << ":  Finished preparing left channel." << endl;
+                cout << timestamp() << ":  Preparing right channel of " << fileName << " with " 
+                     << folds << " folds..." << endl;
+            }
+
+            prepareFolds(folds, 1, channels, fileName, foldedRight, path, debug);
+
+            outFile.open(resultsOutput, ios::app);
+            outFile << timestamp() << ":  Finished preparing right channel." << endl;
+            outFile.close();
+
+            if (debug)
+                cout << timestamp() << ":  Finished preparing right channel." << endl;
+
+            // Train on the left fold
+            for (int i = 0; i < foldedLeft.size(); i++)
+            {
+                outFile.open(resultsOutput, ios::app);
+                outFile << timestamp() << ":  Creating training set for left " << algorithm << "..." << endl;
+                outFile.close();
+
+                if (debug)
+                    cout << timestamp() << ":  Creating training set for left " << algorithm << "..." << endl;
+
+                genTrainSet(foldedLeft, trainSet, i);
+
+                outFile.open(resultsOutput, ios::app);
+                outFile << timestamp() << ":  Training set created." << endl;
+                outFile << timestamp() << ":  Creating test set from folded left " << algorithm << "..." << endl;
+                outFile.close();
+
+                if (debug)
+                {
+                    cout << timestamp() << ":  Training set created." << endl;
+                    cout << timestamp() << ":  Creating test set from folded left " << algorithm << "..." << endl;
+                }
+
+                genTestSet(foldedLeft, testSet);
+
+                outFile.open(resultsOutput, ios::app);
+                outFile << timestamp() << ":  Test set created." << endl;
+                outFile << timestamp() << ":  Starting Learning Vector Quantization for " << algorithm << "..." << endl;
+                outFile.close();
+
+                if (debug)
+                {
+                    cout << timestamp() << ":  Test set created." << endl;
+                    cout << timestamp() << ":  Starting Learning Vector Quantization for " << algorithm 
+                         << " left channel..." << endl;
+                }
+             
+                // Make prediction based on training set
+                learningVectorQuantization(trainSet, testSet, codeBooks, learnRate, epochs, fileName, path, debug);
+            } // End train left fold loop
+
+            // Clean out vectors for the right fold
+            trainSet.clear();
+            testSet.clear();
+
+            // Train on the right fold
+            for (int i = 0; i < foldedRight.size(); i++)
+            {
+                outFile.open(resultsOutput, ios::app);
+                outFile << timestamp() << ":  Creating training set for right " << algorithm << "..." << endl;
+                outFile.close();
+
+                if (debug)
+                    cout << timestamp() << ":  Creating training set for right " << algorithm << "..." << endl;
+
+                // Create training set from right fold
+                genTrainSet(foldedRight, trainSet, i);
+
+                outFile.open(resultsOutput, ios::app);
+                outFile << timestamp() << ":  Training set created." << endl;
+                outFile << timestamp() << ":  Creating test set from folded right " << algorithm << "..." << endl;
+                outFile.close();
+
+                if (debug)
+                {
+                    cout << timestamp() << ":  Training set created." << endl;
+                    cout << timestamp() << ":  Creating test set from folded right " << algorithm << "..." << endl;
+                }
+
+                // Create test set from right fold
+                genTestSet(foldedRight, testSet);
+
+                outFile.open(resultsOutput, ios::app);
+                outFile << timestamp() << ":  Test set created." << endl;
+                outFile << timestamp() << ":  Starting Learning Vector Quantization for " << algorithm 
+                        << " right channel..." << endl;
+                outFile.close();
+
+                if (debug)
+                {
+                    cout << timestamp() << ":  Test set created." << endl;
+                    cout << timestamp() << ":  Starting Learning Vector Quantization for "<< algorithm  
+                         << " right channel.." << endl;
+                }
+
+                learningVectorQuantization(trainSet, testSet, codeBooks, learnRate, epochs, fileName, path, debug);
+
+                outFile.open(resultsOutput, ios::app);
+                outFile << timestamp() << ":  Learning Vector Quantization complete." << endl;
+                outFile.close();
+
+                if (debug)
+                    cout << timestamp() << ":  Learning Vector Quantization complete." << endl;
+            } // End train right fold loop
+
+            break;
+        }
+        default:
+        {
+            cout << "twoDVectorPrep given unsupported number of channels." << endl;
             break;
         }
     }
@@ -392,7 +459,12 @@ void prepareFolds(int folds, int curChan, int channels, string fileName, vector<
 void learningVectorQuantization(vector<vector<double> > trainSet, vector<vector<double> > testSet, int codeBooks, double learnRate, int epochs, string fileName, string path, bool debug)
 {
     vector<vector<double> > codeBookSet;        // Will hold the set of codebooks for training
+    vector<double> set;                         // Represents a code book vector
     ofstream outFile;                           // A stream pointer for data output
+
+    // Initialize the codeBookSet to be the correct size
+    for (int i = 0; i < trainSet.size(); i++)
+        codeBookSet.push_back(set);
 
     outFile.open((path + "ANNIResults.txt").c_str(), ios::app);
     outFile << "\t" << timestamp() << ":  Training codebooks..." << endl << endl;
@@ -425,8 +497,14 @@ void learningVectorQuantization(vector<vector<double> > trainSet, vector<vector<
 double euclideanDistance(vector<double> row1, vector<double> row2, string path, bool debug)
 {
     double distance;     // Will describe the euclidean distance between the row1 and row2
+    int control;         // The shortest vector will control the loop
 
-    for (int i = 0; i < row1.size(); i++)
+    if (row1.size() < row2.size())
+        control = row1.size();
+    else
+        control = row2.size();
+    
+    for (int i = 0; i < control; i++)
     {
         distance += (row1[i] - row2[i]) * (row1[i] - row2[i]);
     }
@@ -463,7 +541,23 @@ int getBestMatch(vector<vector<float> > knownData, vector<float> testRow, int ch
 // Purpose:  Finds the best match of a piece of audio by comparing its spectral flux to known data.
 int getBestMatch(vector<vector<double> > knownData, vector<double> testRow, string fileName, string path, bool debug)
 {
-    int match;
+    int match;                      // An integer describing which element of the knownData is the BMU
+    vector<double> distances;       // Contains the euclidean distances of the vectors
+    
+    match = 0;
+
+    // Calculate the euclidean distances between the rows
+    for (int i = 0; i < knownData.size(); i++)
+    {
+        distances.push_back(euclideanDistance(knownData[i], testRow, path, debug));
+    }
+
+    // Find the shortest euclidean distance
+    for (int i = 1; i < distances.size(); i++)
+    {
+        if (distances[i] < distances[i-1])
+            match = i;
+    }
 
     return match;
 }
@@ -483,14 +577,17 @@ void randomDatabase(vector<vector<double> > database, vector<vector<double> > &t
     int lowerBound;    // A random number containing the lower boundary of the subset.
     int upperBound;    // A random number containing the upper boundary of the subset.
 
-    records = database.size();
-
-    lowerBound = (rand() % (records - 1)) + 1;
-    upperBound = (rand() % (records - lowerBound)) + lowerBound;
-
-    for (int i = lowerBound; i < upperBound; i++)
+    for (int i = 0; i < database.size(); i++)
     {
-        trainSet.push_back(database[i]);
+        records = database[i].size();
+
+        lowerBound = (rand() % (records - 1)) + 1;
+        upperBound = (rand() % (records - lowerBound)) + lowerBound;
+
+        for (int j = lowerBound; j < upperBound; j++)
+        {
+            trainSet[i].push_back(database[i][j]);
+        }
     }
 
     return;
@@ -499,7 +596,7 @@ void randomDatabase(vector<vector<double> > database, vector<vector<double> > &t
 // Function trainCodeBooks
 // Inputs:
 //       database - A vector containing known data points for generating the training set
-//       trainSet - A vector that will contain the subset of training data for comparisons
+//       codeBookSet - A vector that will contain the subset of training data for comparisons
 //       nBooks - An integer describing the number of codebooks to generate
 //       lRate - A double describing the learning rate
 //       epochs - An integer describing the number of learning epochs
@@ -508,7 +605,7 @@ void randomDatabase(vector<vector<double> > database, vector<vector<double> > &t
 //       debug - A flag controlling the debug output.
 // Output: None
 // Purpose:  This function is used to generate the number of specified codebooks for running the algorithm.
-void trainCodeBooks(vector<vector<double> > database, vector<vector<double> > &trainSet,int nBooks, double lRate, int epochs, string fileName,string path, bool debug)
+void trainCodeBooks(vector<vector<double> > database, vector<vector<double> > &codeBookSet,int nBooks, double lRate, int epochs, string fileName,string path, bool debug)
 {
     double rate;        // The learning rate of the current epoch
     double error;       // Used to calculate the error rate in the learning
@@ -532,7 +629,7 @@ void trainCodeBooks(vector<vector<double> > database, vector<vector<double> > &t
     // Generate the codebooks
     for (int i = 0; i < nBooks; i++)
     {
-        randomDatabase(database, trainSet, path, debug);
+        randomDatabase(database, codeBookSet, path, debug);
     }
 
     outFile.open((path + "ANNIResults.txt").c_str(), ios::app);
@@ -549,33 +646,38 @@ void trainCodeBooks(vector<vector<double> > database, vector<vector<double> > &t
     // Train the codebooks over the specified number of epochs
     for (int i = 1; i < (epochs+1); i++)
     {
-        rate = lRate * (1.0/(i/epochs));        
+        rate = lRate * (1.0-(static_cast<float>(i-epochs)));        
+
+        sumError = 0.0;
 
         for (int j = 0; j < database.size(); j++)
         {
-            bmu = getBestMatch(trainSet, database[j], fileName, path, debug);
+            bmu = getBestMatch(codeBookSet, database[j], fileName, path, debug);
 
-            for (int k = 0; k < database[j].size(); j++)
+            for (int k = 0; k < database[j].size() - 1; k++)
             {
-                error = database[j][k] - trainSet[bmu][k];
+                if (k < codeBookSet[bmu].size() - 1)
+                {
+                    error = database[j][k] - codeBookSet[bmu][k];
 
-                sumError += error * error;
+                    sumError += error * error;
 
-                if (trainSet[bmu][trainSet[bmu].size()-1] == database[j][database[j].size()-1])
-                    trainSet[bmu][k] += rate * error;
-                else
-                    trainSet[bmu][k] -= rate * error;
+                    if (codeBookSet[bmu][codeBookSet[bmu].size()-1] == database[j][database[j].size()-1])
+                        codeBookSet[bmu][k] += rate * error;
+                    else
+                        codeBookSet[bmu][k] -= rate * error;
+                }
             }
         }
 
         outFile.open((path + "ANNIResults.txt").c_str(), ios::app);
         outFile << endl << "\t\t\t" << "Epoch:  " << i << endl << "\t\t\tLearning Rate:  " << rate
-                << endl << "\t\t\tError:  " << sumError << endl;
+                << endl << "\t\t\tError:  " << setprecision(3) << sumError << endl;
         outFile.close();
 
         if (debug)
             cout << endl << "\t\t\tEpoch: " << i << endl << "\t\t\tLearning Rate:  " << rate 
-                 << endl << "\t\t\tError:  " << sumError << endl;
+                 << endl << "\t\t\tError:  " << setprecision(3) << sumError << endl;
     }
          
     return;

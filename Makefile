@@ -17,7 +17,8 @@ all:
 	#$(FILES);
 	make tests;\
 	make Samples;\
-	make ANN;
+	make ANN;\
+	make driver;
 
 # Make the DeepSampleTest binary
 test: 

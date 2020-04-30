@@ -544,6 +544,32 @@ int sign(double test)
     return result;
 }
 
+// Function genTrainSet (N-d vector version)
+// Inputs:
+//       source - An N-D vector of doubles containing the source for training
+//       sink - An N-D vector of doubles that will hold the training set
+//       exclude - An integer indicating the index to skip when creating the set.
+// Outputs:
+// Purpose:  Generates a training dataset given a source dataset.
+void genTrainSet(vector<vector<double> > source, vector<vector<double> > &sink, int exclude)
+{
+    for (int i = 0; i < source.size(); i++)
+    {
+        if (i != exclude)
+            sink.push_back(source[i]);
+    }
+}
+
+// Function genTestSet (N-d vector version)
+// Inputs:
+//       source - An N-d vector of doubles containing the source for testing
+//       sink - An N-d vector of doubles that will hold the test set.
+void genTestSet(vector<vector<double> > source, vector<vector<double> > &sink)
+{
+    for (int i = 0; i < source.size(); i++)
+        sink.push_back(source[i]);
+}
+
 // Function normalize
 // Inputs:
 //       wave - An AudioWave object containing the audio wave being analyzed.

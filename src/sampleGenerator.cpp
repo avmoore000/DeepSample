@@ -88,13 +88,13 @@ int main(int argc, char** argv)
         cout << "\tfullPrecison" << endl << endl << "\t\tSet the precision for decimal output." << endl << endl;
         cout << "\tdebug" << endl << endl << "\t\tToggle debug output.  Warning: Debug mode causes"
              << " large files and" << endl << "\t\t slows down execution." << endl << endl
-             << "\t\t1 = On" << endl << "\t\t\t2 = Off" << endl << endl;
+             << "\t\t1 = On" << endl << "\t\t2 = Off" << endl << endl;
         cout << "\tplot" << endl << endl << "\t\tToggle plotting." << endl << endl 
              << "\t\t1 = Plot" << endl << "\t\t2 = No Plot" << endl << endl;
         cout << "\tgraphType" << endl << endl << "\t\tSelect the type of graph to plot." << endl << endl;
         cout << "\t\t 1 = Box Graph" << endl << endl;
         cout << "\tsave" << endl << endl << "\t\tToggle Saving" << endl << endl << "\t\t1 = Save"
-             << endl << "\t\t2= No Save" << endl << endl;
+             << endl << "\t\t2 = No Save" << endl << endl;
 
         startGeneration = false;
     }
