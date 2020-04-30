@@ -722,6 +722,15 @@ int main(int argc, char** argv)
                          
                         database << audioName << endl;
 
+                        for (int j = 0; j < tChannel; j++)
+                        {
+                            for (int k = 1; k < wave.getCSize(j); k++)
+                                database << real(wave.getCepstrumDataPoint(j,k));
+
+                            database << endl;
+                            
+                        }
+
                         database << endl;
                         database.close();
 

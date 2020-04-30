@@ -1093,13 +1093,16 @@ double AudioWave::getYMinimum(int alg, int chan)
 //       index - An integer indicating the index to access.
 // Outputs: dataPoint - A double containing the datapoint
 // Purpose: Returns the datapoint from the indicated channel and location.
-double AudioWave::getCepstrumDataPoint(int chan)
+double AudioWave::getCepstrumDataPoint(int chan, int index)
 {
-    double dataPoint;
   
+    double dataPoint;
+
     dataPoint = NULL;
 
-    cout << "The cepstrum function is still being developed." << endl;
+
+    if (chan < cepstrumData.size())
+        dataPoint = cepstrumData[chan].at(index);
 
     return dataPoint;
 }

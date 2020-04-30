@@ -61,7 +61,7 @@ class AudioWave
         vector<complex<double> > getRightChannel();            // Return rightChannel
         vector<complex<double> > getRightFFT();                // Return rightFFT
         complex<double> getChannelData(int, int);              // Return value from channel
-        double getCepstrumDataPoint(int);                      // Return value from cepstrumData
+        double getCepstrumDataPoint(int,int);                  // Return value from cepstrumData
         double getFFTDataPoint(int,int);                       // Return value from FFT data
         double getSpectrumFDataPoint(int);                     // Return value from spectrumFData
         double getSpectrumCDataPoint(int);                     // Return value from spectrumCData
