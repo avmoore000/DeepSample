@@ -807,7 +807,7 @@ int main(int argc, char** argv)
                             {
                                 database << audioName << endl;
                                 database << wave.getSpectrumCDataPoint(0) << endl;
-                                database.close;
+                                database.close();
                             }
                             else if (i == 1)
                             {
