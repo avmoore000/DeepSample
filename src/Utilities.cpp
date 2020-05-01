@@ -553,10 +553,21 @@ int sign(double test)
 // Purpose:  Generates a training dataset given a source dataset.
 void genTrainSet(vector<vector<double> > source, vector<vector<double> > &sink, int exclude)
 {
+    vector<double> set;                             // Will contain a training set.
+    cout << "Source.size() = " << source.size();
+
+    // Set up the sink with the correct size
+    for (int i = 0; i < source.size(); i++)
+        sink.push_back(set);
+
+    // Push the training set to the sink.
     for (int i = 0; i < source.size(); i++)
     {
-        if (i != exclude)
-            sink.push_back(source[i]);
+        for (int j = 0; j < source[i].size(); j++)
+        {
+            if (j != exclude)
+                sink[i].push_back(source[i].at(j));
+        }
     }
 }
 
@@ -566,8 +577,15 @@ void genTrainSet(vector<vector<double> > source, vector<vector<double> > &sink, 
 //       sink - An N-d vector of doubles that will hold the test set.
 void genTestSet(vector<vector<double> > source, vector<vector<double> > &sink)
 {
+    vector<double> set;                        // Will hold the test set.
+
+    // Set up the sink with the correct size
     for (int i = 0; i < source.size(); i++)
-        sink.push_back(source[i]);
+        sink.push_back(set);
+
+    for (int i = 0; i < source.size(); i++)
+        for (int j = 0; j < source[i].size(); j++)
+            sink[i].push_back(source[i].at(j));
 }
 
 // Function normalize

@@ -36,11 +36,10 @@ void ANNI(int, double, int, int, int, int, string, bool);
 void learningVectorQuantization(vector<vector<double> >, vector<vector<double> >, int, double, int, string, string, bool);
 
 // Helper utilities
-void twoDVectorLVQ(string, string,int, double, int, int, int, string, bool);
+void lvqHelper(string, string,int, double, int, int, int, string, bool);
 double euclideanDistance(vector<double>, vector<double>, string, bool);
-int getBestMatch(vector<vector<float> >, vector<float>, string, string, bool);
 int getBestMatch(vector<vector<double> >, vector<double>, string, string, bool);
-void prepareFolds(int, int, int, string, vector<vector<double> > &, string, bool);
+void prepareFolds(int, int, int, int, string, vector<vector<double> > &, string, bool);
 void randomDatabase(vector<vector<double> >, vector<vector<double> >&, string,bool);
 void trainCodeBooks(vector<vector<double> >, vector<vector<double> >&, int, double, int, string, string, bool);
 

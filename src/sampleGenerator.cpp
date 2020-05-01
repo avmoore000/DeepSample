@@ -683,8 +683,8 @@ int main(int argc, char** argv)
 
                         for (int j = 0; j < tChannel; j++)
                         {
-                            for (int k = 0; k < wave.getZSize(j); k++)
-                                database << real(wave.getZeroDataPoint(j,k));
+                            for (int k = 0; k < wave.getZSize(j+1); k++)
+                                database << wave.getZeroDataPoint(j+1,k) << " ";
 
                             database << endl;
                         }
@@ -724,8 +724,8 @@ int main(int argc, char** argv)
 
                         for (int j = 0; j < tChannel; j++)
                         {
-                            for (int k = 1; k < wave.getCSize(j); k++)
-                                database << real(wave.getCepstrumDataPoint(j,k));
+                            for (int k = 1; k < wave.getCSize(j+1); k++)
+                                database << wave.getCepstrumDataPoint(j,k) << " ";
 
                             database << endl;
                             
@@ -745,7 +745,7 @@ int main(int argc, char** argv)
     
                         if (tChannel == 1)
                         {
-                            outFile << timestamp() << ":  Creaing / updating monoSpectrumFlux database..." << endl;
+                            outFile << timestamp() << ":  Creating / updating monoSpectrumFlux database..." << endl;
             
                             if (debug)
                                 cout << timestamp() << ":  Creating / updating monoSpectrumFlux database..." << endl;
@@ -763,10 +763,17 @@ int main(int argc, char** argv)
                                 cout << timestamp() << ":  Creating / updating stereoSpectrumFlux database..." << endl;
  
                             database.open((path + "/Databases/stereoSpectrumFlux.txt").c_str(), ios::app);
-                            database << audioName << endl;
-                            database << wave.getSpectrumFDataPoint(0) << " " 
-                                     << wave.getSpectrumFDataPoint(1) << endl << endl;
-                            database.close();
+                            if (i == 0)
+                            {
+                                database << audioName << endl;
+                                database << wave.getSpectrumFDataPoint(0) << endl;
+                                database.close();
+                            }
+                            else if (i == 1)
+                            {
+                                database << wave.getSpectrumFDataPoint(1) << endl << endl;
+                                database.close();
+                            }
                         }
 
                         outFile << timestamp() << ":  Spectrum Flux database created / updated." << endl;
@@ -796,10 +803,17 @@ int main(int argc, char** argv)
                                 cout << timestamp() << ":  Creating / updating stereoSpectrumCentroid database..." << endl;
 
                             database.open((path + "/Databases/stereoSpectrumCentroid.txt").c_str(), ios::app);
-                            database << audioName << endl;
-                            database << wave.getSpectrumCDataPoint(0) << " "
-                                     << wave.getSpectrumCDataPoint(1) << endl << endl;
-                            database.close();
+                            if (i == 0)
+                            {
+                                database << audioName << endl;
+                                database << wave.getSpectrumCDataPoint(0) << endl;
+                                database.close;
+                            }
+                            else if (i == 1)
+                            {
+                                database << wave.getSpectrumCDataPoint(1) << endl << endl;
+                                database.close();
+                            }
                         }
 
                         outFile << timestamp() << ":  Spectrum Centroid database created / updated." << endl;

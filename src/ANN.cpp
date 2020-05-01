@@ -76,41 +76,49 @@ void ANNI(int folds, double learnRate, int epochs, int codeBooks, int alg, int c
         case 0:  // Use all algorithms
         {
             // Analyze the FFT
-            twoDVectorLVQ("FFT", outFileName, folds, learnRate, epochs, codeBooks, channels, path, debug);
+            lvqHelper("FFT", outFileName, folds, learnRate, epochs, codeBooks, channels, path, debug);
 
             // Analyze the Zero Cross
-            twoDVectorLVQ("Zero Cross", outFileName, folds, learnRate, epochs, codeBooks, channels, path, debug);
+            lvqHelper("Zero Cross", outFileName, folds, learnRate, epochs, codeBooks, channels, path, debug);
 
+            // Analyze Spectrum Flux
+            lvqHelper("Spectrum Flux", outFileName, folds, learnRate, epochs, codeBooks, channels, path, debug);
             // Analyze the Cepstrum
  
-            // Analyze the Spectrum Flux
- 
+            lvqHelper("Real Cepstrum", outFileName, folds, learnRate, epochs, codeBooks, channels, path, debug);
             // Analyzed the Spectrum Centroid
+            lvqHelper("Spectrum Centroid", outFileName, folds, learnRate, epochs, codeBooks, channels, path, debug);
 
             break;
         }
         case 1:  // Use FFT
         {
-            twoDVectorLVQ("FFT", outFileName, folds, learnRate, epochs, codeBooks, channels, path, debug);
+            lvqHelper("FFT", outFileName, folds, learnRate, epochs, codeBooks, channels, path, debug);
  
             break;
         }
         case 2:  // Use Zero Cross
         {
-            twoDVectorLVQ("Zero Cross", outFileName, folds, learnRate, epochs, codeBooks, channels, path, debug);
+            lvqHelper("Zero Cross", outFileName, folds, learnRate, epochs, codeBooks, channels, path, debug);
 
             break;
         }
         case 3:  // Use Spectrum Flux
         {
+            lvqHelper("Spectrum Flux", outFileName, folds, learnRate, epochs, codeBooks, channels, path, debug);
+
             break;
         }
         case 4:  // Use Cepstrum
         {
+            lvqHelper("Real Cepstrum", outFileName, folds, learnRate, epochs, codeBooks, channels, path, debug);
+
             break;
         }
         case 5:  // Use Spectrum Centroid
         {
+            lvqHelper("Spectrum Centroid", outFileName, folds, learnRate, epochs, codeBooks, channels, path, debug);
+
             break;
         }
         default:
@@ -123,7 +131,7 @@ void ANNI(int folds, double learnRate, int epochs, int codeBooks, int alg, int c
     return;
 }
 
-// Function twoDVectorLVQ
+// Function lvqHelper
 // Inputs:
 //       algorithm - A string containing the name of the algorithm being run against.
 //       resultsOutput - A string containing the full path to the output file.
@@ -136,7 +144,7 @@ void ANNI(int folds, double learnRate, int epochs, int codeBooks, int alg, int c
 //       debug - A flag that controls debug output.
 // Outputs:
 // Purpose:  Peforms ths LVQ on a two dimensional vector of doubles.
-void twoDVectorLVQ(string algorithm, string resultsOutput, int folds, double learnRate, int epochs, int codeBooks, int channels, string path, bool debug)
+void lvqHelper(string algorithm, string resultsOutput, int folds, double learnRate, int epochs, int codeBooks, int channels, string path, bool debug)
 {
     ofstream outFile;                          // A stream pointer for data output
     ofstream debugFile;                        // A stream pointer for debug output
@@ -148,6 +156,7 @@ void twoDVectorLVQ(string algorithm, string resultsOutput, int folds, double lea
     vector<vector<double> > trainSet;          // Will hold the training set
     vector<vector<double> > testSet;           // Will hold the test set
 
+    int alg;                                   // Used to tell the folder which algorithm
    
     switch(channels)
     {
@@ -158,9 +167,30 @@ void twoDVectorLVQ(string algorithm, string resultsOutput, int folds, double lea
         case 2:
         {
             if (algorithm.compare("FFT") == 0)
+            {
                 fileName = path + "Databases/stereoFFT.txt";
+                alg = 1;
+            }
             else if (algorithm.compare("Zero Cross") == 0)
+            {
+                alg = 2;
                 fileName = path + "Databases/stereoZeroCross.txt";
+            }
+            else if (algorithm.compare("Spectrum Flux") == 0)
+            {
+                alg = 3;
+                fileName = path + "Databases/stereoSpectrumFlux.txt";
+            }
+            else if (algorithm.compare("Real Cepstrum") == 0)
+            {
+                alg = 4;
+                fileName = path + "Databases/stereoCepstrum.txt";
+            }
+            else if (algorithm.compare("Spectrum Centroid") == 0)
+            {
+                alg = 5;
+                fileName = path + "Databases/stereoSpectrumCentroid.txt";
+            }
 
             outFile.open(resultsOutput, ios::app);
             outFile << timestamp() << ":  Preparing left channel of " << fileName << " with "
@@ -171,7 +201,7 @@ void twoDVectorLVQ(string algorithm, string resultsOutput, int folds, double lea
                 cout << timestamp() << ":  Preparing left channel of " << fileName << " with "
                      << folds << " folds..." << endl;
 
-            prepareFolds(folds, 0, channels, fileName, foldedLeft, path, debug);
+            prepareFolds(folds, alg, 0, channels, fileName, foldedLeft, path, debug);
 
             outFile.open(resultsOutput, ios::app);
             outFile << timestamp() << ":  Finished preparing left channel." << endl;
@@ -186,7 +216,7 @@ void twoDVectorLVQ(string algorithm, string resultsOutput, int folds, double lea
                      << folds << " folds..." << endl;
             }
 
-            prepareFolds(folds, 1, channels, fileName, foldedRight, path, debug);
+            prepareFolds(folds, alg, 1, channels, fileName, foldedRight, path, debug);
 
             outFile.open(resultsOutput, ios::app);
             outFile << timestamp() << ":  Finished preparing right channel." << endl;
@@ -304,15 +334,16 @@ void twoDVectorLVQ(string algorithm, string resultsOutput, int folds, double lea
 
 // Function prepareFolds (FFT version)
 // Inputs:
-//       folds - An integer indicating the number of folds to create
+//       folds - An integer indicating the number of folds to create.
+//       alg - Specify the algorithm being worked on.
 //       curChan - An integer specifiying the current channel being manipulated.
 //       channels - An integer indicating the total channels in the audio samples
-//       &fft - An n-dimensional vector of doubles that will hold the folded FFT
+//       &folded - An n-dimensional vector of doubles that will hold the folded FFT
 //       path - A string indicating the path for data output
 //       debug - A boolean flag that controls debug output
 // Outputs: None
 // Purpose:  Break a given FFT into the correct number of folds for analysis.
-void prepareFolds(int folds, int curChan, int channels, string fileName, vector<vector<double> > &fft, string path, bool debug)
+void prepareFolds(int folds, int alg, int curChan, int channels, string fileName, vector<vector<double> > &folded, string path, bool debug)
 {
     int foldSize;                         // The size of each fold
     int start;                            // Index to start making fold
@@ -327,10 +358,10 @@ void prepareFolds(int folds, int curChan, int channels, string fileName, vector<
     start = 0;
     currentFold = 0;
 
-    // Initialize the fft 
+    // Initialize the folded vector
     for (int i = 0; i < folds; i++)
     {
-        fft.push_back(dataFold);
+        folded.push_back(dataFold);
     }
 
     // Grab the line of data
@@ -338,58 +369,70 @@ void prepareFolds(int folds, int curChan, int channels, string fileName, vector<
 
     if (channels == 1)
     {
-        std::getline(inFile, line);  // Get rid of the first name
+        std::getline(inFile, line);  // Get rid of the audio name
    
         while (std::getline(inFile, line))
         {
             data = "";
             foldSize = line.size() / folds;
 
-            outFile.open((path + "/ANNIResults.txt").c_str(), ios::app);
-            outFile << "\tSize of data line:  " << line.size() << endl;
-            outFile << "\tFold Size:  " << foldSize << endl;
-            outFile << "\tCurrent Fold:  (" << (currentFold + 1) <<" / " << folds << ")" << endl << endl;
-            outFile.close();
-
-            if (debug)
+            if (line.size() > 0)
             {
-                cout << "\tSize of data line:  " << line.size() << endl;
-                cout << "\tFold Size:  " << foldSize << endl;
-                cout << "\tCurrent Fold:  (" << (currentFold + 1) << " / " << folds << ")" << endl << endl;
+                outFile.open((path + "/ANNIResults.txt").c_str(), ios::app);
+                outFile << "\tSize of data line:  " << line.size() << endl;
+                outFile << "\tFold Size:  " << foldSize << endl;
+                outFile << "\tCurrent Fold:  (" << (currentFold + 1) <<" / " << folds << ")" << endl << endl;
+                outFile.close();
+
+                if (debug)
+                {
+                    cout << "\tSize of data line:  " << line.size() << endl;
+                    cout << "\tFold Size:  " << foldSize << endl;
+                    cout << "\tCurrent Fold:  (" << (currentFold + 1) << " / " << folds << ")" << endl << endl;
+                }
             }
 
-            for (int i = 0; i < line.size(); i++)
+            if ((alg == 3) || (alg == 5))
             {
-                if (line[i] != ' ')
-                {
-                    data += line[i];
-                }
-                else
-                {
-                    if ( (i + 1) < (start + foldSize))
-                    {
+                data += line;
 
-                        fft[currentFold].push_back(stod(data));
-                        data = "";
-                    }
-                    else
-                    {
-                        start += foldSize;
-                        currentFold++;
-
-                        if (currentFold > (fft.size() - 1))
-                            currentFold = fft.size() - 1;
-                    }
-                }
-                    
+                folded[currentFold].push_back(stod(data));
             }
+            else
+            {
+                for (int i = 0; i < line.size(); i++)
+                {
+                    if (line.size() > 0)
+                    {
+                        if (line[i] != ' ')
+                        {
+                            data += line[i];
+                        }
+                        else
+                        {
+                            if ( (i + 1) < (start + foldSize))
+                            {
+                                folded[currentFold].push_back(stod(data));
+                                data = "";
+                            }
+                            else
+                            {  
+                                start += foldSize;
+                                currentFold++;
 
+                                if (currentFold > (folded.size() - 1))
+                                    currentFold = folded.size() - 1;
+                            }
+                        }
+                    }
+                }
+            }
             std::getline(inFile, line);
         }
     }
     else if (channels == 2)
     {
-        std::getline(inFile, line);
+        std::getline(inFile, line); // Get rid of the audio name
 
         while (std::getline(inFile, line))
         {
@@ -413,30 +456,43 @@ void prepareFolds(int folds, int curChan, int channels, string fileName, vector<
                 cout << "\tCurrent Fold:  (" << (currentFold + 1) << " / " << folds << ")" << endl << endl;
             }
 
-            for (int i = 0; i < line.size(); i++)
+            if ((alg == 3) || (alg == 5))
             {
-                if ((line[i] != ' '))
+                data += line;
+         
+                if (!data.empty())
+                    folded[currentFold].push_back(stod(data));
+            }
+            else
+            {
+                for (int i = 0; i < line.size(); i++)
                 {
-                    data += line[i];
-                }
-                else 
-                {
-                    if ((i + 1) < (start + foldSize) )
+                    if (line.size() > 0)
                     {
-                        fft[currentFold].push_back(stod(data));
-                        data = "";
-                    }
-                    else
-                    {
-                        start += foldSize;
-                        currentFold++;
+                        if ((line[i] != ' '))
+                        {
+                            data += line[i];
+                        }
+                        else 
+                        {
+                            if ((i + 1) < (start + foldSize) )
+                            {
+                                folded[currentFold].push_back(stod(data));
+                                data = "";
+                            }
+                            else
+                            {
+                                start += foldSize;
+                                currentFold++;
 
-                        if (currentFold > fft.size() - 1)
-                            currentFold = fft.size() - 1;
+                                if (currentFold > folded.size() - 1)
+                                    currentFold = folded.size() - 1;
+                            }
+                        }
                     }
                 }
             }
-
+       
             std::getline(inFile, line);
         }
     }
@@ -512,24 +568,7 @@ double euclideanDistance(vector<double> row1, vector<double> row2, string path, 
     return sqrt(distance);
 }
 
-// Function getBestMatch (zero crossing)
-// Inputs:
-//       knownData - A vector containing known data sets for comparison
-//       testRow - A vector containing the row to test against the knownData
-//       path - A string containing the location of the output directory
-//       channels - An integer describing the number of channels in the audio
-//       debug - A flag that controls debug output
-// Output:
-//       category - An integer describing the category the audio belongs to
-// Purpose:  Finds the best match of a piece of audio by comparing its zerocross to known data.
-int getBestMatch(vector<vector<float> > knownData, vector<float> testRow, int channels, string path, bool debug)
-{
-    int match;
-
-    return match;
-}
-
-// Function getBestMatch (FFT)
+// Function getBestMatch
 // Inputs:
 //       knownData - A vector containing known data sets for comparison
 //       testRow - An array containing spectral flux data to compare.
@@ -581,8 +620,16 @@ void randomDatabase(vector<vector<double> > database, vector<vector<double> > &t
     {
         records = database[i].size();
 
-        lowerBound = (rand() % (records - 1)) + 1;
-        upperBound = (rand() % (records - lowerBound)) + lowerBound;
+        if (records > 1)
+        { 
+            lowerBound = (rand() % (records - 1)) + 1;
+            upperBound = (rand() % (records - lowerBound)) + lowerBound;
+        }
+        else
+        {
+            lowerBound = 0;
+            upperBound = 1;
+        }
 
         for (int j = lowerBound; j < upperBound; j++)
         {
@@ -595,7 +642,7 @@ void randomDatabase(vector<vector<double> > database, vector<vector<double> > &t
 
 // Function trainCodeBooks
 // Inputs:
-//       database - A vector containing known data points for generating the training set
+//       trainSet - A vector containing known data points for generating the training set
 //       codeBookSet - A vector that will contain the subset of training data for comparisons
 //       nBooks - An integer describing the number of codebooks to generate
 //       lRate - A double describing the learning rate
@@ -605,7 +652,7 @@ void randomDatabase(vector<vector<double> > database, vector<vector<double> > &t
 //       debug - A flag controlling the debug output.
 // Output: None
 // Purpose:  This function is used to generate the number of specified codebooks for running the algorithm.
-void trainCodeBooks(vector<vector<double> > database, vector<vector<double> > &codeBookSet,int nBooks, double lRate, int epochs, string fileName,string path, bool debug)
+void trainCodeBooks(vector<vector<double> > trainSet, vector<vector<double> > &codeBookSet,int nBooks, double lRate, int epochs, string fileName,string path, bool debug)
 {
     double rate;        // The learning rate of the current epoch
     double error;       // Used to calculate the error rate in the learning
@@ -629,7 +676,7 @@ void trainCodeBooks(vector<vector<double> > database, vector<vector<double> > &c
     // Generate the codebooks
     for (int i = 0; i < nBooks; i++)
     {
-        randomDatabase(database, codeBookSet, path, debug);
+        randomDatabase(trainSet, codeBookSet, path, debug);
     }
 
     outFile.open((path + "ANNIResults.txt").c_str(), ios::app);
@@ -650,19 +697,19 @@ void trainCodeBooks(vector<vector<double> > database, vector<vector<double> > &c
 
         sumError = 0.0;
 
-        for (int j = 0; j < database.size(); j++)
+        for (int j = 0; j < trainSet.size(); j++)
         {
-            bmu = getBestMatch(codeBookSet, database[j], fileName, path, debug);
-
-            for (int k = 0; k < database[j].size() - 1; k++)
+            bmu = getBestMatch(codeBookSet, trainSet[j], fileName, path, debug);
+        
+            for (int k = 0; k < trainSet[j].size(); k++)
             {
                 if (k < codeBookSet[bmu].size() - 1)
                 {
-                    error = database[j][k] - codeBookSet[bmu][k];
+                    error = trainSet[j][k] - codeBookSet[bmu][k];
 
                     sumError += error * error;
 
-                    if (codeBookSet[bmu][codeBookSet[bmu].size()-1] == database[j][database[j].size()-1])
+                    if (codeBookSet[bmu][codeBookSet[bmu].size()-1] == trainSet[j][trainSet[j].size()-1])
                         codeBookSet[bmu][k] += rate * error;
                     else
                         codeBookSet[bmu][k] -= rate * error;
