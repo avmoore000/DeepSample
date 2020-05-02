@@ -176,7 +176,9 @@ Completed Tasks
 	- Enabled plotting / sample generation using the Real Cepstrum and Spectrum Centroid implementations provided by Hue and Alex.
 	- Finished ANN implementation.
 	- Added methods for Zero Cross, Spectrum Flux and the ANN to research paper.	
-	- Fixed a bunch of errors with the databases, they were not formating or saving properly.
+	- Fixed a bunch of errors with the databases, they were not formating or saving properly
+	- Added all of the function documentation to the development manual.
+	- Reorganized source code to better reflect the development documentation.
 	
 TO DO LIST
 
