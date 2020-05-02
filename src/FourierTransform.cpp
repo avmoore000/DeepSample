@@ -69,27 +69,26 @@ void fft(AudioWave &wave, string fileName, string path, bool debug)
         if (i == 0)
         {
             outFile << timeStamp() << ":  Getting FFT of left channel..." << endl;
+            cout << timeStamp() << ":  Getting FFT of left channel..." << endl;
+
             channelWave = wave.getLeftChannel();
 
             if (debug)
             {
                 debugFile << "Left Channel Size = " << channelWave.size() << endl;
-
-                cout << timeStamp() << ":  Getting FFT of left channel..." << endl;
             }
         }
         else if (i == 1)
         {
             if (wave.getChannels() > 1 && wave.getRightSize() > 0)
             {
-                outFile << timeStamp() << ":  Getting FFT of the right channel...." << endl;
+                outFile << timeStamp() << ":  Getting FFT of the right channel..." << endl;
+                cout << timeStamp() << ":  Getting FFT of the right channel..." << endl;
                 channelWave = wave.getRightChannel();
 
                 if (debug)
                 {
                     debugFile << "Right Channel Size = " << channelWave.size() << endl;
-
-                    cout << timeStamp() << ":  Getting FFT of right channel..." << endl;
                 }
             }
         }
@@ -207,23 +206,22 @@ void fft(AudioWave &wave, string fileName, string path, bool debug)
         if (i == 0)
         {
             outFile << timeStamp() << ":  Left Channel FFT computed." << endl;
+            cout << timeStamp() <<  ":  Left Channel FFT computed." << endl;
             wave.setLeftFFT(channelWave);
-
-            if (debug)
-                cout << timeStamp() << ":  Left Channel FFT computed." << endl;
         }
         else if (i == 1)
         {
             if (wave.getRightSize() > 0)
             {
                 outFile << timeStamp() << ":  Right Channel FFT computed." << endl;
+                cout << timeStamp() << ":  Right Channel FFT computed." << endl;
                 wave.setRightFFT(channelWave);
-
-                if (debug)
-                   cout << timeStamp() << ":  Right Channel FFT computed." << endl;
             }
             else
+            {
                 outFile << timeStamp() << "Invalid right channel.  FFT not computed." << endl;
+                cout << timeStamp() << ":  Invalid right channel.  FFT not computed." << endl;
+            }
         } 
     }
    

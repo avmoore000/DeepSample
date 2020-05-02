@@ -56,13 +56,12 @@ void spectralCentroid(AudioWave &wave, string fileName, string path, bool debug)
     outFile.open((path + "/" + fileName).c_str(), ios::app);
     outFile << timeStamp() << ":  Spectrum Centroid Algorithm started..." << endl;
     outFile.close();
+    cout << timeStamp() << ":  Spectrum Centroid Algorithm started..." << endl;
 
     if (debug)
     {
         debugFile.open((path + "/SpectrumCentroid/SpectrumCentrAlgDebug.txt").c_str(), ios::app);  
         debugFile << "Spectrum Centroid Algorithm Debug" << endl << endl;
-
-        cout << timeStamp() << ":  Spectrum Centroid Algorithm started..." << endl;
     }
 
     // Make sure we have an fft to work with
@@ -82,16 +81,12 @@ void spectralCentroid(AudioWave &wave, string fileName, string path, bool debug)
         if (i == 0)
         {
             outFile << timeStamp() << ":  Calculating left channel spectral centroid..." << endl;
-
-            if (debug)
-                cout << timeStamp() << ":  Calculating left channel spectral centroid..." << endl;
+            cout << timeStamp() << ":  Calculating left channel spectral centroid..." << endl;
         }
         else if (i == 1)
         {
             outFile << timeStamp() << ":  Calculating right channel spectral centroid..." << endl;
-            
-            if (debug)
-                cout << timeStamp() << ":  Calculating right channel spectral centroid..." << endl;
+            cout << timeStamp() << ":  Calculating right channel spectral centroid..." << endl;
         }
 
         outFile.close();
@@ -167,13 +162,12 @@ void spectralCentroid(AudioWave &wave, string fileName, string path, bool debug)
     outFile.open((path + "/" + fileName).c_str(), ios::app);
     outFile << timeStamp() << ":  Spectrum Centroid Algorithm Completed." << endl;
     outFile.close();
+    cout << timeStamp() << ":  Spectrum Centroid Algorithm returning..." << endl;
 
     if (debug)
     {
         debugFile << "Spectrum Centroid Algorithm completed." << endl;
         debugFile.close();
-
-        cout << timeStamp() << ":  Spectrum Centroid Algorithm returning..." << endl;
     }
 
     return;

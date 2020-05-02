@@ -202,9 +202,7 @@ void graphAlg(AudioWave wave, string filePrefix, int alg, string fileName, strin
 
     outFile.open((path + "/" + fileName).c_str(), ios::app);
     outFile << timeStamp() << ":  Plotting " << fullTitle[0] << "..." << endl;
-
-    if (debug)
-        cout << timeStamp() << ":  Plotting " << fullTitle[0] << "..." << endl;
+    cout << timeStamp() << ":  Plotting " << fullTitle[0] << "..." << endl;
 
     system(plotCommand.c_str());
 
@@ -392,6 +390,7 @@ void normalize(AudioWave wave, vector<vector<double> > &normals, string outputFi
     outFile.open((path + "/" + outputFile).c_str(), ios::app);
     outFile << timeStamp() << ":  Finished calculating normals." << endl;
     outFile.close();
+    cout << timeStamp() << ":  Normals calculated." << endl;
 
     if (debug)
     {
@@ -420,8 +419,6 @@ void normalize(AudioWave wave, vector<vector<double> > &normals, string outputFi
 
             debugFile << endl << "]" << endl << endl;
         }
-
-        cout << timeStamp() << ":  Normals calculated." << endl;
     }
 
     debugFile.close();

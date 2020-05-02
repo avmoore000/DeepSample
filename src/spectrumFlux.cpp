@@ -48,13 +48,12 @@ void spectralFlux(AudioWave &wave, string fileName, string path, bool debug)
     outFile.open((path + "/" + fileName).c_str(), ios::app);
     outFile << timeStamp() << ":  Spectrum Flux Algorithm started..." << endl;
     outFile.close();
+    cout << timeStamp() << ":  Spectrum Flux Algorithm started..." << endl;
 
     if (debug)
     {
         debugFile.open((path + "/SpectrumFlux/SpectrumFluxAlgDebug.txt").c_str(), ios::app);  
         debugFile << "Spectrum Flux Algorithm Debug" << endl << endl;
-
-        cout << timeStamp() << ":  Spectrum Flux Algorithm started..." << endl;
     }
 
     // Make sure we have an fft to work with
@@ -74,16 +73,12 @@ void spectralFlux(AudioWave &wave, string fileName, string path, bool debug)
         if (i == 0)
         {
             outFile << timeStamp() << ":  Calculating left channel spectral flux..." << endl;
-
-            if (debug)
-                cout << timeStamp() << ":  Calculating left channel spectral flux..." << endl;
+            cout << timeStamp() << ":  Calculating left channel spectral flux..." << endl;
         }
         else if (i == 1)
         {
             outFile << timeStamp() << ":  Calculating right channel spectral flux..." << endl;
-            
-            if (debug)
-                cout << timeStamp() << ":  Calculating right channel spectral flux..." << endl;
+            cout << timeStamp() << ":  Calculating right channel spectral flux..." << endl;
         }
 
         outFile.close();
@@ -140,29 +135,23 @@ void spectralFlux(AudioWave &wave, string fileName, string path, bool debug)
         if (i == 0)
         {
             outFile << timeStamp() << ":  Left channel spectral flux calculated." << endl;
-
-            if (debug)
-                cout << timeStamp() << ":  Left channel spectral flux calculated." << endl;
+            cout << timeStamp() << ":  Left channel spectral flux calculated." << endl;
         }
         else if (i == 1)
         {
             outFile << timeStamp() << ":  Right channel spectral flux calculated." << endl;
-
-            if (debug)
-                cout << timeStamp() << ":  Right channel spectral flux calculated." << endl;
+            cout << timeStamp() << ":  Right channel spectral flux calculated." << endl;
         }
     }
 
     outFile.open((path + "/" + fileName).c_str(), ios::app);
     outFile << timeStamp() << ":  Spectrum Flux Algorithm Completed." << endl;
     outFile.close();
-
+    cout << timeStamp() << ":  Spectrum Flux algorithm returning..." << endl;
     if (debug)
     {
         debugFile << "Spectrum Flux Algorithm completed." << endl;
         debugFile.close();
-
-        cout << timeStamp() << ":  Spectrum Flux algorithm returning..." << endl;
     }
 
     return;

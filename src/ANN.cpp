@@ -551,8 +551,6 @@ void learningVectorQuantization(vector<vector<double> > trainSet, vector<vector<
 
     if (debug)
         cout << endl << "\t" << timeStamp() << ":  Codebooks trained." << endl;
-
-    cout << "samples.size = " << samples.size() << endl;
         
     for (int i = 0; i < samples.size(); i++)
         cout << "samples[" << i << "].size = " << samples[i].size() << endl;
@@ -564,9 +562,6 @@ void learningVectorQuantization(vector<vector<double> > trainSet, vector<vector<
             cout << "The best match for " << sampleNames[i] << " is:  " << BMUnames[match] << endl;
         }
     }
-
-  //  if (match > -1)
-    //    cout << "The best match is:  " << names[match] << endl;
 
     return;
 }

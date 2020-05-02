@@ -50,11 +50,11 @@ void zeroCross(AudioWave &wave, string fileName, string path, bool debug)
     outFile.open((path + "/" + fileName).c_str(), ios::app);
     outFile << timeStamp() << ":  ZeroCross Algorithm Called..." << endl;
     outFile.close();
+    cout << timeStamp() << ":  ZeroCross Algorithm Called..." << endl;
 
     if (debug)
     {
         debugFile.open((path + "/ZeroCrossAlgDebug.txt").c_str(), ios::out);
-        cout << timeStamp() << ":  ZeroCross Algorithm Called..." << endl;
     }
 
     // Perform the zero cross for each channel in the wave
@@ -67,12 +67,11 @@ void zeroCross(AudioWave &wave, string fileName, string path, bool debug)
             outFile.open((path + "/" + fileName).c_str(), ios::app);
             outFile << timeStamp() << ":  Calculating left channel zero cross..." << endl;
             outFile.close();
-           
+            cout << timeStamp() << ":  Calculating left channel zero cross..." << endl;
+       
             if (debug)
             {
                 debugFile << "Left Channel Zero Cross:  " << endl;
-
-                cout << timeStamp() << ":  Calculating left channel zero cross..." << endl;
             }
         }
         else if (i == 1)
@@ -82,12 +81,10 @@ void zeroCross(AudioWave &wave, string fileName, string path, bool debug)
             outFile.open((path + "/" + fileName).c_str(), ios::app);
             outFile << timeStamp() << ":  Calculating right channel zero cross..." << endl;
             outFile.close();
-          
+            cout << timeStamp() << ":  Calculating right channel zero cross..." << endl; 
             if (debug)
             {
                 debugFile << "Right Channel Zero Cross:  " << endl;
-
-                cout << timeStamp() << ":  Calculating right channel zero cross..." << endl;
             }
         }
 
@@ -128,16 +125,12 @@ void zeroCross(AudioWave &wave, string fileName, string path, bool debug)
         if (i == 0)
         {
             outFile << timeStamp() << ":  Left Channel Zero Cross calculated." << endl;
-
-            if (debug)
-                cout << timeStamp() << ":  Left Channel Zero Cross calculated." << endl;
+            cout << timeStamp() << ":  Left Channel Zero Cross calculated." << endl;
         }
         else if (i == 1)
         {
             outFile << timeStamp() << ":  Right Channel Zero Cross calculated."  << endl;
-
-            if (debug)
-                cout << timeStamp() << ":  Right Channel Zero Cross calculated." << endl;
+            cout << timeStamp() << ":  Right Channel Zero Cross calculated." << endl;
         }
  
     } 
@@ -145,11 +138,11 @@ void zeroCross(AudioWave &wave, string fileName, string path, bool debug)
     outFile.open((path + "/" + fileName).c_str(), ios::app);
     outFile << timeStamp() << ":  ZeroCross Algorithm completed." << endl;
     outFile.close();
+    cout << timeStamp() << ":  ZeroCross Algorithm returning..." << endl;
 
     if (debug)
     {
         cout << timeStamp() << ":  ZeroCross Algorithm returning..." << endl;
-        debugFile.close();
     }
 
     return;
