@@ -152,12 +152,12 @@ int main(int argc, char** argv)
         case 1:        // Load Audio test
         {
             if (debug)
-                cout << timestamp() << ":  Starting Audio Loader Test..." << endl;
+                cout << timeStamp() << ":  Starting Audio Loader Test..." << endl;
 
             audioTest(waves[0], inputFile, "", "", channels, 1, outputFile, filePath, debug);
 
             if (debug)
-                cout << timestamp() << ":  Audio Loader Test complete." << endl;
+                cout << timeStamp() << ":  Audio Loader Test complete." << endl;
 
             break;
         }
@@ -165,23 +165,23 @@ int main(int argc, char** argv)
         {
             if (debug)
             {
-                cout << timestamp() << ":  Doing prep work for FFT Test..." << endl;
-                cout << timestamp() << ":  Loading Audio..." << endl;
+                cout << timeStamp() << ":  Doing prep work for FFT Test..." << endl;
+                cout << timeStamp() << ":  Loading Audio..." << endl;
             }
 
                 loadAudio(waves[0], inputFile, "", "", channels, 1, filePath, debug);
 
             if (debug)
             {
-                cout << timestamp() << ":  Audio loaded." << endl;
-                cout << timestamp() << ":  Prep work complete." << endl;
-                cout << timestamp() << ":  Starting FFT Test..." << endl;
+                cout << timeStamp() << ":  Audio loaded." << endl;
+                cout << timeStamp() << ":  Prep work complete." << endl;
+                cout << timeStamp() << ":  Starting FFT Test..." << endl;
             }
 
             fftTest(waves[0], outputFile, filePath, debug);
 
             if (debug)
-                cout << timestamp() << ":  FFT Test complete." << endl;
+                cout << timeStamp() << ":  FFT Test complete." << endl;
 
             break; 
         }
@@ -189,23 +189,23 @@ int main(int argc, char** argv)
         {
             if (debug)
             {
-                cout << timestamp() << ":  Doing prep work for Zero Cross Test..." << endl;
-                cout << timestamp() << ":  Loading Audio..." << endl;
+                cout << timeStamp() << ":  Doing prep work for Zero Cross Test..." << endl;
+                cout << timeStamp() << ":  Loading Audio..." << endl;
             }
 
                 loadAudio(waves[0], inputFile, "", "", channels, 1, filePath, debug);     
 
             if (debug)
             {
-                cout << timestamp() << ":  Audio loaded." << endl;
-                cout << timestamp() << ":  Prep work complete." << endl;
-                cout << timestamp() << ":  Starting Zero Cross Test..." << endl;
+                cout << timeStamp() << ":  Audio loaded." << endl;
+                cout << timeStamp() << ":  Prep work complete." << endl;
+                cout << timeStamp() << ":  Starting Zero Cross Test..." << endl;
             }
 
             zeroCrossingTest(waves[0], outputFile, filePath, debug); 
 
             if (debug)
-                cout << timestamp() << ":  Zero Cross Test complete." << endl;
+                cout << timeStamp() << ":  Zero Cross Test complete." << endl;
 
             break;
         }
@@ -213,23 +213,23 @@ int main(int argc, char** argv)
         {
             if (debug)
             {
-                cout << timestamp() << ":  Doing prep work for Spectrum Flux Test..." << endl;
-                cout << timestamp() << ":  Loading Audio..." << endl;
+                cout << timeStamp() << ":  Doing prep work for Spectrum Flux Test..." << endl;
+                cout << timeStamp() << ":  Loading Audio..." << endl;
             }
           
                 loadAudio(waves[0], inputFile, "", "", channels, 1, filePath, debug);
 
             if (debug)
             {
-                cout << timestamp() << ":  Audio loaded." << endl;
-                cout << timestamp() << ":  Prep work complete." << endl;
-                cout << timestamp() << ":  Starting Spectrum Flux Test..." << endl;
+                cout << timeStamp() << ":  Audio loaded." << endl;
+                cout << timeStamp() << ":  Prep work complete." << endl;
+                cout << timeStamp() << ":  Starting Spectrum Flux Test..." << endl;
             }
 
             spectrumFluxTest(waves[0], outputFile, filePath, debug);
 
             if (debug)
-                cout << timestamp() << ":  Spectrum Flux Test complete." << endl;
+                cout << timeStamp() << ":  Spectrum Flux Test complete." << endl;
 
             break;
         }
@@ -237,24 +237,24 @@ int main(int argc, char** argv)
         {
             if (debug)
             {
-                cout << timestamp() << ":  Doing prep work for Cepstrum Test..." << endl;
-                cout << timestamp() << ":  Loading Audio..." << endl;
+                cout << timeStamp() << ":  Doing prep work for Cepstrum Test..." << endl;
+                cout << timeStamp() << ":  Loading Audio..." << endl;
             }
 
                 loadAudio(waves[0], inputFile, "", "", channels, 1, filePath, debug);
 
             if (debug)
             {
-                cout << timestamp() << ":  Audio loaded." << endl;
-                cout << timestamp() << ":  Prep work complete." << endl;
-                cout << timestamp() << ":  Starting Cepstrum Test..." << endl;
+                cout << timeStamp() << ":  Audio loaded." << endl;
+                cout << timeStamp() << ":  Prep work complete." << endl;
+                cout << timeStamp() << ":  Starting Cepstrum Test..." << endl;
             }
 
             cepstrumTest(waves[0], outputFile, filePath, debug);
 
 
             if (debug)
-                cout << timestamp() << ":  Cepstrum Test complete." << endl;
+                cout << timeStamp() << ":  Cepstrum Test complete." << endl;
 
             break;
         }
@@ -262,23 +262,23 @@ int main(int argc, char** argv)
         {
             if (debug)
             {
-                cout << timestamp() << ":  Doing prep work for Spectrum Centroid Test..." << endl;
-                cout << timestamp() << ":  Loading Audio..." << endl;
+                cout << timeStamp() << ":  Doing prep work for Spectrum Centroid Test..." << endl;
+                cout << timeStamp() << ":  Loading Audio..." << endl;
             }
           
                 loadAudio(waves[0], inputFile, "", "", channels, 1, filePath, debug);
 
             if (debug)
             {
-                cout << timestamp() << ":  Audio loaded." << endl;
-                cout << timestamp() << ":  Prep work complete." << endl;
-                cout << timestamp() << ":  Starting Spectrum Centroid Test..." << endl;
+                cout << timeStamp() << ":  Audio loaded." << endl;
+                cout << timeStamp() << ":  Prep work complete." << endl;
+                cout << timeStamp() << ":  Starting Spectrum Centroid Test..." << endl;
             }
 
             spectrumCentroidTest(waves[0], outputFile, filePath, debug);
 
             if (debug)
-                cout << timestamp() << ":  Spectrum Centroid Test complete." << endl;
+                cout << timeStamp() << ":  Spectrum Centroid Test complete." << endl;
 
             break;
         }
@@ -289,16 +289,16 @@ int main(int argc, char** argv)
             if (debug)
             {
                 if (test == 5)
-                    cout << timestamp() << ":  Doing prep work for ANNI Test..." << endl;
+                    cout << timeStamp() << ":  Doing prep work for ANNI Test..." << endl;
 
-                cout << timestamp() << ":  Loading Audio..." << endl;
+                cout << timeStamp() << ":  Loading Audio..." << endl;
             }
                 loadAudio(waves[0], inputFile, "", "", channels, 1, filePath, debug);
 
             if (debug)
             {
-                cout << timestamp() << ":  Audio Loaded." << endl;
-                cout << timestamp() << ":  Generating FFT..." << endl;
+                cout << timeStamp() << ":  Audio Loaded." << endl;
+                cout << timeStamp() << ":  Generating FFT..." << endl;
             }
 
             // Generate the FFT
@@ -306,8 +306,8 @@ int main(int argc, char** argv)
             
             if (debug)
             {
-                cout << timestamp() << ":  FFT generation complete." << endl;
-                cout << timestamp() << ":  Generating Zero Cross..." << endl;
+                cout << timeStamp() << ":  FFT generation complete." << endl;
+                cout << timeStamp() << ":  Generating Zero Cross..." << endl;
             }
 
             // Generate zero cross
@@ -315,8 +315,8 @@ int main(int argc, char** argv)
 
             if (debug)
             {
-                cout << timestamp() << ":  Zero Cross generation complete." << endl;
-                cout << timestamp() << ":  Generating Spectrum Flux..." << endl;
+                cout << timeStamp() << ":  Zero Cross generation complete." << endl;
+                cout << timeStamp() << ":  Generating Spectrum Flux..." << endl;
             }
 
             // Generate spectrum flux
@@ -324,8 +324,8 @@ int main(int argc, char** argv)
 
             if (debug)
             {
-                cout << timestamp() << ":  Spectrum Flux generation complete." << endl;
-                cout << timestamp() << ":  Generating Cepstrum..." << endl;
+                cout << timeStamp() << ":  Spectrum Flux generation complete." << endl;
+                cout << timeStamp() << ":  Generating Cepstrum..." << endl;
             }
 
             // Generate cepstrum
@@ -333,8 +333,8 @@ int main(int argc, char** argv)
 
             if (debug)
             {
-                cout << timestamp() << ":  Cepstrum generation complete." << endl;
-                cout << timestamp() << ":  Generating Spectrum Centroid..." << endl;
+                cout << timeStamp() << ":  Cepstrum generation complete." << endl;
+                cout << timeStamp() << ":  Generating Spectrum Centroid..." << endl;
             }
 
             // Generate spectrum centroid
@@ -342,15 +342,15 @@ int main(int argc, char** argv)
 
             if (debug)
             {
-                cout << timestamp() << ":  Spectrum Centroid generation complete." << endl;
-                cout << timestamp() << ":  Prep work complete." << endl;
-                cout << timestamp() << ":  Starting ANNI Test..." << endl;
+                cout << timeStamp() << ":  Spectrum Centroid generation complete." << endl;
+                cout << timeStamp() << ":  Prep work complete." << endl;
+                cout << timeStamp() << ":  Starting ANNI Test..." << endl;
             }
 
             anniTest(waves[0], outputFile, filePath, debug);
 
             if (debug)
-                cout << timestamp() << ":  ANNI Test complete." << endl;
+                cout << timeStamp() << ":  ANNI Test complete." << endl;
 
             break;
         }

@@ -44,7 +44,7 @@ void audioTest(AudioWave &wave, string audioFileName, string audioDir, string sa
     ofstream debugFile;      // A stream pointer for debug output
 
     outFile.open((path + "/" + fileName).c_str(), ios::app);
-    outFile << timestamp() << ":  Starting Audio Test" << endl;
+    outFile << timeStamp() << ":  Starting Audio Test" << endl;
     outFile.close();
 
     if (debug)
@@ -59,7 +59,7 @@ void audioTest(AudioWave &wave, string audioFileName, string audioDir, string sa
     auto duration = duration_cast<microseconds>(stop - start);
 
     outFile.open((path + "/" + fileName).c_str(), ios::app);
-    outFile << timestamp() << ":  Audio Test completed in " << duration.count() << " us." << endl << endl;
+    outFile << timeStamp() << ":  Audio Test completed in " << duration.count() << " us." << endl << endl;
     outFile << "\tLeft Channel Size:  " << wave.getLeftSize() << endl;
     outFile << "\tRight Channel Size:  " << wave.getRightSize() << endl;
 
@@ -89,7 +89,7 @@ void fftTest(AudioWave &wave, string fileName, string path, bool debug)
     ofstream debugFile;             // A stream pointer for debug output
 
     outFile.open((path + "/" + fileName).c_str(), ios::app);
-    outFile << timestamp() << ":  Starting FFT Test..." << endl;
+    outFile << timeStamp() << ":  Starting FFT Test..." << endl;
     outFile.close();
 
     if (debug)
@@ -104,7 +104,7 @@ void fftTest(AudioWave &wave, string fileName, string path, bool debug)
     auto duration = duration_cast<microseconds>(stop - start);
 
     outFile.open((path + "/" + fileName).c_str(), ios::app);
-    outFile << timestamp() << ":  FFT Test completed in " << duration.count() << " us." << endl;
+    outFile << timeStamp() << ":  FFT Test completed in " << duration.count() << " us." << endl;
     outFile.close();
 
     if (debug)
@@ -130,7 +130,7 @@ void zeroCrossingTest(AudioWave &wave, string fileName, string path, bool debug)
     ofstream debugFile;             // A stream pointer for debug output
 
     outFile.open((path + "/" + fileName).c_str(), ios::app);
-    outFile << timestamp() << ":  Starting Zero Cross Test..." << endl;
+    outFile << timeStamp() << ":  Starting Zero Cross Test..." << endl;
     outFile.close();
 
     if (debug)
@@ -145,7 +145,7 @@ void zeroCrossingTest(AudioWave &wave, string fileName, string path, bool debug)
     auto duration = duration_cast<milliseconds>(stop - start);
 
     outFile.open((path + "/" + fileName).c_str(), ios::app);
-    outFile << timestamp() << ":  Zero Cross Test completed in " << duration.count() << " ms." << endl;
+    outFile << timeStamp() << ":  Zero Cross Test completed in " << duration.count() << " ms." << endl;
     outFile << endl << "\tZero Cross Database contains " << wave.getZSize(0) << " channels." << endl;
     outFile << "\tLeft Channel Zero Cross Size:  " << wave.getZSize(1) << endl;
     outFile << "\tRight Channel Zero Cross Size:  " << wave.getZSize(2) << endl << endl;
@@ -209,7 +209,7 @@ void spectrumFluxTest(AudioWave &wave, string fileName, string path, bool debug)
     ofstream debugFile;                // A stream pointer for debug output.
 
     outFile.open((path + "/" + fileName).c_str(), ios::app);
-    outFile << timestamp() << ":  Starting Spectrum Flux Test..." << endl;
+    outFile << timeStamp() << ":  Starting Spectrum Flux Test..." << endl;
     outFile.close();
 
     if (debug)
@@ -224,7 +224,7 @@ void spectrumFluxTest(AudioWave &wave, string fileName, string path, bool debug)
     auto duration = duration_cast<microseconds>(stop - start);
 
     outFile.open((path + "/" + fileName).c_str(), ios::app);
-    outFile << timestamp() << ":  Spectrum Flux Test completed in " << duration.count() << " us." << endl;
+    outFile << timeStamp() << ":  Spectrum Flux Test completed in " << duration.count() << " us." << endl;
     outFile << endl << "\tSpectrum Flux Results:" << endl;
     outFile << endl << "\tTotal Vector Size:  " << wave.getSFSize() << endl;
     outFile << "\tLeft Channel:  " << wave.getSpectrumFDataPoint(0) << endl;
@@ -267,7 +267,7 @@ void cepstrumTest(AudioWave &wave, string fileName, string path, bool debug)
     ofstream debugFile;     // A stream pointer for debug output.
 
     outFile.open((path + "/" + fileName).c_str(), ios::app);
-    outFile << timestamp() << ":  Starting Cepstrum Test..." << endl;
+    outFile << timeStamp() << ":  Starting Cepstrum Test..." << endl;
     outFile.close();
 
     if (debug)
@@ -282,7 +282,7 @@ void cepstrumTest(AudioWave &wave, string fileName, string path, bool debug)
     auto duration = duration_cast<microseconds>(stop - start);
 
     outFile.open((path + "/" + fileName).c_str(), ios::app);
-    outFile << timestamp() << ":  Cepstrum Test completed in " << duration.count() << " us." << endl;
+    outFile << timeStamp() << ":  Cepstrum Test completed in " << duration.count() << " us." << endl;
     outFile << endl << "\tCepstrum database contains:  " << endl;
 
     outFile << endl;
@@ -311,7 +311,7 @@ void spectrumCentroidTest(AudioWave &wave, string fileName, string path, bool de
     ofstream debugFile;                // A stream pointer for debug output.
 
     outFile.open((path + "/" + fileName).c_str(), ios::app);
-    outFile << timestamp() << ":  Starting Spectrum Centroid Test..." << endl;
+    outFile << timeStamp() << ":  Starting Spectrum Centroid Test..." << endl;
     outFile.close();
 
     if (debug)
@@ -326,7 +326,7 @@ void spectrumCentroidTest(AudioWave &wave, string fileName, string path, bool de
     auto duration = duration_cast<microseconds>(stop - start);
 
     outFile.open((path + "/" + fileName).c_str(), ios::app);
-    outFile << timestamp() << ":  Spectrum Centroid Test completed in " << duration.count() << " us." << endl;
+    outFile << timeStamp() << ":  Spectrum Centroid Test completed in " << duration.count() << " us." << endl;
     outFile << endl << "\tSpectrum Centroid Results:" << endl;
     outFile << endl << "\tTotal Vector Size:  " << wave.getSCSize() << endl;
     outFile << "\tLeft Channel:  " << wave.getSpectrumCDataPoint(0) << endl;
@@ -369,7 +369,7 @@ void anniTest(AudioWave &wave, string fileName, string path, bool debug)
     ofstream debugFile;                      // A stream pointer for debug output
  
     outFile.open((path + "/" + fileName).c_str(), ios::app);
-    outFile << timestamp() << ":  Starting ANNI Test..." << endl;
+    outFile << timeStamp() << ":  Starting ANNI Test..." << endl;
     outFile.close();
 
     if (debug)
@@ -384,7 +384,7 @@ void anniTest(AudioWave &wave, string fileName, string path, bool debug)
     auto duration = duration_cast<microseconds>(stop - start);
 
     outFile.open((path + "/" + fileName).c_str(), ios::app);
-    outFile << timestamp() << ":  ANNI Test completed in " << duration.count() << " us." << endl;
+    outFile << timeStamp() << ":  ANNI Test completed in " << duration.count() << " us." << endl;
     outFile << endl << "\tANNI Results:  " << endl;
 
     outFile << endl;
