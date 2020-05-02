@@ -27,6 +27,7 @@ int main(int argc, char** argv)
 {
 
     string path;                               // Path for file output.
+    string sampleName;                         // A string containing the name of the sample file
 
     int folds;                                 // Contains the number of folds to seperated data into
     double learnRate;                          // The learning rate for the neural network.
@@ -41,7 +42,7 @@ int main(int argc, char** argv)
     {
         cout << endl << endl << "Program Use:" << endl << endl;
         cout << "./ANNI [folds] [learnRate] [epochs] [codeBooks] [alg {0,1,2,3,4,5]"
-             << endl << "       [channels {1,2}] [path] [debug {0,1}]" << endl << endl;
+             << endl << "       [channels {1,2}] [path] [debug {0,1}] [sampleFile]" << endl << endl;
         cout << "\tfolds" << endl << endl << "\t\tInteger indicating the number of folds to break"
              << " data into." << endl << endl;
         cout << "\tlearnRate" << endl << endl << "\t\tFloating point indicating the learning rate."
@@ -59,6 +60,8 @@ int main(int argc, char** argv)
         cout << "\tpath" << endl << endl << "\t\tThe path for saving data output." << endl << endl;
         cout << "\tdebug" << endl << endl << "\t\tA flag that controls debug output." << endl << endl
              << "\t\t0 - No debug" << endl << "\t\t1 - Debug" << endl << endl;
+        cout << "\tsampleFile" << endl << endl << "\t\tA string indicating the name of the file to test."
+             << endl << endl;
     }
     else
     {
@@ -106,6 +109,11 @@ int main(int argc, char** argv)
                     debug = atoi(argv[i]);
                     break;
                 }
+                case 9:
+                {
+                    sampleName = argv[i];
+                    break;
+                }
                 default:
                 {
                     cout << "Error with arguments." << endl;
@@ -116,7 +124,7 @@ int main(int argc, char** argv)
 
     cout << "Calling ANNI.." << endl;
 
-    ANNI(folds, learnRate, epochs, codeBooks, alg, channels, path, debug);
+    ANNI(sampleName, folds, learnRate, epochs, codeBooks, alg, channels, path, debug);
  
     return 0;
 }

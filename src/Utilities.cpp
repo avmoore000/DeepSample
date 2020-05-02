@@ -21,234 +21,6 @@
 #include "../include/Utilities.h"
 #include <sys/stat.h>
 
-// Function printer
-// Inputs:  
-//        fileName - A string containing the name of the output file.
-//        value - A string to be added to the output file.
-//        algo - An integer specifying the algorithm that called the printer.
-//        begin - An integer describing the beginning of the printed range.
-//        end - An integer describing the end of the printed range.
-// Outputs:  None
-// Purpose:  Formats and outputs text to a file.
-void printer (string fileName, vector<string> value, int algo, int begin, int end)
-{
-    ofstream outFile;                // A stream pointer for data output
-    stringstream stringBuilder;      // This will be used to create the output string
-    string line;                     // Stores the line as the string is built
-
-    outFile.open(fileName, ios::app);
-
-    switch (algo)  // Switch to determine which algorithm we are using.
-    {
-        case 0:  // ZeroShift algorithm
-        {
-            for (int i = 0; i < value.size() - 1; i++)
-            {
-                if (i == 0)
-                    line = "Iteration:";
-                if (i == 1)
-                    line = "Real I [" + to_string(begin) + " - " + to_string(end) + "]:";
-                if (i == 2)
-                    line = "Real I+1 [" + to_string(begin) + " - " + to_string(end) + "]:";
-                if (i == 3)
-                    line = "Sign 1 [" + to_string(begin) + " - " + to_string(end) + "]:";
-                if (i == 4)
-                    line = "Sign 2 [" + to_string(begin) + " - " + to_string(end) + "]:";
-                if (i == 5)
-                    line = "ZeroCross [" + to_string(begin) + " - " + to_string(end) + "]:";
-
-                outFile << line << setiosflags(ios_base::left) << setw(30-line.length()) << " "
-                        << resetiosflags(ios_base::left) << setiosflags(ios_base::right) << value[i]
-                        << resetiosflags(ios_base::right) << endl << endl;
-
-            }
-           
-            for (int i = 0; i < 100; i++)
-                outFile << "_";
-
-            outFile << endl << endl;
- 
-            break;
-        } // End ZeroShift algorithm
-
-        case 2:  // Spectrum Flux algorithm
-        {
-            break;
-        }  // End Spectrum Flux algorithm
-
-        case 3:  // Cepstral algorithm
-        {
-            break;
-        }  // End Cepstral algorithm
-
-        case 4:  // Complex Cepstral algorithm
-        {
-            break;
-        }  // End Complex Cepstral algorithm
-
-        default:
-            break;
-    }
-
-    outFile.close();
-}
-
-// Function createString (int version)
-// Inputs:
-//       data - An integer to be converted to a string.
-//       fieldWidth - An integer specifying the width of the data field.
-// Outputs:  
-//       newString - The string version of the input
-// Purpose:  Generate strings from given input
-string createString(int data, int fieldWidth)
-{
-    stringstream stringBuilder;
-            
-    stringBuilder << setiosflags(ios_base::left) << setw(fieldWidth) << to_string(data) + "  " << resetiosflags(ios_base::left);
-
-    return stringBuilder.str();
-}
-
-// Function createString (double version)
-// Inputs:
-//       data - A double to be converted to a string.
-//       fieldWidth - An integer specifying the width of the data field.
-// Outputs:
-//       newString - The string version of the input
-// Purpose:  Generate strings from given input
-string createString(double data, int fieldWidth)
-{
-    stringstream stringBuilder;
-
-    stringBuilder << setiosflags(ios_base::left) << setw(fieldWidth) << to_string(data) + " " << resetiosflags(ios_base::left);
-
-    return stringBuilder.str();
-}
-
-// Function createString (boolean version)
-// Inputs:
-//       data - A boolean to be converted to a string.
-//       fieldWidth - An integer specifying the width of the data field.
-// Outputs:
-//       newString - The string version of the input.
-// Purpose:  Generate strings from given input
-string createString(bool data, int fieldWidth)
-{
-    stringstream stringBuilder;
- 
-    stringBuilder << setiosflags(ios_base::left) << setw(fieldWidth) << to_string(data) + " " << resetiosflags(ios_base::left);
-
-    return stringBuilder.str();
-}
-
-// Function fileExists
-// Inputs:
-//       fileName - A string containing the name of the file to check
-// Outputs:
-//       file - A filestream object cast to a boolean representing the results of the check.
-// Purpose: Determine the existance of a file
-bool fileExists(string fileName)
-{
-    ifstream infile(fileName.c_str());
-
-    if (infile)
-        return true;
-    else
-	return false;
-}
-
-// Function plotter
-// Inputs:
-//       wave - An AudioWave object
-//       graphType - An integer denoting the type of graph to create.
-//       alg - An integer indicating which audio algorithm(s) to plot
-//       fileName - A string indicating the name of the output file.
-//       path - A path to the directory for outputting the plot
-//       debug - A boolean flag that controls debug output.
-// Outputs: None
-// Purpose:  To graph a given data file.
-void plotter(AudioWave wave, int graphType, int alg, string fileName, string path, bool debug)
-{
-    ofstream outFile;         // Stream pointer for data output
-    ofstream debugFile;       // Stream pointer for debug output.
-    ifstream infile;          // Will be used to edit the sourceFile if needed.
-     
-    string filePrefix;        // The prefix for plot files
- 
-    /*
-    switch(graphType)
-    {
-        case 0:
-        {
-            outFileName = plotFileName + "_boxGraph";
-            break;
-        }
-        default:
-        {
-            cout << "Unsupported graph type." << endl;
-            break;
-        }
-    }*/
-
-    string plotPath = path + "/Plots/" + wave.getFileName();
-
-    mkdir(plotPath.c_str(), 0777);
-
-    filePrefix = path + "/Plots/" + wave.getFileName();
-
-    switch(alg)
-    { 
-        case 0: // Plot all algorithms
-        {
-            for (int i = 0; i < 6; i++)
-            {
-                graphAlg(wave, filePrefix, i, fileName, path, debug);
-            }
-
-            break;
-        }
-        case 1: // Graph Audio wave
-        {
-            graphAlg(wave, filePrefix, 0, fileName, path, debug);
-            break;
-        }
-        case 2: // Graph FFT
-        {
-            graphAlg(wave, filePrefix, 1, fileName, path, debug);
-            break;
-        }
-        case 3: // Graph Zero cross
-        {
-            graphAlg(wave, filePrefix, 2, fileName, path, debug);
-            break;
-        }
-        case 4: // Graph Spectral Flux
-        {
-            graphAlg(wave, filePrefix, 3, fileName, path, debug);
-            break;
-        }
-        case 5: // Graph Real Cepstrum
-        {
-            graphAlg(wave, filePrefix, 4, fileName, path, debug);
- 
-            break;
-        }
-        case 6: // Graph Spectrum Centroid
-        {
-            graphAlg(wave, filePrefix, 5, fileName, path, debug);
-
-            break;
-        }
-        default:
-        {
-            cout << "Invalid algorithm." << endl;
-            break;
-        }
-    }
-
-    return;
-}
-
 // Function graphAlg
 // Inputs:
 //       wave - An AudioWave object
@@ -429,10 +201,10 @@ void graphAlg(AudioWave wave, string filePrefix, int alg, string fileName, strin
         generateScript(alg,fullTitle[0], xlabel, ylabel, yMin[0], yMax[0], fullOutFile[0], sourceFile, 1);
 
     outFile.open((path + "/" + fileName).c_str(), ios::app);
-    outFile << timestamp() << ":  Plotting " << fullTitle[0] << "..." << endl;
+    outFile << timeStamp() << ":  Plotting " << fullTitle[0] << "..." << endl;
 
     if (debug)
-        cout << timestamp() << ":  Plotting " << fullTitle[0] << "..." << endl;
+        cout << timeStamp() << ":  Plotting " << fullTitle[0] << "..." << endl;
 
     system(plotCommand.c_str());
 
@@ -444,10 +216,10 @@ void graphAlg(AudioWave wave, string filePrefix, int alg, string fileName, strin
       //  if (alg != 5)
             generateScript(alg,fullTitle[1], xlabel, ylabel, yMin[1], yMax[1], fullOutFile[1], sourceFile, 2);
 
-        outFile << timestamp() << ":  Plotting " << fullTitle[1] << "..." << endl;
+        outFile << timeStamp() << ":  Plotting " << fullTitle[1] << "..." << endl;
         
         if (debug)
-            cout << timestamp() << ":  Plotting " << fullTitle[1] << "..." << endl;
+            cout << timeStamp() << ":  Plotting " << fullTitle[1] << "..." << endl;
 
         system(plotCommand.c_str());
     }
@@ -457,7 +229,7 @@ void graphAlg(AudioWave wave, string filePrefix, int alg, string fileName, strin
     return;
 }
 
-// Functon generateScript
+// Function generateScript
 // Inputs:
 //       title - A string containing the title of the graph.
 //       xlabel - A string containing the x label for the graph.
@@ -493,57 +265,6 @@ void generateScript(int alg, string title, string xlabel, string ylabel, double 
     return;
 }
 
-// Function timestamp
-// Inputs: None
-// Ouputs: 
-//       currentTime - A string containing the current system timestamp
-// Purpose: The timestamp function returns a string reflecting the current system timestamp.
-string timestamp()
-{
-    string currentTime;
-    string temp;
-
-    currentTime = "";
-    temp = "";
-
-    auto timeNow = chrono::system_clock::to_time_t(chrono::system_clock::now());
-
-    temp = ctime(&timeNow);
-
-    for (std::string::size_type i = 0; i < temp.size()-1; i++)
-        currentTime += temp[i];
-
-    return currentTime;
-}
-
-// Function sortDist
-// Inputs:
-//       v1 - The first vector to sort
-//       v2 - The second vector to sort
-// Outputs:
-//       isSorted - A boolean value describing if v1[x] < v2[x]
-// Purpose:  To sort a list of vectors from greatest to least euclidean distance
-bool sortDist (const vector<double>& v1, const vector<double>& v2)
-{
-    return v1[v1.size()-1] < v2[v2.size()-1];
-}
-
-// Function sign
-// Inputs:
-//       test - A double containing the number to test
-// Outputs: 
-//       result - An integer describing the sign of the test number
-// Purpose: The sign function determines the sign of a given number
-int sign(double test)
-{
-    int result = 0;
-
-    if (test > 0)
-        result = 1;
-
-    return result;
-}
-
 // Function genTrainSet (N-d vector version)
 // Inputs:
 //       source - An N-D vector of doubles containing the source for training
@@ -554,8 +275,7 @@ int sign(double test)
 void genTrainSet(vector<vector<double> > source, vector<vector<double> > &sink, int exclude)
 {
     vector<double> set;                             // Will contain a training set.
-    cout << "Source.size() = " << source.size();
-
+    
     // Set up the sink with the correct size
     for (int i = 0; i < source.size(); i++)
         sink.push_back(set);
@@ -569,23 +289,6 @@ void genTrainSet(vector<vector<double> > source, vector<vector<double> > &sink, 
                 sink[i].push_back(source[i].at(j));
         }
     }
-}
-
-// Function genTestSet (N-d vector version)
-// Inputs:
-//       source - An N-d vector of doubles containing the source for testing
-//       sink - An N-d vector of doubles that will hold the test set.
-void genTestSet(vector<vector<double> > source, vector<vector<double> > &sink)
-{
-    vector<double> set;                        // Will hold the test set.
-
-    // Set up the sink with the correct size
-    for (int i = 0; i < source.size(); i++)
-        sink.push_back(set);
-
-    for (int i = 0; i < source.size(); i++)
-        for (int j = 0; j < source[i].size(); j++)
-            sink[i].push_back(source[i].at(j));
 }
 
 // Function normalize
@@ -612,11 +315,11 @@ void normalize(AudioWave wave, vector<vector<double> > &normals, string outputFi
     step = wave.getFrames();
 
     outFile.open((path + "/" + outputFile).c_str(), ios::app);
-    outFile << timestamp() << ":  Calculating normals..." << endl;
+    outFile << timeStamp() << ":  Calculating normals..." << endl;
     outFile.close();
 
     if (debug)
-        cout << timestamp() << ":  Calculating normals..." << endl;
+        cout << timeStamp() << ":  Calculating normals..." << endl;
 
     // Clear out the normals vector(s)
     for (int i = 0; i < normals.size(); i++)
@@ -687,7 +390,7 @@ void normalize(AudioWave wave, vector<vector<double> > &normals, string outputFi
     }
 
     outFile.open((path + "/" + outputFile).c_str(), ios::app);
-    outFile << timestamp() << ":  Finished calculating normals." << endl;
+    outFile << timeStamp() << ":  Finished calculating normals." << endl;
     outFile.close();
 
     if (debug)
@@ -718,12 +421,176 @@ void normalize(AudioWave wave, vector<vector<double> > &normals, string outputFi
             debugFile << endl << "]" << endl << endl;
         }
 
-        cout << timestamp() << ":  Normals calculated." << endl;
+        cout << timeStamp() << ":  Normals calculated." << endl;
     }
 
     debugFile.close();
 
     return;
+}
+
+// Function plotter
+// Inputs:
+//       wave - An AudioWave object
+//       graphType - An integer denoting the type of graph to create.
+//       alg - An integer indicating which audio algorithm(s) to plot
+//       fileName - A string indicating the name of the output file.
+//       path - A path to the directory for outputting the plot
+//       debug - A boolean flag that controls debug output.
+// Outputs: None
+// Purpose:  To graph a given data file.
+void plotter(AudioWave wave, int graphType, int alg, string fileName, string path, bool debug)
+{
+    ofstream outFile;         // Stream pointer for data output
+    ofstream debugFile;       // Stream pointer for debug output.
+    ifstream infile;          // Will be used to edit the sourceFile if needed.
+     
+    string filePrefix;        // The prefix for plot files
+ 
+    /*
+    switch(graphType)
+    {
+        case 0:
+        {
+            outFileName = plotFileName + "_boxGraph";
+            break;
+        }
+        default:
+        {
+            cout << "Unsupported graph type." << endl;
+            break;
+        }
+    }*/
+
+    string plotPath = path + "/Plots/" + wave.getFileName();
+
+    mkdir(plotPath.c_str(), 0777);
+
+    filePrefix = path + "/Plots/" + wave.getFileName();
+
+    switch(alg)
+    { 
+        case 0: // Plot all algorithms
+        {
+            for (int i = 0; i < 6; i++)
+            {
+                graphAlg(wave, filePrefix, i, fileName, path, debug);
+            }
+
+            break;
+        }
+        case 1: // Graph Audio wave
+        {
+            graphAlg(wave, filePrefix, 0, fileName, path, debug);
+            break;
+        }
+        case 2: // Graph FFT
+        {
+            graphAlg(wave, filePrefix, 1, fileName, path, debug);
+            break;
+        }
+        case 3: // Graph Zero cross
+        {
+            graphAlg(wave, filePrefix, 2, fileName, path, debug);
+            break;
+        }
+        case 4: // Graph Spectral Flux
+        {
+            graphAlg(wave, filePrefix, 3, fileName, path, debug);
+            break;
+        }
+        case 5: // Graph Real Cepstrum
+        {
+            graphAlg(wave, filePrefix, 4, fileName, path, debug);
+ 
+            break;
+        }
+        case 6: // Graph Spectrum Centroid
+        {
+            graphAlg(wave, filePrefix, 5, fileName, path, debug);
+
+            break;
+        }
+        default:
+        {
+            cout << "Invalid algorithm." << endl;
+            break;
+        }
+    }
+
+    return;
+}
+
+// Function printer
+// Inputs:  
+//        fileName - A string containing the name of the output file.
+//        value - A string to be added to the output file.
+//        algo - An integer specifying the algorithm that called the printer.
+//        begin - An integer describing the beginning of the printed range.
+//        end - An integer describing the end of the printed range.
+// Outputs:  None
+// Purpose:  Formats and outputs text to a file.
+void printer (string fileName, vector<string> value, int algo, int begin, int end)
+{
+    ofstream outFile;                // A stream pointer for data output
+    stringstream stringBuilder;      // This will be used to create the output string
+    string line;                     // Stores the line as the string is built
+
+    outFile.open(fileName, ios::app);
+
+    switch (algo)  // Switch to determine which algorithm we are using.
+    {
+        case 0:  // ZeroShift algorithm
+        {
+            for (int i = 0; i < value.size() - 1; i++)
+            {
+                if (i == 0)
+                    line = "Iteration:";
+                if (i == 1)
+                    line = "Real I [" + to_string(begin) + " - " + to_string(end) + "]:";
+                if (i == 2)
+                    line = "Real I+1 [" + to_string(begin) + " - " + to_string(end) + "]:";
+                if (i == 3)
+                    line = "Sign 1 [" + to_string(begin) + " - " + to_string(end) + "]:";
+                if (i == 4)
+                    line = "Sign 2 [" + to_string(begin) + " - " + to_string(end) + "]:";
+                if (i == 5)
+                    line = "ZeroCross [" + to_string(begin) + " - " + to_string(end) + "]:";
+
+                outFile << line << setiosflags(ios_base::left) << setw(30-line.length()) << " "
+                        << resetiosflags(ios_base::left) << setiosflags(ios_base::right) << value[i]
+                        << resetiosflags(ios_base::right) << endl << endl;
+
+            }
+           
+            for (int i = 0; i < 100; i++)
+                outFile << "_";
+
+            outFile << endl << endl;
+ 
+            break;
+        } // End ZeroShift algorithm
+
+        case 2:  // Spectrum Flux algorithm
+        {
+            break;
+        }  // End Spectrum Flux algorithm
+
+        case 3:  // Cepstral algorithm
+        {
+            break;
+        }  // End Cepstral algorithm
+
+        case 4:  // Complex Cepstral algorithm
+        {
+            break;
+        }  // End Complex Cepstral algorithm
+
+        default:
+            break;
+    }
+
+    outFile.close();
 }
 
 // Function realify
@@ -750,11 +617,11 @@ void realify(AudioWave wave, vector<vector<double> > &reals, string outputFile, 
     step = wave.getFrames();
 
     outFile.open((path + "/" + outputFile).c_str(), ios::app);
-    outFile << timestamp() << ":  Realifying FFT..." << endl;
+    outFile << timeStamp() << ":  Realifying FFT..." << endl;
     outFile.close();
 
     if (debug)
-        cout << timestamp() << ":  Realifying FFT..." << endl;
+        cout << timeStamp() << ":  Realifying FFT..." << endl;
 
     // Clear out the reals vector(s)
     for (int i = 0; i < reals.size(); i++)
@@ -803,7 +670,7 @@ void realify(AudioWave wave, vector<vector<double> > &reals, string outputFile, 
     }
 
     outFile.open((path + "/" + outputFile).c_str(), ios::app);
-    outFile << timestamp() << ":  Finished realifying FFT." << endl;
+    outFile << timeStamp() << ":  Finished realifying FFT." << endl;
     outFile.close();
 
     if (debug)
@@ -834,10 +701,128 @@ void realify(AudioWave wave, vector<vector<double> > &reals, string outputFile, 
             debugFile << endl << "]" << endl << endl;
         }
 
-        cout << timestamp() << ":  FFT realified." << endl;
+        cout << timeStamp() << ":  FFT realified." << endl;
     }
 
     debugFile.close();
 
     return;
 }
+
+// Function createString (int version)
+// Inputs:
+//       data - An integer to be converted to a string.
+//       fieldWidth - An integer specifying the width of the data field.
+// Outputs:  
+//       newString - The string version of the input
+// Purpose:  Generate strings from given input
+string createString(int data, int fieldWidth)
+{
+    stringstream stringBuilder;
+            
+    stringBuilder << setiosflags(ios_base::left) << setw(fieldWidth) << to_string(data) + "  " << resetiosflags(ios_base::left);
+
+    return stringBuilder.str();
+}
+
+// Function createString (double version)
+// Inputs:
+//       data - A double to be converted to a string.
+//       fieldWidth - An integer specifying the width of the data field.
+// Outputs:
+//       newString - The string version of the input
+// Purpose:  Generate strings from given input
+string createString(double data, int fieldWidth)
+{
+    stringstream stringBuilder;
+
+    stringBuilder << setiosflags(ios_base::left) << setw(fieldWidth) << to_string(data) + " " << resetiosflags(ios_base::left);
+
+    return stringBuilder.str();
+}
+
+// Function createString (boolean version)
+// Inputs:
+//       data - A boolean to be converted to a string.
+//       fieldWidth - An integer specifying the width of the data field.
+// Outputs:
+//       newString - The string version of the input.
+// Purpose:  Generate strings from given input
+string createString(bool data, int fieldWidth)
+{
+    stringstream stringBuilder;
+ 
+    stringBuilder << setiosflags(ios_base::left) << setw(fieldWidth) << to_string(data) + " " << resetiosflags(ios_base::left);
+
+    return stringBuilder.str();
+}
+
+// Function timeStamp
+// Inputs: None
+// Ouputs: 
+//       currentTime - A string containing the current system timeStamp
+// Purpose: The timeStamp function returns a string reflecting the current system timeStamp.
+string timeStamp()
+{
+    string currentTime;
+    string temp;
+
+    currentTime = "";
+    temp = "";
+
+    auto timeNow = chrono::system_clock::to_time_t(chrono::system_clock::now());
+
+    temp = ctime(&timeNow);
+
+    for (std::string::size_type i = 0; i < temp.size()-1; i++)
+        currentTime += temp[i];
+
+    return currentTime;
+}
+
+// Function fileExists
+// Inputs:
+//       fileName - A string containing the name of the file to check
+// Outputs:
+//       file - A filestream object cast to a boolean representing the results of the check.
+// Purpose: Determine the existance of a file
+bool fileExists(string fileName)
+{
+    ifstream infile(fileName.c_str());
+
+    if (infile)
+        return true;
+    else
+	return false;
+}
+
+// Function sortDist
+// Inputs:
+//       v1 - The first vector to sort
+//       v2 - The second vector to sort
+// Outputs:
+//       isSorted - A boolean value describing if v1[x] < v2[x]
+// Purpose:  To sort a list of vectors from greatest to least euclidean distance
+bool sortDist (const vector<double>& v1, const vector<double>& v2)
+{
+    return v1[v1.size()-1] < v2[v2.size()-1];
+}
+
+// Function sign
+// Inputs:
+//       test - A double containing the number to test
+// Outputs: 
+//       result - An integer describing the sign of the test number
+// Purpose: The sign function determines the sign of a given number
+int sign(double test)
+{
+    int result = 0;
+
+    if (test > 0)
+        result = 1;
+
+    return result;
+}
+
+
+

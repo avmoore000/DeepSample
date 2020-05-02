@@ -54,6 +54,46 @@ AudioWave::~AudioWave()
     spectrumCData.clear();
 }
 
+/******************** Initializers ********************/
+
+// Function setCepstrumData
+// Inputs: None
+// Outputs: None
+// Purpose: Initializes the cepstrumData member variable
+void AudioWave::setCepstrumData()
+{
+    vector<double> data;
+
+    cepstrumData.push_back(data);
+    cepstrumData.push_back(data);
+
+    return;
+}
+
+// Function setChannels
+// Inputs:
+//       chan - An integer indicating the number of channels in the audio file.
+// Outputs: None
+// Purpose:  Initializes the channels member variable
+void AudioWave::setChannels(int chan)
+{
+    channels = chan;
+
+    return;
+}
+
+// Function setFrames
+// Inputs:
+//       numFrames - An integer indicating the number of frames in the audio file.
+// Outputs: None
+// Purpose:  Initializes the frames member variable.
+void AudioWave::setFrames(int num)
+{
+    frames = num;
+
+    return;
+}
+
 // Function setName
 // Inputs:
 //       audioName - A string containing the fulle path to an audio file.
@@ -64,6 +104,242 @@ void AudioWave::setName(string audioName)
     fileName = audioName;
 
     return;
+}
+
+// Function setLeftFFT
+// Inputs:
+//       fft - A vector of complex double vectors containing the left channel FFT
+// Outputs: None
+// Purpose:  Set the value of the leftFFT member vector
+void AudioWave::setLeftFFT(vector<complex<double> > fft)
+{
+    leftFFT = fft;
+
+    return;
+}
+
+// Function setRightFFT
+// Inputs:
+//       fft - A vector of complex double vectors containing the right channel FFT
+// Outputs: None
+// Purpose:  Set the value of the rightFFT member vector
+void AudioWave::setRightFFT(vector<complex<double> > fft)
+{
+    rightFFT = fft;
+
+    return;
+}
+
+// Function setYMaximums
+// Inputs: None
+// Outputs: None
+// Purpose: Set up the max values of the data vectors
+void AudioWave::setYMaximums()
+{
+    double tMax;
+
+    tMax = 0;
+
+    // Set up the max of audio wave channels
+    for (int i = 0; i < leftChannel.size(); i++)
+    {   
+        if (real(leftChannel.at(i)) > tMax)
+            tMax = real(leftChannel.at(i));
+    }
+
+    max.push_back(tMax);
+    tMax = 0;
+
+    if (channels == 2)
+    {
+        for (int i = 0; i < rightChannel.size(); i++)
+        {
+            if (real(rightChannel.at(i)) > tMax)
+                tMax = real(rightChannel.at(i));
+        }
+
+        max.push_back(tMax);
+        tMax = 0;
+    }
+
+    // Set up the max of fft vector
+
+    for (int i = 0; i < leftFFT.size(); i++)
+    {
+        if (real(leftFFT.at(i)) > tMax)
+            tMax = real(leftFFT.at(i));
+    }
+   
+    max.push_back(tMax);
+    tMax = 0;
+
+    if (channels == 2)
+    {
+        for (int i = 0; i < rightFFT.size(); i++)
+        {
+            if (real(rightFFT.at(i)) > tMax)
+                tMax = real(rightFFT.at(i));
+        }
+
+        max.push_back(tMax);
+        tMax = 0;
+    }
+
+    // Set up max of zeroData
+
+    for (int i = 0; i < zeroData[0].size(); i++)
+    {
+        if (real(zeroData[0].at(i)) > tMax)
+            tMax = real(zeroData[0].at(i));
+    }
+  
+        max.push_back(tMax);
+        tMax = 0;
+
+    if (channels == 2)
+    {
+        for (int i = 0; i < zeroData[1].size(); i++)
+        {
+            if (real(zeroData[1].at(i)) > tMax)
+                tMax = real(zeroData[1].at(i));
+        }
+
+        max.push_back(tMax);
+        tMax = 0;
+    }
+
+    // Set up max of Real Cepstrum
+    for (int i = 0; i < cepstrumData[0].size(); i++)
+    {
+        if (cepstrumData[0].at(i) > tMax)
+            tMax = cepstrumData[0].at(i);
+    }
+
+    max.push_back(tMax);
+    tMax = 0;
+
+    if (channels == 2)
+    {
+        for (int i = 0; i < cepstrumData[1].size(); i++)
+        {
+            if (cepstrumData[1].at(i) > tMax)
+                tMax = cepstrumData[1].at(i);
+        }
+
+        max.push_back(tMax);
+        tMax = 0;
+    }
+
+}
+
+// Function setYMinimums
+// Inputs: None
+// Outputs: None
+// Purpose:  Set up the y minimums for datasets
+void AudioWave::setYMinimums()
+{
+    double tMin;    // Will contain the y minimum
+
+    tMin = 0;
+
+    // Set the y-min for the audio waves
+
+    for (int i = 0; i < leftChannel.size(); i++)
+    {
+        if (i == 0)
+            tMin = real(leftChannel.at(i));
+        else if (real(leftChannel.at(i)) < tMin)
+            tMin = real(leftChannel.at(i));
+
+    }
+
+    min.push_back(tMin);
+    tMin = 0;
+
+    if (channels == 2)
+    {
+        for (int i = 0; i < rightChannel.size(); i++)
+        {
+            if (i == 0)
+                tMin = real(rightChannel.at(i));
+            else if (real(rightChannel.at(i)) < tMin)
+                tMin = real(rightChannel.at(i));
+        }
+
+        min.push_back(tMin);
+        tMin = 0;
+    }
+
+    // Set the y-min for the fft
+
+    for (int i = 0; i < leftFFT.size(); i++)
+    {
+        if (i == 0)
+            tMin = real(leftFFT.at(i));
+        else if (real(leftFFT.at(i)) < tMin)
+            tMin = real(leftFFT.at(i));
+    }
+
+    min.push_back(tMin);
+    tMin = 0;
+
+    if (channels == 2)
+    {
+        for (int i = 0; i < rightFFT.size(); i++)
+        {
+            if ((i == 0) || (real(rightFFT.at(i)) < tMin))
+                tMin = real(rightFFT.at(i));
+        }
+
+        min.push_back(tMin);
+        tMin = 0;
+    }
+
+    // Set the y-min for zeroData
+
+    for (int i = 0; i < zeroData[0].size(); i++)
+    {
+        if ((i == 0) || (zeroData[0].at(i) < tMin))
+            tMin = zeroData[0].at(i);
+    }
+
+    min.push_back(tMin);
+    tMin = 0;
+
+    if (channels == 2)
+    {
+        for (int i = 0; i < zeroData[1].size(); i++)
+        {
+            if ((i == 0) || (zeroData[1].at(i) < tMin))
+                tMin = zeroData[1].at(i);
+        }
+
+        min.push_back(tMin);
+        tMin = 0;
+    }
+
+    // Set the y-min for Real Cepstrum
+
+    for (int i = 0; i < cepstrumData[0].size(); i++)
+    {
+        if ((i == 0) || (cepstrumData[0].at(i) < tMin))
+            tMin = cepstrumData[0].at(i);
+    }
+
+    min.push_back(tMin);
+    tMin = 0;
+
+    if (channels == 0)
+    {
+        for (int i = 0; i < cepstrumData[1].size(); i++)
+        {
+            if ((i == 0) || (cepstrumData[1].at(i) < tMin))
+                tMin = cepstrumData[1].at(i);
+        }
+
+        min.push_back(tMin);
+        tMin = 0;
+    }
 }
 
 // Function setSourceFiles
@@ -179,30 +455,6 @@ void AudioWave::setSourceFiles()
     return;
 }
 
-// Function setChannels
-// Inputs:
-//       chan - An integer indicating the number of channels in the audio file.
-// Outputs: None
-// Purpose:  Initializes the channels member variable
-void AudioWave::setChannels(int chan)
-{
-    channels = chan;
-
-    return;
-}
-
-// Function setFrames
-// Inputs:
-//       numFrames - An integer indicating the number of frames in the audio file.
-// Outputs: None
-// Purpose:  Initializes the frames member variable.
-void AudioWave::setFrames(int num)
-{
-    frames = num;
-
-    return;
-}
-
 // Function setZeroData
 // Inputs: 
 // Outputs: None
@@ -217,68 +469,9 @@ void AudioWave::setZeroData()
     return;
 }
 
-// Function setCepstrumData
-// Inputs: None
-// Outputs: None
-// Purpose: Initializes the cepstrumData member variable
-void AudioWave::setCepstrumData()
-{
-    vector<double> data;
+/******************** End Initializers ********************/
 
-    cepstrumData.push_back(data);
-    cepstrumData.push_back(data);
-
-    return;
-}
-
-// Function setLeftFFT
-// Inputs:
-//       fft - A vector of complex double vectors containing the left channel FFT
-// Outputs: None
-// Purpose:  Set the value of the leftFFT member vector
-void AudioWave::setLeftFFT(vector<complex<double> > fft)
-{
-    leftFFT = fft;
-
-    return;
-}
-
-// Function setRightFFT
-// Inputs:
-//       fft - A vector of complex double vectors containing the right channel FFT
-// Outputs: None
-// Purpose:  Set the value of the rightFFT member vector
-void AudioWave::setRightFFT(vector<complex<double> > fft)
-{
-    rightFFT = fft;
- 
-    return;
-}
-
-// Functon pushZero
-// Inputs:
-//       chan - An integer indicating the channel being pushed to.
-//       data - A double containing the data to add.
-// Outputs: None
-// Purpose:  Push new data onto the zeroData vector.
-void AudioWave::pushZero(int chan, double data)
-{
-    zeroData[chan].push_back(data);
-
-    return;
-}
-
-// Function pushSpectrumF
-// Inputs:
-//       data - A double containing the data to add.
-// Outputs: None
-// Purpose:  Push new data onto the spectrumFData vector.
-void AudioWave::pushSpectrumF(double data)
-{
-    spectrumFData.push_back(data);
-
-    return;
-}
+/************************ Setters *************************/
 
 // Function pushCepstrum
 // Inputs:
@@ -289,18 +482,6 @@ void AudioWave::pushSpectrumF(double data)
 void AudioWave::pushCepstrum(int chan, double data)
 {
     cepstrumData[chan].push_back(data);
-    return;
-}
-
-// Function pushSpectrumC
-// Inputs:
-//       data - A double containing the data to add.
-// Outputs: None
-// Purpose:  Push new data onto the spectrumCData vector.
-void AudioWave::pushSpectrumC(double data)
-{
-    spectrumCData.push_back(data);
-
     return;
 }
 
@@ -328,6 +509,47 @@ void AudioWave::pushRightChannel(complex<double> data)
     return;
 }
 
+// Function pushSpectrumC
+// Inputs:
+//       data - A double containing the data to add.
+// Outputs: None
+// Purpose:  Push new data onto the spectrumCData vector.
+void AudioWave::pushSpectrumC(double data)
+{
+    spectrumCData.push_back(data);
+
+    return;
+}
+
+// Function pushSpectrumF
+// Inputs:
+//       data - A double containing the data to add.
+// Outputs: None
+// Purpose:  Push new data onto the spectrumFData vector.
+void AudioWave::pushSpectrumF(double data)
+{
+    spectrumFData.push_back(data);
+
+    return;
+}
+
+// Functon pushZero
+// Inputs:
+//       chan - An integer indicating the channel being pushed to.
+//       data - A double containing the data to add.
+// Outputs: None
+// Purpose:  Push new data onto the zeroData vector.
+void AudioWave::pushZero(int chan, double data)
+{
+    zeroData[chan].push_back(data);
+
+    return;
+}
+
+/************************ End Setters ***************************/
+
+/************************** Getters *****************************/
+
 // Function getFileName
 // Inputs: None
 // Outputs:
@@ -349,194 +571,6 @@ string AudioWave::getSourceFile(int index)
     return sourceFiles[index];
 }
 
-// Function getChannels
-// Inputs: None
-// Outputs:
-//        channels - An integer indicating the number of channels in the audio file.
-// Purpose:  Return the value of the channels member variable
-int AudioWave::getChannels()
-{
-    return channels;
-}
-
-// Function getLeftFFTSize
-// Inputs: None
-// Outputs:
-//        size - The size of the left fft
-// Purpose:  Return the size fo the left fft
-int AudioWave::getLeftFFTSize()
-{
-    return leftFFT.size();
-}
-
-// Function getRightFFTSize
-// Inputs: None
-// Ouputs:
-//       size - The size of the right fft
-// Purpos:  Return the size of the right fft
-int AudioWave::getRightFFTSize()
-{
-    return rightFFT.size();
-}
-
-// Function getFrames
-// Inputs: None
-// Outputs:
-//        frames - An integer indicating the number of frames in the audio file.
-// Purpose:  Return the value of the frames member variable
-int AudioWave::getFrames()
-{
-    return frames;
-}
-
-// Function getChannelSize
-// Inputs:
-//       chan - An integer indicating the channel to look at.
-// Outputs: cSize - An integer containing the size of the channel.
-// Purpose:  Return the size of a channel in the audio wave object.
-int AudioWave::getChannelSize(int chan)
-{
-    int cSize;
-
-    cSize = 0;
-
-    switch(chan)
-    {
-        case 1:
-        {
-            cSize = leftChannel.size();
-            break;
-        }
-        case 2:
-        {
-            cSize = rightChannel.size();
-            break;
-        }
-        default:
-        {
-            cout << "Invalid channel requested." << endl;
-            break;
-        }
-    }
-  
-    return cSize;
-}
-// Function getLeftSize
-// Inputs: None
-// Outputs:
-//        size - The size of the left channel.
-// Purpose:  Return the size of the left channel member vector.
-int AudioWave::getLeftSize()
-{
-    return leftChannel.size();
-}
-
-// Function getRightSize
-// Inputs: None
-// Outputs:
-//        size - The size of the right channel.
-// Purpose:  Return the size of the right channel member vector.
-int AudioWave::getRightSize()
-{
-    return rightChannel.size();
-}
-
-// Function getZSize
-// Inputs:
-//       chan - An integer indicating the channel to look up the size of.
-// Outputs: size - An integer describing the size.
-// Purpose:  Return the size of the zeroData vector and its elements.
-int AudioWave::getZSize(int chan)
-{
-    int size;    // Will hold the size of the channel or vector.
-
-    size = 0;
-
-    switch(chan)
-    {
-        case 0:  // Return the size of the whole vector
-        {
-            size = zeroData.size();
-            break;
-        }
-        case 1:  // Return the size of the left channel.
-        {
-            size = zeroData[0].size();
-            break;
-        }
-        case 2:
-        {
-            if (channels == 2)
-                size = zeroData[1].size();
-            break;
-        }
-        default:
-        {
-            size = -1;
-            break;
-        }
-    }
-
-    return size;
-}
-
-// Function  getSFSize
-// Inputs: None
-// Outputs: size - An integer describing the size.
-// Purpose:  Return the size of the spectrumFData vector
-int AudioWave::getSFSize()
-{
-    return spectrumFData.size();
-}
-
-// Function getCSize
-// Inputs:
-//       chan - An integer indicating the channel to look up the size of.
-// Outputs: size - An integer descibing the size.
-// Purpose:  Return the size of the cepstrumData vector and its elements.
-int AudioWave::getCSize(int chan)
-{
-    int size;
-
-    size = 0;
-
-    switch(chan)
-    {
-        case 0:
-        {
-            size = cepstrumData.size();
-            break;
-        }
-        case 1:
-        {
-            size = cepstrumData[0].size();
-            break;
-        }
-        case 2:
-        {
-            if (channels == 2)
-                size = cepstrumData[1].size();
-            break;
-        }
-        default:
-        {
-            size = -1;
-            break;
-        }
-    }
-
-    return size;
-}
-
-// Function  getSCSize
-// Inputs: None
-// Outputs: size - An integer describing the size.
-// Purpose:  Return the size of the spectrumCData vector
-int AudioWave::getSCSize()
-{
-    return spectrumCData.size();
-}
-
 // Function getLeftChannel
 // Inputs: None
 // Outputs: leftChannel - A vector of complex doubles representing the left channel of the wave.
@@ -544,16 +578,6 @@ int AudioWave::getSCSize()
 vector<complex<double> > AudioWave::getLeftChannel()
 {
     return leftChannel;
-}
-
-// Function getRightChannel
-// Inputs: None
-// Outputs:
-//        rightChannel - A vector of complex doubles representing the right channel of the wave.
-// Purpose:  Returnthe rightChannel member vector
-vector<complex<double> > AudioWave::getRightChannel()
-{
-    return rightChannel;
 }
 
 // Function getLeftFFT
@@ -564,6 +588,16 @@ vector<complex<double> > AudioWave::getRightChannel()
 vector<complex<double> > AudioWave::getLeftFFT()
 {
     return leftFFT;
+}
+
+// Function getRightChannel
+// Inputs: None
+// Outputs:
+//        rightChannel - A vector of complex doubles representing the right channel of the wave.
+// Purpose:  Returnthe rightChannel member vector
+vector<complex<double> > AudioWave::getRightChannel()
+{
+    return rightChannel;
 }
 
 // Function getRightFFT
@@ -610,42 +644,41 @@ complex<double> AudioWave::getChannelData(int channel, int index)
     return value;
 }
 
-    
-// Function getZeroDataPoint
+// Function getCepstrumDataPoint
 // Inputs:
 //       chan - An integer indicating which channel to pull the data from.
-//       index - An integer indicating which data point to return.
+//       index - An integer indicating the index to access.
+// Outputs: dataPoint - A double containing the datapoint
+// Purpose: Returns the datapoint from the indicated channel and location.
+double AudioWave::getCepstrumDataPoint(int chan, int index)
+{
+
+    double dataPoint;
+
+    dataPoint = NULL;
+
+
+    if (chan < cepstrumData.size())
+        dataPoint = cepstrumData[chan].at(index);
+
+    return dataPoint;
+}
+
+// Function getSpectrumCDataPoint
+// Inputs:
+//       chan - An integer indicating which channel to pull the data from.
 // Outputs: dataPoint - A double containing the datapoint.
-// Purpose:  Returns the datapoint from the indicated channel and location.
-double AudioWave::getZeroDataPoint(int chan, int index)
+// Purpose: Returns the datapoint from the indicated channel and location.
+double AudioWave::getSpectrumCDataPoint(int chan)
 {
     double dataPoint;
 
     dataPoint = NULL;
 
-    switch(chan)
-    {
-        case 1:
-        {
-            if (index < zeroData[0].size())
-                dataPoint = zeroData[0][index];
-            break;
-        }
-        case 2:
-        {
-            if (channels == 2)
-            {
-                if (index < zeroData[1].size())
-                    dataPoint = zeroData[1][index];
-            }
-            
-            break;
-        }
-        default:
-            break;
-    }
-  
-    return dataPoint; 
+    if (chan < spectrumCData.size())
+        dataPoint = spectrumCData.at(chan);
+
+    return dataPoint;
 }
 
 // Function getSpectrumFDataPoint
@@ -663,218 +696,6 @@ double AudioWave::getSpectrumFDataPoint(int chan)
         dataPoint = spectrumFData.at(chan);
 
     return dataPoint;
-}
-
-// Function setYMaximums
-// Inputs: None
-// Outputs: None
-// Purpose: Set up the max values of the data vectors
-void AudioWave::setYMaximums()
-{
-    double tMax;
-
-    tMax = 0;
-
-    // Set up the max of audio wave channels
-    for (int i = 0; i < leftChannel.size(); i++)
-    {
-        if (real(leftChannel.at(i)) > tMax)
-            tMax = real(leftChannel.at(i));
-    }
-
-    max.push_back(tMax);
-    tMax = 0;
-
-    if (channels == 2)
-    {
-        for (int i = 0; i < rightChannel.size(); i++)
-        {
-            if (real(rightChannel.at(i)) > tMax)
-                tMax = real(rightChannel.at(i));
-        }
-
-        max.push_back(tMax);
-        tMax = 0;
-    }
-
-    // Set up the max of fft vector
-   
-    for (int i = 0; i < leftFFT.size(); i++)
-    {
-        if (real(leftFFT.at(i)) > tMax)
-            tMax = real(leftFFT.at(i));
-    }
-    
-    max.push_back(tMax);
-    tMax = 0;
-
-    if (channels == 2)
-    {
-        for (int i = 0; i < rightFFT.size(); i++)
-        {
-            if (real(rightFFT.at(i)) > tMax)
-                tMax = real(rightFFT.at(i));
-        }
- 
-        max.push_back(tMax);
-        tMax = 0;
-    }
-
-    // Set up max of zeroData
-
-    for (int i = 0; i < zeroData[0].size(); i++)
-    {
-        if (real(zeroData[0].at(i)) > tMax)
-            tMax = real(zeroData[0].at(i));
-    }
-   
-        max.push_back(tMax);
-        tMax = 0;
-
-    if (channels == 2)
-    {
-        for (int i = 0; i < zeroData[1].size(); i++)
-        {
-            if (real(zeroData[1].at(i)) > tMax)
-                tMax = real(zeroData[1].at(i));
-        }
-
-        max.push_back(tMax);
-        tMax = 0;
-    }
-
-    // Set up max of Real Cepstrum
-    for (int i = 0; i < cepstrumData[0].size(); i++)
-    {
-        if (cepstrumData[0].at(i) > tMax)
-            tMax = cepstrumData[0].at(i);
-    }
-
-    max.push_back(tMax);
-    tMax = 0;
-
-    if (channels == 2)
-    {
-        for (int i = 0; i < cepstrumData[1].size(); i++)
-        {
-            if (cepstrumData[1].at(i) > tMax) 
-                tMax = cepstrumData[1].at(i);
-        }
-
-        max.push_back(tMax);
-        tMax = 0;
-    }	
-
-}
-
-// Function setYMinimums
-// Inputs: None
-// Outputs: None
-// Purpose:  Set up the y minimums for datasets
-void AudioWave::setYMinimums()
-{
-    double tMin;    // Will contain the y minimum
-
-    tMin = 0;
-
-    // Set the y-min for the audio waves
-
-    for (int i = 0; i < leftChannel.size(); i++)
-    {
-        if (i == 0)
-            tMin = real(leftChannel.at(i));
-        else if (real(leftChannel.at(i)) < tMin)
-            tMin = real(leftChannel.at(i));
-        
-    }
-
-    min.push_back(tMin);
-    tMin = 0;
-
-    if (channels == 2)
-    {
-        for (int i = 0; i < rightChannel.size(); i++)
-        {
-            if (i == 0)
-                tMin = real(rightChannel.at(i));
-            else if (real(rightChannel.at(i)) < tMin)
-                tMin = real(rightChannel.at(i));
-        }
-
-        min.push_back(tMin);
-        tMin = 0;
-    }
-
-    // Set the y-min for the fft
-
-    for (int i = 0; i < leftFFT.size(); i++)
-    {
-        if (i == 0)
-            tMin = real(leftFFT.at(i));
-        else if (real(leftFFT.at(i)) < tMin)
-            tMin = real(leftFFT.at(i));
-    }
-
-    min.push_back(tMin);
-    tMin = 0;
- 
-    if (channels == 2)
-    {
-        for (int i = 0; i < rightFFT.size(); i++)
-        {
-            if ((i == 0) || (real(rightFFT.at(i)) < tMin))
-                tMin = real(rightFFT.at(i));
-        }
-
-        min.push_back(tMin);
-        tMin = 0;
-    }
-
-    // Set the y-min for zeroData
-
-    for (int i = 0; i < zeroData[0].size(); i++)
-    {
-        if ((i == 0) || (zeroData[0].at(i) < tMin))
-            tMin = zeroData[0].at(i);
-    }
- 
-    min.push_back(tMin);
-    tMin = 0;
-
-    if (channels == 2)
-    {
-        for (int i = 0; i < zeroData[1].size(); i++)
-        {
-            if ((i == 0) || (zeroData[1].at(i) < tMin))
-                tMin = zeroData[1].at(i);
-        }
-  
-        min.push_back(tMin);
-        tMin = 0;
-    }
-
-    // Set the y-min for Real Cepstrum
-    
-    for (int i = 0; i < cepstrumData[0].size(); i++)
-    {
-        if ((i == 0) || (cepstrumData[0].at(i) < tMin))
-            tMin = cepstrumData[0].at(i);
-    }
-
-    min.push_back(tMin);
-    tMin = 0;
-
-    if (channels == 0)
-    {
-        for (int i = 0; i < cepstrumData[1].size(); i++)
-        {
-            if ((i == 0) || (cepstrumData[1].at(i) < tMin))
-                tMin = cepstrumData[1].at(i);
-        }
-  
-        min.push_back(tMin);
-        tMin = 0;
-    }
 }
 
 // Function getYMaximum
@@ -933,7 +754,7 @@ double AudioWave::getYMaximum(int alg, int chan)
                     maxi = max[4];
             }
             if (chan == 2)
-            { 
+            {
                 if (channels == 2)
                     maxi = max[5];
                 else
@@ -942,6 +763,7 @@ double AudioWave::getYMaximum(int alg, int chan)
 
             break;
         }
+
         case 3:  // Spectrum data
         {
             if (chan == 1)
@@ -950,7 +772,7 @@ double AudioWave::getYMaximum(int alg, int chan)
                 maxi = spectrumFData[1];
             else
                 cout << "Invalid channel lookup." << endl;
-      
+
             break;
         }
         case 4:  // Cepstrum data
@@ -988,7 +810,7 @@ double AudioWave::getYMaximum(int alg, int chan)
             cout << "Unsupported algorithm for maximum." << endl;
             break;
         }
-    } 
+    }
 
     return maxi;
 }
@@ -1011,13 +833,13 @@ double AudioWave::getYMinimum(int alg, int chan)
             if (chan == 1)
                 mini = min[0];
             else if (chan == 2)
-            { 
+            {
                 if (channels == 2)
                     mini = min[1];
                 else
                     cout << "Invalid channel lookup." << endl;
             }
-            
+
             break;
         }
         case 1: // FFT
@@ -1030,7 +852,7 @@ double AudioWave::getYMinimum(int alg, int chan)
                     mini = min[2];
             }
             else if (chan == 2)
-            { 
+            {
                 if (channels == 2)
                     mini = min[3];
                 else
@@ -1039,6 +861,7 @@ double AudioWave::getYMinimum(int alg, int chan)
 
             break;
         }
+
         case 2: // Zero cross
         {
             if (chan == 1)
@@ -1087,39 +910,229 @@ double AudioWave::getYMinimum(int alg, int chan)
     return mini;
 }
 
-// Function getCepstrumDataPoint
+// Function getZeroDataPoint
 // Inputs:
 //       chan - An integer indicating which channel to pull the data from.
-//       index - An integer indicating the index to access.
-// Outputs: dataPoint - A double containing the datapoint
-// Purpose: Returns the datapoint from the indicated channel and location.
-double AudioWave::getCepstrumDataPoint(int chan, int index)
-{
-  
+//       index - An integer indicating which data point to return.
+// Outputs: dataPoint - A double containing the datapoint.
+// Purpose:  Returns the datapoint from the indicated channel and location.
+double AudioWave::getZeroDataPoint(int chan, int index)
+{   
     double dataPoint;
-
+    
     dataPoint = NULL;
-
-
-    if (chan < cepstrumData.size())
-        dataPoint = cepstrumData[chan].at(index);
-
+    
+    switch(chan)
+    {   
+        case 1:
+        {   
+            if (index < zeroData[0].size())
+                dataPoint = zeroData[0][index];
+            break;
+        }
+        case 2:
+        {   
+            if (channels == 2)
+            {   
+                if (index < zeroData[1].size())
+                    dataPoint = zeroData[1][index];
+            }
+            
+            break;
+        }
+        default:
+            break;
+    }
+    
     return dataPoint;
 }
 
-// Function getSpectrumCDataPoint
-// Inputs:
-//       chan - An integer indicating which channel to pull the data from.
-// Outputs: dataPoint - A double containing the datapoint.
-// Purpose: Returns the datapoint from the indicated channel and location.
-double AudioWave::getSpectrumCDataPoint(int chan)
+// Function getChannels
+// Inputs: None
+// Outputs:
+//        channels - An integer indicating the number of channels in the audio file.
+// Purpose:  Return the value of the channels member variable
+int AudioWave::getChannels()
 {
-    double dataPoint;
+    return channels;
+}
 
-    dataPoint = NULL;
+// Function getChannelSize
+// Inputs:
+//       chan - An integer indicating the channel to look at.
+// Outputs: cSize - An integer containing the size of the channel.
+// Purpose:  Return the size of a channel in the audio wave object.
+int AudioWave::getChannelSize(int chan)
+{
+    int cSize;
 
-    if (chan < spectrumCData.size())
-        dataPoint = spectrumCData.at(chan);
+    cSize = 0;
 
-    return dataPoint;
+    switch(chan)
+    {
+        case 1:
+        {
+            cSize = leftChannel.size();
+            break;
+        }
+        case 2:
+        {
+            cSize = rightChannel.size();
+            break;
+        }
+        default:
+        {
+            cout << "Invalid channel requested." << endl;
+            break;
+        }
+    }
+ 
+    return cSize;
+}
+
+// Function getFrames
+// Inputs: None
+// Outputs:
+//        frames - An integer indicating the number of frames in the audio file.
+// Purpose:  Return the value of the frames member variable
+int AudioWave::getFrames()
+{
+    return frames;
+}
+
+// Function getCSize
+// Inputs:
+//       chan - An integer indicating the channel to look up the size of.
+// Outputs: size - An integer descibing the size.
+// Purpose:  Return the size of the cepstrumData vector and its elements.
+int AudioWave::getCSize(int chan)
+{
+    int size;
+
+    size = 0;
+
+    switch(chan)
+    {
+        case 0:
+        {
+            size = cepstrumData.size();
+            break;
+        }
+        case 1:
+        {
+            size = cepstrumData[0].size();
+            break;
+        }
+        case 2:
+        {
+            if (channels == 2)
+                size = cepstrumData[1].size();
+            break;
+        }
+        default:
+        {
+            size = -1;
+            break;
+        }
+    }
+
+    return size;
+}
+
+// Function getLeftSize
+// Inputs: None
+// Outputs:
+//        size - The size of the left channel.
+// Purpose:  Return the size of the left channel member vector.
+int AudioWave::getLeftSize()
+{
+    return leftChannel.size();
+}
+
+
+// Function getLeftFFTSize
+// Inputs: None
+// Outputs:
+//        size - The size of the left fft
+// Purpose:  Return the size fo the left fft
+int AudioWave::getLeftFFTSize()
+{
+    return leftFFT.size();
+}
+
+// Function getRightSize
+// Inputs: None
+// Outputs:
+//        size - The size of the right channel.
+// Purpose:  Return the size of the right channel member vector.
+int AudioWave::getRightSize()
+{
+    return rightChannel.size();
+}
+
+// Function getRightFFTSize
+// Inputs: None
+// Ouputs:
+//       size - The size of the right fft
+// Purpos:  Return the size of the right fft
+int AudioWave::getRightFFTSize()
+{
+    return rightFFT.size();
+}
+
+// Function  getSCSize
+// Inputs: None
+// Outputs: size - An integer describing the size.
+// Purpose:  Return the size of the spectrumCData vector
+int AudioWave::getSCSize()
+{
+    return spectrumCData.size();
+}
+
+// Function  getSFSize
+// Inputs: None
+// Outputs: size - An integer describing the size.
+// Purpose:  Return the size of the spectrumFData vector
+int AudioWave::getSFSize()
+{
+    return spectrumFData.size();
+}
+
+// Function getZSize
+// Inputs:
+//       chan - An integer indicating the channel to look up the size of.
+// Outputs: size - An integer describing the size.
+// Purpose:  Return the size of the zeroData vector and its elements.
+int AudioWave::getZSize(int chan)
+{
+    int size;    // Will hold the size of the channel or vector.
+
+    size = 0;
+
+    switch(chan)
+    {
+        case 0:  // Return the size of the whole vector
+        {
+            size = zeroData.size();
+            break;
+        }
+        case 1:  // Return the size of the left channel.
+        {
+            size = zeroData[0].size();
+            break;
+        }
+        case 2:
+        {
+            if (channels == 2)
+                size = zeroData[1].size();
+            break;
+        }
+        default:
+        {
+            size = -1;
+            break;
+        }
+    }
+
+    return size;
 }

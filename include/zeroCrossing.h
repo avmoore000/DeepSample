@@ -33,8 +33,5 @@ using namespace std;
 // zeroCrossing algorithms
 void zeroCross(AudioWave&, string, string, bool);
 
-// Helper utilities
-void summation(vector<complex<double> >, vector<vector<float> >&, int, int, string, bool);
-
 #endif
 

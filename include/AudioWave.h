@@ -42,15 +42,15 @@ class AudioWave
         void setRightFFT(vector<complex<double> >);            // Initialize the rightFFT member
         void setYMaximums();                                   // Initialize the max member
         void setYMinimums();                                   // Initialize the min member
-        void setZeroData();                                    // Initialize the zeroData member
         void setSourceFiles();                                 // Initialize the sourceFiles member
+        void setZeroData();                                    // Initialize the zeroData member
 
-        // Updaters
+        // Update
         void pushCepstrum(int, double);                        // Push a value to cepstrumData
         void pushLeftChannel(complex<double>);                 // Push a value to leftChannel
         void pushRightChannel(complex<double>);                // Push a value to rightChannel
-        void pushSpectrumF(double);                            // Push a value to spectrumFData
         void pushSpectrumC(double);                            // Push a value to spectrumCData
+        void pushSpectrumF(double);                            // Push a value to spectrumFData
         void pushZero(int, double);                            // Push a value to zeroData
 
         // Getters
@@ -62,9 +62,8 @@ class AudioWave
         vector<complex<double> > getRightFFT();                // Return rightFFT
         complex<double> getChannelData(int, int);              // Return value from channel
         double getCepstrumDataPoint(int,int);                  // Return value from cepstrumData
-        double getFFTDataPoint(int,int);                       // Return value from FFT data
-        double getSpectrumFDataPoint(int);                     // Return value from spectrumFData
         double getSpectrumCDataPoint(int);                     // Return value from spectrumCData
+        double getSpectrumFDataPoint(int);                     // Return value from spectrumFData
         double getYMaximum(int, int);                          // Return maximum value of a dataset.
         double getYMinimum(int, int);                          // Return minimum value of a dataset.
         double getZeroDataPoint(int, int);                     // Return value from zeroData
@@ -73,11 +72,11 @@ class AudioWave
         int getFrames();                                       // Return frames
         int getCSize(int);                                     // Return cepstrumData size
         int getLeftSize();                                     // Return leftChannel size
-        int getRightSize();                                    // Return rightChannel size
         int getLeftFFTSize();                                  // Return size of left fft
+        int getRightSize();                                    // Return rightChannel size
         int getRightFFTSize();                                 // Return size of right fft
-        int getSFSize();                                       // Return spectrumFData size
         int getSCSize();                                       // Return spectrumCData size
+        int getSFSize();                                       // Return spectrumFData size
         int getZSize(int);                                     // Return zeroData size     
       
     private:
@@ -86,19 +85,18 @@ class AudioWave
 
         // Wave specific member variables
         string fileName;                                       // Name of audio file.
-        vector<vector<double> > zeroData;                      // Zero cross data
-        vector<vector<double> > cepstrumData;                  // Cepstrum data
-        vector<string > sourceFiles;                           // Graphing source files.
         vector<complex<double> > leftChannel;                  // Left channel
-        vector<complex<double> > leftFFT;                      // Left channel FFT
-        vector<complex<double> > rightChannel;                 // Right channel.
+        vector<complex<double> > rightChannel;                 // Right channel
+        vector<complex<double> > leftFFT;                       // Left channel FFT
         vector<complex<double> > rightFFT;                     // Right channel FFT
-        vector<double>  spectrumFData;                         // Spectrum Flux data
-        vector<double>  spectrumCData;                         // Spectrum Centroid data
-        int channels;                                          // Number of channels
-        int frames;                                            // Number of frames
-
+        vector<vector<double> > cepstrumData;                  // Cepstrum data
+        vector<vector<double> > zeroData;                      // Zero cross data
         vector<double> max;                                    // Maximums of the data vectors
         vector<double> min;                                    // Minimums of the data vectors
+        vector<double> spectrumCData;                          // Spectrum Centroid data
+        vector<double> spectrumFData;                          // Spectrum Flux data
+        vector<string > sourceFiles;                           // Graphing source files.
+        int channels;                                          // Number of channels
+        int frames;                                            // Number of frames
 };
 #endif

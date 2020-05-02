@@ -35,7 +35,6 @@ vector<double> rCepstrum(vector<double>&, double);
 
 // Helper utilities
 double windowHamming(double, double);
-bool getSign(complex<double>, bool, string);
 
 #endif
 

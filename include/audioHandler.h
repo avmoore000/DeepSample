@@ -30,8 +30,8 @@ using namespace std;
 #ifndef audioHandler
 #define audioHandler
 
-void loadAudio(AudioWave&, string, string, string, int, bool, string, bool);
 static void convertSound(AudioWave&, string, string, string, int, bool, string, bool);
+void loadAudio(AudioWave&, string, string, string, int, bool, string, bool);
 
 #endif
 

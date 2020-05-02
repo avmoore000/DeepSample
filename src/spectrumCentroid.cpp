@@ -54,7 +54,7 @@ void spectralCentroid(AudioWave &wave, string fileName, string path, bool debug)
         reals.push_back(realT);
 
     outFile.open((path + "/" + fileName).c_str(), ios::app);
-    outFile << timestamp() << ":  Spectrum Centroid Algorithm started..." << endl;
+    outFile << timeStamp() << ":  Spectrum Centroid Algorithm started..." << endl;
     outFile.close();
 
     if (debug)
@@ -62,7 +62,7 @@ void spectralCentroid(AudioWave &wave, string fileName, string path, bool debug)
         debugFile.open((path + "/SpectrumCentroid/SpectrumCentrAlgDebug.txt").c_str(), ios::app);  
         debugFile << "Spectrum Centroid Algorithm Debug" << endl << endl;
 
-        cout << timestamp() << ":  Spectrum Centroid Algorithm started..." << endl;
+        cout << timeStamp() << ":  Spectrum Centroid Algorithm started..." << endl;
     }
 
     // Make sure we have an fft to work with
@@ -81,17 +81,17 @@ void spectralCentroid(AudioWave &wave, string fileName, string path, bool debug)
 
         if (i == 0)
         {
-            outFile << timestamp() << ":  Calculating left channel spectral centroid..." << endl;
+            outFile << timeStamp() << ":  Calculating left channel spectral centroid..." << endl;
 
             if (debug)
-                cout << timestamp() << ":  Calculating left channel spectral centroid..." << endl;
+                cout << timeStamp() << ":  Calculating left channel spectral centroid..." << endl;
         }
         else if (i == 1)
         {
-            outFile << timestamp() << ":  Calculating right channel spectral centroid..." << endl;
+            outFile << timeStamp() << ":  Calculating right channel spectral centroid..." << endl;
             
             if (debug)
-                cout << timestamp() << ":  Calculating right channel spectral centroid..." << endl;
+                cout << timeStamp() << ":  Calculating right channel spectral centroid..." << endl;
         }
 
         outFile.close();
@@ -150,22 +150,22 @@ void spectralCentroid(AudioWave &wave, string fileName, string path, bool debug)
         
         if (i == 0)
         {
-            outFile << timestamp() << ":  Left channel spectral centroid calculated." << endl;
+            outFile << timeStamp() << ":  Left channel spectral centroid calculated." << endl;
 
             if (debug)
-                cout << timestamp() << ":  Left channel spectral centroid calculated." << endl;
+                cout << timeStamp() << ":  Left channel spectral centroid calculated." << endl;
         }
         else if (i == 1)
         {
-            outFile << timestamp() << ":  Right channel spectral centroid calculated." << endl;
+            outFile << timeStamp() << ":  Right channel spectral centroid calculated." << endl;
 
             if (debug)
-                cout << timestamp() << ":  Right channel spectral centroid calculated." << endl;
+                cout << timeStamp() << ":  Right channel spectral centroid calculated." << endl;
         }
     }
 
     outFile.open((path + "/" + fileName).c_str(), ios::app);
-    outFile << timestamp() << ":  Spectrum Centroid Algorithm Completed." << endl;
+    outFile << timeStamp() << ":  Spectrum Centroid Algorithm Completed." << endl;
     outFile.close();
 
     if (debug)
@@ -173,7 +173,7 @@ void spectralCentroid(AudioWave &wave, string fileName, string path, bool debug)
         debugFile << "Spectrum Centroid Algorithm completed." << endl;
         debugFile.close();
 
-        cout << timestamp() << ":  Spectrum Centroid Algorithm returning..." << endl;
+        cout << timeStamp() << ":  Spectrum Centroid Algorithm returning..." << endl;
     }
 
     return;
