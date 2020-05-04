@@ -620,7 +620,7 @@ complex<double> AudioWave::getChannelData(int channel, int index)
 {
     complex<double> value;
 
-    value = NULL;
+    value = std::nan("1");
 
     switch(channel)
     {
@@ -655,7 +655,7 @@ double AudioWave::getCepstrumDataPoint(int chan, int index)
 
     double dataPoint;
 
-    dataPoint = NULL;
+    dataPoint = std::nan("1");
 
 
     if (chan < cepstrumData.size())
@@ -673,7 +673,7 @@ double AudioWave::getSpectrumCDataPoint(int chan)
 {
     double dataPoint;
 
-    dataPoint = NULL;
+    dataPoint = std::nan("1");
 
     if (chan < spectrumCData.size())
         dataPoint = spectrumCData.at(chan);
@@ -690,7 +690,7 @@ double AudioWave::getSpectrumFDataPoint(int chan)
 {
     double dataPoint;
 
-    dataPoint = NULL;
+    dataPoint = std::nan("1");
 
     if (chan < spectrumFData.size())
         dataPoint = spectrumFData.at(chan);
@@ -920,7 +920,7 @@ double AudioWave::getZeroDataPoint(int chan, int index)
 {   
     double dataPoint;
     
-    dataPoint = NULL;
+    dataPoint = std::nan("1");
     
     switch(chan)
     {   

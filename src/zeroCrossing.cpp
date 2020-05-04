@@ -114,8 +114,7 @@ void zeroCross(AudioWave &wave, string fileName, string path, bool debug)
             if (debug)
                 debugFile << "\tsum/2 = " << sum << endl;
 
-            if (i == 0)
-                wave.pushZero(i,sum);
+            wave.pushZero(i,sum);
 
             sum = 0;
         }

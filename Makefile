@@ -5,60 +5,69 @@
 CC = g++
 CFLAGS = -g -Wall -std=gnu++17
 LIBS = -lsndfile -lvorbis -lboost_system -lboost_filesystem
+DIR = $(shell mkdir build)
+CLEANDIR = $(shell rm -rf build)
 FILES = $(shell git pull)
 
 # Make the DeepSample binary, first making sure the source files aren't stail.
 default: 
 #	$(FILES);
-	make tests;
+	$(DIR)\
+	make test;\
+	make sample;\
+	make anni;\
 
 # Make all the binaries in the project, first making sure the source files aren't stail.
 all:   
 	#$(FILES);
-	make tests;\
-	make Samples;\
-	make ANN;\
-	make driver;
+	$(DIR)\
+	make test;\
+	make sample;\
+	make anni;\
 
 # Make the DeepSampleTest binary
 test: 
 #	$(FILES);
+	$(DIR)\
 	make tests;
 
 # Make the SampleGenerator binary
 
 sample: 
 #	$(FILES);
+	$(DIR)
 	make Samples;\
 	make driver;
 
 # Make the ANNI binary
 anni:
 #	$(FILES);
+	$(DIR)\
 	make ANN;
 
 # Just make the test binary
 tests: src/deepSampleTests.o src/FourierTransform.o src/zeroCrossing.o src/spectrumFlux.o src/spectrumCentroid.o src/cepstrum.o src/audioHandler.o src/Utilities.o src/ANN.o src/TestSuite.o src/AudioWave.o
-	$(CC) $(CFLAGS) -o DeepSampleTests src/deepSampleTests.o src/FourierTransform.o src/zeroCrossing.o src/spectrumFlux.o src/spectrumCentroid.o src/cepstrum.o src/audioHandler.o src/Utilities.o src/ANN.o src/TestSuite.o src/AudioWave.o $(LIBS)
+	$(CC) $(CFLAGS) -o build/DeepSampleTests src/deepSampleTests.o src/FourierTransform.o src/zeroCrossing.o src/spectrumFlux.o src/spectrumCentroid.o src/cepstrum.o src/audioHandler.o src/Utilities.o src/ANN.o src/TestSuite.o src/AudioWave.o $(LIBS)
 	$(RM) src/*.o;
 
 # Just make the sample binary, first making sure the source files aren't stail.
 Samples: src/sampleGenerator.o src/FourierTransform.o src/zeroCrossing.o src/spectrumFlux.o src/spectrumCentroid.o src/cepstrum.o src/audioHandler.o src/Utilities.o src/AudioWave.o 
-	$(CC) $(CFLAGS) -o SampleGenerator src/sampleGenerator.o src/FourierTransform.o src/zeroCrossing.o src/spectrumFlux.o src/spectrumCentroid.o src/cepstrum.o src/audioHandler.o src/Utilities.o src/AudioWave.o $(LIBS)
+	$(CC) $(CFLAGS) -o build/SampleGenerator src/sampleGenerator.o src/FourierTransform.o src/zeroCrossing.o src/spectrumFlux.o src/spectrumCentroid.o src/cepstrum.o src/audioHandler.o src/Utilities.o src/AudioWave.o $(LIBS)
 	$(RM) src/*.o
 
 # Make driver binary
 driver: src/driver.o 
-	$(CC) $(CFLAGS) -o a.out src/driver.o $(LIBS)
+	$(CC) $(CFLAGS) -o build/genSamples src/driver.o $(LIBS)
 
 # Make ANNI binary
 ANN: src/anniDriver.o src/ANN.o src/AudioWave.o src/Utilities.o 
-	$(CC) $(CFLAGS) -o ANNI src/anniDriver.o src/ANN.o src/AudioWave.o src/Utilities.o $(LIBS)
+	$(CC) $(CFLAGS) -o build/ANNI src/anniDriver.o src/ANN.o src/AudioWave.o src/Utilities.o $(LIBS)
 	$(RM) src/*.o
 
 # Clean up the directory
 clean:
-	$(RM) ANNI DeepSampleTests SampleGenerator *.o *.~ *.out src/*.o *.txt
+	$(CLEANDIR)
+	$(RM) *.o *.~ *.out src/*.o *.txt;\
 
 # Object compilation
 deepSampleTests.o: src/deepSampleTests.cpp
