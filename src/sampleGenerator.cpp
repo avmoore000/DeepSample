@@ -646,6 +646,10 @@ int main(int argc, char** argv)
                             database << real(tempFFT[j]) << " ";
                         
                         database << endl;
+
+                        if (i == 1)
+                            database << endl;
+
                         database.close();
                         tempFFT.clear();
                        
