@@ -255,6 +255,8 @@ void lvqHelper(string algorithm, string trainPath, string testPath, string resul
                 outFile << timeStamp() << ":  Training set created." << endl;
                 outFile << timeStamp() << ":  Creating test set from folded left " << algorithm << "..." << endl;
                 outFile.close();
+ 
+                cout << "trainSet.size() = " << trainSet.size() << endl;
 
                 if (debug)
                 {
@@ -282,10 +284,12 @@ void lvqHelper(string algorithm, string trainPath, string testPath, string resul
              
                 // Make prediction based on training set
                 learningVectorQuantization(trainSet, testSet, BMUnames, sampleNames, algorithm, 0, codeBooks, learnRate, epochs, resultsOutput, resultsPath, debug);
+
+                trainSet.clear();
+
             } // End train left fold loop
 
             // Clean out vectors for the right fold
-            trainSet.clear();
             testSet.clear();
             sampleNames.clear();
 
@@ -306,6 +310,8 @@ void lvqHelper(string algorithm, string trainPath, string testPath, string resul
                 outFile << timeStamp() << ":  Training set created." << endl;
                 outFile << timeStamp() << ":  Creating test set from folded right " << algorithm << "..." << endl;
                 outFile.close();
+
+                cout << "trainSet.size() = " << trainSet.size() << endl;
 
                 if (debug)
                 {
@@ -337,6 +343,8 @@ void lvqHelper(string algorithm, string trainPath, string testPath, string resul
 
                 if (debug)
                     cout << timeStamp() << ":  Learning Vector Quantization complete." << endl;
+
+                trainSet.clear();
             } // End train right fold loop
 
             break;
@@ -484,13 +492,6 @@ void prepareFolds(bool folding, int folds, int alg, int currChan, int channels, 
 
         for (int i = 0; i < folds; i++)
         {
- 
-            outFile.open((resultsPath + "/ANNIResults.txt").c_str(), ios::app);
-            outFile << "\tCurrent Fold:  (" << (i+1) << " / " << folds << ")" << endl << endl;
-
-            if (debug)
-                cout << "\tCurrent Fold:  (" << (i+1) << " / " << folds << ")" << endl << endl;
-
             for (int k = 0; k < foldSize-1; k++)
             {
                 if (currIndex < tempVec.size())
@@ -503,6 +504,15 @@ void prepareFolds(bool folding, int folds, int alg, int currChan, int channels, 
            
                 currIndex++;  
 
+            }
+
+            outFile.open((resultsPath + "/ANNIResults.txt").c_str(), ios::app);
+            outFile << "\tCurrent Fold:  (" << (i+1) << " / " << folds << ")" << endl;
+            outFile << "\tFold Size:  " << folded[i].size() << endl << endl;
+            if (debug)
+            {
+                cout << "\tCurrent Fold:  (" << (i+1) << " / " << folds << ")" << endl;
+                cout << "\tFold Size:  " << folded[i].size() << endl << endl;
             }
         
         }
@@ -561,9 +571,6 @@ void learningVectorQuantization(vector<vector<double> > trainSet, vector<vector<
 
     if (debug)
         cout << endl << "\t" << timeStamp() << ":  Codebooks trained." << endl;
-        
-//    for (int i = 0; i < samples.size(); i++)
-  //      cout << "samples[" << i << "].size = " << samples[i].size() << endl;
 
     for (int i = 0; i < samples.size(); i++)
     {
@@ -574,16 +581,16 @@ void learningVectorQuantization(vector<vector<double> > trainSet, vector<vector<
             outFile.open("predictions.txt", ios::app);
             outFile << "The best match for " << sampleNames[i] << " using the " << channel << " channel " << algorithm
                     << " is " << BMUnames[match] << endl;
-
-            if (currChan == 1)
-                outFile << endl;
-
             outFile.close();
 
             cout << "The best match for " << sampleNames[i] << " using the " << channel << " channel "  << algorithm
                  << " is  " << BMUnames[match] << endl << endl;
         }
     }
+
+    outFile.open("predictions.txt", ios::app);
+    outFile << endl;
+    outFile.close();
 
     return;
 }
@@ -602,6 +609,8 @@ double euclideanDistance(vector<double> row1, vector<double> row2, string result
     double distance;     // Will describe the euclidean distance between the row1 and row2
     int control;         // The shortest vector will control the loop
 
+    distance = 0;
+
     if (row1.size() < row2.size())
         control = row1.size();
     else
@@ -611,6 +620,7 @@ double euclideanDistance(vector<double> row1, vector<double> row2, string result
     {
         distance += (row1[i] - row2[i]) * (row1[i] - row2[i]);
     }
+
 
     return sqrt(distance);
 }
@@ -632,11 +642,15 @@ int getBestMatch(vector<vector<double> > knownData, vector<double> testRow, stri
     
     match = 0;
 
+    cout << "knownData.size() = " << knownData.size() << endl;
     // Calculate the euclidean distances between the rows
     for (int i = 0; i < knownData.size(); i++)
     {
         distances.push_back(euclideanDistance(knownData[i], testRow, resultsPath, debug));
     }
+
+    for (int z = 0; z < distances.size(); z++)
+        cout << "distance[" << z << "] = " << distances[z] << endl;
 
     // Find the shortest euclidean distance
     for (int i = 1; i < distances.size(); i++)
@@ -645,6 +659,7 @@ int getBestMatch(vector<vector<double> > knownData, vector<double> testRow, stri
             match = i;
     }
 
+    cout << "match = " << match << endl;
     return match;
 }
 
