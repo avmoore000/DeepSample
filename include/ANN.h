@@ -32,11 +32,11 @@ using namespace std;
 #define ANN
 
 // Neural network functions
-void ANNI(string, int, double, int, int, int, int, string, bool);
-void learningVectorQuantization(vector<vector<double> >, vector<vector<double> >, vector<string>, vector<string>, int, double, int, string, string, bool);
+void ANNI(string, string, int, double, int, int, int, int, string, bool);
+void learningVectorQuantization(vector<vector<double> >, vector<vector<double> >, vector<string>, vector<string>, string, int, int, double, int, string, string, bool);
 
 // Helper utilities
-void lvqHelper(string, string, string,int, double, int, int, int, string, bool);
+void lvqHelper(string, string, string, string,int, double, int, int, int, string, bool);
 double euclideanDistance(vector<double>, vector<double>, string, bool);
 int getBestMatch(vector<vector<double> >, vector<double>, string, string, bool);
 void prepareFolds(bool,int, int, int, int, string, vector<vector<double> > &, vector<string>&, string, bool);

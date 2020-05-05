@@ -43,7 +43,7 @@ sample:
 anni:
 #	$(FILES);
 	$(DIR)\
-	make ANN;
+	make DeepSample;
 
 # Just make the test binary
 tests: src/deepSampleTests.o src/FourierTransform.o src/zeroCrossing.o src/spectrumFlux.o src/spectrumCentroid.o src/cepstrum.o src/audioHandler.o src/Utilities.o src/ANN.o src/TestSuite.o src/AudioWave.o
@@ -60,8 +60,8 @@ driver: src/driver.o
 	$(CC) $(CFLAGS) -o build/genSamples src/driver.o $(LIBS)
 
 # Make ANNI binary
-ANN: src/anniDriver.o src/ANN.o src/AudioWave.o src/Utilities.o 
-	$(CC) $(CFLAGS) -o build/ANNI src/anniDriver.o src/ANN.o src/AudioWave.o src/Utilities.o $(LIBS)
+DeepSample: src/anniDriver.o src/ANN.o src/AudioWave.o src/Utilities.o 
+	$(CC) $(CFLAGS) -o build/DeepSample src/anniDriver.o src/ANN.o src/AudioWave.o src/Utilities.o $(LIBS)
 	$(RM) src/*.o
 
 # Clean up the directory

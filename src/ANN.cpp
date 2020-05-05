@@ -24,27 +24,28 @@ using namespace std;
 
 // Function ANNI
 // Inputs:
-//       testFile - A string containing the file to test
+//       trainPath - A string containing the resultsPath to the training directory
+//       testPath - A string containing the resultsPath to the test directory
 //       folds - An integer indicating the number of folds to create from the wave object.
 //       learnRate - A double indicating the learning rate to apply to the algorithm.
 //       epochs - An integer indicating the number of epochs to generate data over.
 //       codebooks - An integer indicating the number of codebooks to be used for training / analysis.
 //       alg - An integer indicating the algorithm(s) to use in training / analysis.
 //       channels - An integer indicating the number of channels in the audio samples.
-//       path - A string containing the location of the output files.
+//       resultsPath - A string containing the location of the output files.
 //       debug - A flag that controls debug output.
 // Outputs: None
 // Purpose: ANNI is an artificial neural network that is used to learn the classifications of music.
-void ANNI(string testFile, int folds, double learnRate, int epochs, int codeBooks, int alg, int channels, string path, bool debug)
+void ANNI(string trainPath, string testPath, int folds, double learnRate, int epochs, int codeBooks, int alg, int channels, string resultsPath, bool debug)
 {
     ofstream outFile;                         // A stream pointer for data output.
     ofstream debugFile;                       // A stream pointer for debug output.
 
-    string outFileName;                       // Will hold the output file name with the path
+    string outFileName;                       // Will hold the output file name with the resultsPath
 
-    path += "/";
+    resultsPath += "/";
 
-    outFileName = path + "ANNIResults.txt";
+    outFileName = resultsPath + "ANNIResults.txt";
 
     if (debug)
     {
@@ -55,11 +56,11 @@ void ANNI(string testFile, int folds, double learnRate, int epochs, int codeBook
         cout << "\tcodeBooks = " << codeBooks << endl;
         cout << "\talg = " << alg << endl;
         cout << "\tchannels = " << channels << endl;
-        cout << "\tpath = " << path << endl;
+        cout << "\tresultsPath = " << resultsPath << endl;
         cout << "\tdebug = " << debug << endl << endl;
     }
 
-    outFile.open((path + "/ANNIResults.txt").c_str(), ios::app);
+    outFile.open((resultsPath + "/ANNIResults.txt").c_str(), ios::app);
 
     outFile << timeStamp() << ":  ANNI RUN" << endl << endl;
 
@@ -77,48 +78,48 @@ void ANNI(string testFile, int folds, double learnRate, int epochs, int codeBook
         case 0:  // Use all algorithms
         {
             // Analyze the FFT
-            lvqHelper("FFT", testFile, outFileName, folds, learnRate, epochs, codeBooks, channels, path, debug);
+            lvqHelper("FFT", trainPath, testPath, outFileName, folds, learnRate, epochs, codeBooks, channels, resultsPath, debug);
 
             // Analyze the Zero Cross
-            lvqHelper("Zero Cross", testFile, outFileName, folds, learnRate, epochs, codeBooks, channels, path, debug);
+            lvqHelper("Zero Cross", trainPath, testPath, outFileName, folds, learnRate, epochs, codeBooks, channels, resultsPath, debug);
 
             // Analyze Spectrum Flux
-            lvqHelper("Spectrum Flux", testFile, outFileName, folds, learnRate, epochs, codeBooks, channels, path, debug);
+            lvqHelper("Spectrum Flux", trainPath, testPath, outFileName, folds, learnRate, epochs, codeBooks, channels, resultsPath, debug);
             // Analyze the Cepstrum
  
-            lvqHelper("Real Cepstrum", testFile, outFileName, folds, learnRate, epochs, codeBooks, channels, path, debug);
+            lvqHelper("Real Cepstrum", trainPath, testPath, outFileName, folds, learnRate, epochs, codeBooks, channels, resultsPath, debug);
             // Analyzed the Spectrum Centroid
-            lvqHelper("Spectrum Centroid", testFile, outFileName, folds, learnRate, epochs, codeBooks, channels, path, debug);
+            lvqHelper("Spectrum Centroid", trainPath, testPath, outFileName, folds, learnRate, epochs, codeBooks, channels, resultsPath, debug);
 
             break;
         }
         case 1:  // Use FFT
         {
-            lvqHelper("FFT", testFile, outFileName, folds, learnRate, epochs, codeBooks, channels, path, debug);
+            lvqHelper("FFT", trainPath, testPath, outFileName, folds, learnRate, epochs, codeBooks, channels, resultsPath, debug);
  
             break;
         }
         case 2:  // Use Zero Cross
         {
-            lvqHelper("Zero Cross", testFile, outFileName, folds, learnRate, epochs, codeBooks, channels, path, debug);
+            lvqHelper("Zero Cross", trainPath, testPath, outFileName, folds, learnRate, epochs, codeBooks, channels, resultsPath, debug);
 
             break;
         }
         case 3:  // Use Spectrum Flux
         {
-            lvqHelper("Spectrum Flux", testFile, outFileName, folds, learnRate, epochs, codeBooks, channels, path, debug);
+            lvqHelper("Spectrum Flux", trainPath, testPath, outFileName, folds, learnRate, epochs, codeBooks, channels, resultsPath, debug);
 
             break;
         }
         case 4:  // Use Cepstrum
         {
-            lvqHelper("Real Cepstrum", testFile, outFileName, folds, learnRate, epochs, codeBooks, channels, path, debug);
+            lvqHelper("Real Cepstrum", trainPath, testPath, outFileName, folds, learnRate, epochs, codeBooks, channels, resultsPath, debug);
 
             break;
         }
         case 5:  // Use Spectrum Centroid
         {
-            lvqHelper("Spectrum Centroid", testFile, outFileName, folds, learnRate, epochs, codeBooks, channels, path, debug);
+            lvqHelper("Spectrum Centroid", trainPath, testPath, outFileName, folds, learnRate, epochs, codeBooks, channels, resultsPath, debug);
 
             break;
         }
@@ -135,18 +136,19 @@ void ANNI(string testFile, int folds, double learnRate, int epochs, int codeBook
 // Function lvqHelper
 // Inputs:
 //       algorithm - A string containing the name of the algorithm being run against.
-//       testFile - A string indicating the name of the file to test
-//       resultsOutput - A string containing the full path to the output file.
+//       trainPath - A string containing the path to the training dataset
+//       testPath - A string indicating the path to the test data set.
+//       resultsOutput - A string containing the full resultsPath to the output file.
 //       learnRate - A double indicating the learning rate to apply to the algorithm.
 //       folds - An integer indicating the niumber of folds to create from the wave object
 //       epochs - An integer indicating the number of epochs to generate data over
 //       codebooks - An integer indicating the number of codebooks to be used for training / analysis
 //       channels - An integer indicating the number of channels in the audio samples
-//       path - A string containing the location of the output files
+//       resultsPath - A string containing the location of the output files
 //       debug - A flag that controls debug output.
 // Outputs:
 // Purpose:  Peforms ths LVQ on a two dimensional vector of doubles.
-void lvqHelper(string algorithm, string testFile, string resultsOutput, int folds, double learnRate, int epochs, int codeBooks, int channels, string path, bool debug)
+void lvqHelper(string algorithm, string trainPath, string testPath, string resultsOutput, int folds, double learnRate, int epochs, int codeBooks, int channels, string resultsPath, bool debug)
 {
     ofstream outFile;                          // A stream pointer for data output
     ofstream debugFile;                        // A stream pointer for debug output
@@ -173,33 +175,33 @@ void lvqHelper(string algorithm, string testFile, string resultsOutput, int fold
         {
             if (algorithm.compare("FFT") == 0)
             {
-                fileName = path + "Databases/stereoFFT.txt";
-                sampleFileName = path + testFile + "_stereoFFT.txt";
+                fileName = trainPath + "/Databases/stereoFFT.txt";
+                sampleFileName = testPath + "/Databases/stereoFFT.txt";
                 alg = 1;
             }
             else if (algorithm.compare("Zero Cross") == 0)
             {
                 alg = 2;
-                fileName = path + "Databases/stereoZeroCross.txt";
-                sampleFileName = path  + testFile + "_stereoZeroCross.txt";
+                fileName = trainPath + "/Databases/stereoZeroCross.txt";
+                sampleFileName = testPath + "/Databases/stereoZeroCross.txt";
             }
             else if (algorithm.compare("Spectrum Flux") == 0)
             {
                 alg = 3;
-                fileName = path + "Databases/stereoSpectrumFlux.txt";
-                sampleFileName = path + testFile + "_stereoSpectrumFlux.txt";;
+                fileName = trainPath + "/Databases/stereoSpectrumFlux.txt";
+                sampleFileName = testPath + "/Databases/stereoSpectrumFlux.txt";;
             }
             else if (algorithm.compare("Real Cepstrum") == 0)
             {
                 alg = 4;
-                fileName = path + "Databases/stereoCepstrum.txt";
-                sampleFileName = path + testFile + "_stereoCepstrum.txt";
+                fileName = trainPath + "/Databases/stereoCepstrum.txt";
+                sampleFileName = testPath + "/Databases/stereoCepstrum.txt";
             }
             else if (algorithm.compare("Spectrum Centroid") == 0)
             {
                 alg = 5;
-                fileName = path + "Databases/stereoSpectrumCentroid.txt";
-                sampleFileName = path + testFile + "_stereoSpectrumCentroid.txt";
+                fileName = trainPath + "/Databases/stereoSpectrumCentroid.txt";
+                sampleFileName = testPath + "/Databases/stereoSpectrumCentroid.txt";
             }
 
             outFile.open(resultsOutput, ios::app);
@@ -212,7 +214,7 @@ void lvqHelper(string algorithm, string testFile, string resultsOutput, int fold
                      << folds << " folds..." << endl;
 
             // Prepare left training set
-            prepareFolds(1,folds, alg, 0, channels, fileName, foldedLeft, BMUnames, path, debug);
+            prepareFolds(1,folds, alg, 0, channels, fileName, foldedLeft, BMUnames, resultsPath, debug);
 
             outFile.open(resultsOutput, ios::app);
             outFile << timeStamp() << ":  Finished preparing left channel." << endl;
@@ -228,7 +230,7 @@ void lvqHelper(string algorithm, string testFile, string resultsOutput, int fold
             }
 
             // Prepare right training set
-            prepareFolds(1,folds, alg, 1, channels, fileName, foldedRight, BMUnames, path, debug);
+            prepareFolds(1,folds, alg, 1, channels, fileName, foldedRight, BMUnames, resultsPath, debug);
 
             outFile.open(resultsOutput, ios::app);
             outFile << timeStamp() << ":  Finished preparing right channel." << endl;
@@ -262,9 +264,9 @@ void lvqHelper(string algorithm, string testFile, string resultsOutput, int fold
 
     
                 // Generate the test set
-                prepareFolds(0, folds, alg, 0, channels, sampleFileName, testSet, sampleNames, path, debug);
-                cout << "sampleFileName = " << sampleFileName << endl;
-                cout << "testSet.size() = " << testSet.size() << endl;
+                prepareFolds(0, folds, alg, 0, channels, sampleFileName, testSet, sampleNames, resultsPath, debug);
+                //cout << "sampleFileName = " << sampleFileName << endl;
+               // cout << "testSet.size() = " << testSet.size() << endl;
 
                 outFile.open(resultsOutput, ios::app);
                 outFile << timeStamp() << ":  Test set created." << endl;
@@ -279,7 +281,7 @@ void lvqHelper(string algorithm, string testFile, string resultsOutput, int fold
                 }
              
                 // Make prediction based on training set
-                learningVectorQuantization(trainSet, testSet, BMUnames, sampleNames, codeBooks, learnRate, epochs, fileName, path, debug);
+                learningVectorQuantization(trainSet, testSet, BMUnames, sampleNames, algorithm, 0, codeBooks, learnRate, epochs, resultsOutput, resultsPath, debug);
             } // End train left fold loop
 
             // Clean out vectors for the right fold
@@ -312,7 +314,7 @@ void lvqHelper(string algorithm, string testFile, string resultsOutput, int fold
                 }
 
                 // Use prepareFolds to generate a test set from the right channel of the samples
-                prepareFolds(0, folds, alg, 1, channels, sampleFileName, testSet, sampleNames, path, debug);
+                prepareFolds(0, folds, alg, 1, channels, sampleFileName, testSet, sampleNames, resultsPath, debug);
 
                 outFile.open(resultsOutput, ios::app);
                 outFile << timeStamp() << ":  Test set created." << endl;
@@ -323,12 +325,11 @@ void lvqHelper(string algorithm, string testFile, string resultsOutput, int fold
                 if (debug)
                 {
                     cout << timeStamp() << ":  Test set created." << endl;
-        cout << "testSet.size = " << testSet.size() << endl;
                     cout << timeStamp() << ":  Starting Learning Vector Quantization for "<< algorithm  
                          << " right channel.." << endl;
                 }
 
-                learningVectorQuantization(trainSet, testSet, BMUnames, sampleNames, codeBooks, learnRate, epochs, fileName, path, debug);
+                learningVectorQuantization(trainSet, testSet, BMUnames, sampleNames, algorithm, 1, codeBooks, learnRate, epochs, resultsOutput, resultsPath, debug);
 
                 outFile.open(resultsOutput, ios::app);
                 outFile << timeStamp() << ":  Learning Vector Quantization complete." << endl;
@@ -358,11 +359,11 @@ void lvqHelper(string algorithm, string testFile, string resultsOutput, int fold
 //       currChan - An integer specifiying the current channel being manipulated.
 //       channels - An integer indicating the total channels in the audio samples
 //       &folded - An n-dimensional vector of doubles that will hold the folded FFT
-//       path - A string indicating the path for data output
+//       resultsPath - A string indicating the path for data output
 //       debug - A boolean flag that controls debug output
 // Outputs: None
 // Purpose:  Break a given dataset into the correct number of folds for analysis.
-void prepareFolds(bool folding, int folds, int alg, int currChan, int channels, string fileName, vector<vector<double> > &folded, vector<string> &names, string path, bool debug)
+void prepareFolds(bool folding, int folds, int alg, int currChan, int channels, string fileName, vector<vector<double> > &folded, vector<string> &names, string resultsPath, bool debug)
 {
     int foldSize;                         // The size of each fold
     int currIndex;                        // Index to add to fold
@@ -470,7 +471,7 @@ void prepareFolds(bool folding, int folds, int alg, int currChan, int channels, 
         if (foldSize <= 0)
             foldSize = 1;
 
-        outFile.open((path + "/ANNIResults.txt").c_str(), ios::app);
+        outFile.open((resultsPath + "/ANNIResults.txt").c_str(), ios::app);
         outFile << "\tNumber of Folds:  " << folds << endl;
         outFile << "\tFold Size:  " << foldSize << endl;
         outFile.close();
@@ -484,7 +485,7 @@ void prepareFolds(bool folding, int folds, int alg, int currChan, int channels, 
         for (int i = 0; i < folds; i++)
         {
  
-            outFile.open((path + "/ANNIResults.txt").c_str(), ios::app);
+            outFile.open((resultsPath + "/ANNIResults.txt").c_str(), ios::app);
             outFile << "\tCurrent Fold:  (" << (i+1) << " / " << folds << ")" << endl << endl;
 
             if (debug)
@@ -514,52 +515,73 @@ void prepareFolds(bool folding, int folds, int alg, int currChan, int channels, 
 //       trainSet - An n-dimensional vector of doubles representing the training set.
 //       samples - An n-dimenstional vector of doubles representing the sample set
 //       BMUnames -  A vector of strings containing the names for BMU options.
-//       sampleNames - A vector of strings containing the names of the files being analyzed/
+//       sampleNames - A vector of strings containing the names of the files being analyzed
+//       algorithm -  A string containing the algorithm being used.
+//       currChan - An integer indicating the current channel.
 //       codeBooks - An integer indicating the number of codebooks used for training/analysis
 //       learnRate - A double indicating the learning rate
 //       epochs - An integer indicating the number of epochs to train over.
 //       fileName - A string indicating the name of the output file.
-//       path - A string indicating the path for output files.
+//       resultsPath - A string indicating the path for output files.
 //       debug - A boolean flag that controls debug output.
 // Output: None
 // Purpose:  To determine the effectiveness of a training set 
-void learningVectorQuantization(vector<vector<double> > trainSet, vector<vector<double> > samples, vector<string> BMUnames, vector<string> sampleNames, int codeBooks, double learnRate, int epochs, string fileName, string path, bool debug)
+void learningVectorQuantization(vector<vector<double> > trainSet, vector<vector<double> > samples, vector<string> BMUnames, vector<string> sampleNames, string algorithm, int currChan, int codeBooks, double learnRate, int epochs, string fileName, string resultsPath, bool debug)
 {
     vector<vector<double> > codeBookSet;        // Will hold the set of codebooks for training
     vector<double> set;                         // Represents a code book vector
     ofstream outFile;                           // A stream pointer for data output
     int match;                                  // Will contain the BMU for the sample
-
+    string channel;
     match = -1;
+
+
+    // Set which channel is being worked with
+    if (currChan == 0)
+        channel = "Left";
+    else if (currChan == 1)
+        channel = "Right";
 
     // Initialize the codeBookSet to be the correct size
     for (int i = 0; i < trainSet.size(); i++)
         codeBookSet.push_back(set);
 
-    outFile.open((path + "ANNIResults.txt").c_str(), ios::app);
+    outFile.open((resultsPath).c_str(), ios::app);
     outFile << "\t" << timeStamp() << ":  Training codebooks..." << endl << endl;
     outFile.close();
 
     if (debug)
         cout << "\t" << timeStamp() << ":  Training codebooks..." << endl << endl;
 
-    trainCodeBooks(trainSet, codeBookSet, codeBooks, learnRate, epochs, fileName, path, debug); 
+    trainCodeBooks(trainSet, codeBookSet, codeBooks, learnRate, epochs, fileName, resultsPath, debug); 
 
-    outFile.open((path + "ANNIResults.txt").c_str(), ios::app);
+    outFile.open((resultsPath).c_str(), ios::app);
     outFile << endl << "\t" << timeStamp() << ":  Codebooks trained." << endl;
     outFile.close();
 
     if (debug)
         cout << endl << "\t" << timeStamp() << ":  Codebooks trained." << endl;
         
-    for (int i = 0; i < samples.size(); i++)
-        cout << "samples[" << i << "].size = " << samples[i].size() << endl;
+//    for (int i = 0; i < samples.size(); i++)
+  //      cout << "samples[" << i << "].size = " << samples[i].size() << endl;
+
     for (int i = 0; i < samples.size(); i++)
     {
         if (samples[i].size() > 0)
         {
-            match = getBestMatch(codeBookSet, samples[i], fileName, path, debug);
-            cout << "The best match for " << sampleNames[i] << " is:  " << BMUnames[match] << endl;
+            match = getBestMatch(codeBookSet, samples[i], fileName, resultsPath, debug);
+
+            outFile.open("predictions.txt", ios::app);
+            outFile << "The best match for " << sampleNames[i] << " using the " << channel << " channel " << algorithm
+                    << " is " << BMUnames[match] << endl;
+
+            if (currChan == 1)
+                outFile << endl;
+
+            outFile.close();
+
+            cout << "The best match for " << sampleNames[i] << " using the " << channel << " channel "  << algorithm
+                 << " is  " << BMUnames[match] << endl << endl;
         }
     }
 
@@ -570,12 +592,12 @@ void learningVectorQuantization(vector<vector<double> > trainSet, vector<vector<
 // Inputs:
 //       row1 - A vector of floats containing the first row
 //       row2 - A vector of floats containing the second row
-//       path - A string containing the location of the output directory
+//       resultsPath - A string containing the location of the output directory
 //       debug - A flag that controls debug output.
 // Outputs:
 //       distance - A double describing the euclidean distance between row1 and row2
 // Purpose:  Calculate the euclidean distance between the first and second row
-double euclideanDistance(vector<double> row1, vector<double> row2, string path, bool debug)
+double euclideanDistance(vector<double> row1, vector<double> row2, string resultsPath, bool debug)
 {
     double distance;     // Will describe the euclidean distance between the row1 and row2
     int control;         // The shortest vector will control the loop
@@ -597,13 +619,13 @@ double euclideanDistance(vector<double> row1, vector<double> row2, string path, 
 // Inputs:
 //       knownData - A vector containing known data sets for comparison
 //       testRow - An array containing spectral flux data to compare.
-//       path - A string containing the location of the output directory
+//       resultsPath - A string containing the location of the output directory
 //       fileName - A string indicating the file name for data output.
 //       debug - A flag that controls debug output
 // Output:
 //       category - An integer describing the category the audio belongs to
 // Purpose:  Finds the best match of a piece of audio by comparing its spectral flux to known data.
-int getBestMatch(vector<vector<double> > knownData, vector<double> testRow, string fileName, string path, bool debug)
+int getBestMatch(vector<vector<double> > knownData, vector<double> testRow, string fileName, string resultsPath, bool debug)
 {
     int match;                      // An integer describing which element of the knownData is the BMU
     vector<double> distances;       // Contains the euclidean distances of the vectors
@@ -613,7 +635,7 @@ int getBestMatch(vector<vector<double> > knownData, vector<double> testRow, stri
     // Calculate the euclidean distances between the rows
     for (int i = 0; i < knownData.size(); i++)
     {
-        distances.push_back(euclideanDistance(knownData[i], testRow, path, debug));
+        distances.push_back(euclideanDistance(knownData[i], testRow, resultsPath, debug));
     }
 
     // Find the shortest euclidean distance
@@ -630,11 +652,11 @@ int getBestMatch(vector<vector<double> > knownData, vector<double> testRow, stri
 // Inputs:
 //       database - An n-D vector of doubles containing known data points for generating training set.
 //       trainSet - An n-D vector of doubles that will contain the subset of training data for comparisons
-//       path - A string containing the path to the output directory.
+//       resultsPath - A string containing the path to the output directory.
 //       debug - A flag controlling the debug output.
 // Outputs:  None
 // Purpose: This creates a random database consisting of a subset of known data for use by ANNI.
-void randomDatabase(vector<vector<double> > database, vector<vector<double> > &trainSet,string path, bool debug)
+void randomDatabase(vector<vector<double> > database, vector<vector<double> > &trainSet,string resultsPath, bool debug)
 {
 
     int records;       // Contains the total number of records in the database
@@ -676,11 +698,11 @@ void randomDatabase(vector<vector<double> > database, vector<vector<double> > &t
 //       lRate - A double describing the learning rate
 //       epochs - An integer describing the number of learning epochs
 //       fileName - A string indicating the file name for data output.
-//       path - A string containing the path to the output directory
+//       resultsPath - A string containing the path to the output directory
 //       debug - A flag controlling the debug output.
 // Output: None
 // Purpose:  This function is used to generate the number of specified codebooks for running the algorithm.
-void trainCodeBooks(vector<vector<double> > trainSet, vector<vector<double> > &codeBookSet,int nBooks, double lRate, int epochs, string fileName,string path, bool debug)
+void trainCodeBooks(vector<vector<double> > trainSet, vector<vector<double> > &codeBookSet,int nBooks, double lRate, int epochs, string fileName,string resultsPath, bool debug)
 {
     double rate;        // The learning rate of the current epoch
     double error;       // Used to calculate the error rate in the learning
@@ -694,7 +716,7 @@ void trainCodeBooks(vector<vector<double> > trainSet, vector<vector<double> > &c
     sumError = 0;
     bmu = 0;
 
-    outFile.open((path + "ANNIResults.txt").c_str(), ios::app);
+    outFile.open((resultsPath).c_str(), ios::app);
     outFile << "\t\t" << timeStamp() << ":  Creating " << nBooks << " codebooks from training set..." << endl;
     outFile.close();
 
@@ -704,10 +726,10 @@ void trainCodeBooks(vector<vector<double> > trainSet, vector<vector<double> > &c
     // Generate the codebooks
     for (int i = 0; i < nBooks; i++)
     {
-        randomDatabase(trainSet, codeBookSet, path, debug);
+        randomDatabase(trainSet, codeBookSet, resultsPath, debug);
     }
 
-    outFile.open((path + "ANNIResults.txt").c_str(), ios::app);
+    outFile.open((resultsPath).c_str(), ios::app);
     outFile << "\t\t" << timeStamp() << ":  " << nBooks << " codebooks created." << endl;
     outFile << "\t\t" << timeStamp() << ":  Training codebooks over " << epochs << " epochs..." << endl;
     outFile.close();
@@ -727,7 +749,7 @@ void trainCodeBooks(vector<vector<double> > trainSet, vector<vector<double> > &c
 
         for (int j = 0; j < trainSet.size(); j++)
         {
-            bmu = getBestMatch(codeBookSet, trainSet[j], fileName, path, debug);
+            bmu = getBestMatch(codeBookSet, trainSet[j], fileName, resultsPath, debug);
        
             for (int k = 0; k < trainSet[j].size(); k++)
             {
@@ -745,7 +767,7 @@ void trainCodeBooks(vector<vector<double> > trainSet, vector<vector<double> > &c
             }
         }
 
-        outFile.open((path + "ANNIResults.txt").c_str(), ios::app);
+        outFile.open((resultsPath).c_str(), ios::app);
         outFile << endl << "\t\t\t" << "Epoch:  " << i << endl << "\t\t\tLearning Rate:  " << rate
                 << endl << "\t\t\tError:  " << setprecision(3) << sumError << endl;
         outFile.close();

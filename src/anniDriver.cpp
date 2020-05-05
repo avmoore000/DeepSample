@@ -26,8 +26,9 @@ using namespace std;
 int main(int argc, char** argv) 
 {
 
-    string path;                               // Path for file output.
-    string sampleName;                         // A string containing the name of the sample file
+    string resultsPath;                        // Path for file output.
+    string testPath;                           // A string containing the path to the test directory
+    string trainPath;                          // A string containing the path to the training data.
 
     int folds;                                 // Contains the number of folds to seperated data into
     double learnRate;                          // The learning rate for the neural network.
@@ -41,8 +42,11 @@ int main(int argc, char** argv)
     if (argc <= 1)
     {
         cout << endl << endl << "Program Use:" << endl << endl;
-        cout << "./ANNI [folds] [learnRate] [epochs] [codeBooks] [alg {0,1,2,3,4,5]"
-             << endl << "       [channels {1,2}] [path] [debug {0,1}] [sampleFile]" << endl << endl;
+        cout << "./DeepSample [trainPath] [testPath] [folds] [learnRate] [epochs] [codeBooks] [alg {0,1,2,3,4,5]"
+             << endl << "       [channels {1,2}] [path] [debug {0,1}]" << endl << endl;
+        cout << "\ttrainPath" << endl << endl << "\t\tA string indicating the path for the training data." 
+             << endl << endl;
+        cout << "\ttestPath" << endl << endl << "\t\tA string indicating the path to test file location."                                                << endl << endl;
         cout << "\tfolds" << endl << endl << "\t\tInteger indicating the number of folds to break"
              << " data into." << endl << endl;
         cout << "\tlearnRate" << endl << endl << "\t\tFloating point indicating the learning rate."
@@ -57,11 +61,9 @@ int main(int argc, char** argv)
              << "\t\t4 - Cepstrum" << endl << " \t\t5 - Spectrum Centroid" << endl << endl;
         cout << "\tchannels" << endl << endl << "\t\tAn integer indicating the number of channels"
              << " in the audio samples." << endl << endl;
-        cout << "\tpath" << endl << endl << "\t\tThe path for saving data output." << endl << endl;
+        cout << "\tresultsPath" << endl << endl << "\t\tThe path for saving data output." << endl << endl;
         cout << "\tdebug" << endl << endl << "\t\tA flag that controls debug output." << endl << endl
              << "\t\t0 - No debug" << endl << "\t\t1 - Debug" << endl << endl;
-        cout << "\tsampleFile" << endl << endl << "\t\tA string indicating the name of the file to test."
-             << endl << endl;
     }
     else
     {
@@ -71,47 +73,52 @@ int main(int argc, char** argv)
             {
                 case 1:
                 {
-                    folds = atoi(argv[i]);
+                    trainPath = argv[i];
                     break;
                 }
-                case 2:
+                case 2: 
                 {
-                    learnRate = stod(argv[i]);
+                    testPath = argv[i];
                     break;
                 }
                 case 3:
                 {
-                    epochs = atoi(argv[i]);
+                    folds = atoi(argv[i]);
                     break;
                 }
                 case 4:
                 {
-                    codeBooks = atoi(argv[i]);
+                    learnRate = stod(argv[i]);
                     break;
                 }
                 case 5:
                 {
-                    alg = atoi(argv[i]);
+                    epochs = atoi(argv[i]);
                     break;
                 }
                 case 6:
                 {
-                    channels = atoi(argv[i]);
+                    codeBooks = atoi(argv[i]);
                     break;
                 }
                 case 7:
                 {
-                    path = argv[i];
+                    alg = atoi(argv[i]);
                     break;
                 }
                 case 8:
                 {
-                    debug = atoi(argv[i]);
+                    channels = atoi(argv[i]);
                     break;
                 }
                 case 9:
                 {
-                    sampleName = argv[i];
+                    resultsPath = argv[i];
+                    break;
+                }
+                case 10:
+                {
+                    debug = atoi(argv[i]);
                     break;
                 }
                 default:
@@ -124,7 +131,7 @@ int main(int argc, char** argv)
 
     cout << "Calling ANNI.." << endl;
 
-    ANNI(sampleName, folds, learnRate, epochs, codeBooks, alg, channels, path, debug);
+    ANNI(trainPath, testPath, folds, learnRate, epochs, codeBooks, alg, channels, resultsPath, debug);
  
     return 0;
 }
