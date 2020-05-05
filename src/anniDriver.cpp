@@ -43,7 +43,7 @@ int main(int argc, char** argv)
     {
         cout << endl << endl << "Program Use:" << endl << endl;
         cout << "./DeepSample [trainPath] [testPath] [folds] [learnRate] [epochs] [codeBooks] [alg {0,1,2,3,4,5]"
-             << endl << "       [channels {1,2}] [path] [debug {0,1}]" << endl << endl;
+             << endl << "       [channels {1,2}] [resultPath] [debug {0,1}]" << endl << endl;
         cout << "\ttrainPath" << endl << endl << "\t\tA string indicating the path for the training data." 
              << endl << endl;
         cout << "\ttestPath" << endl << endl << "\t\tA string indicating the path to test file location."                                                << endl << endl;
