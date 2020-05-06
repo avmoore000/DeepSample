@@ -17,6 +17,7 @@
 
 #include "../include/ANN.h"
 #include "../include/Utilities.h"
+#include "../include/Fold.h"
 #include <time.h>
 #include <algorithm>
 
@@ -155,16 +156,16 @@ void lvqHelper(string algorithm, string trainPath, string testPath, string resul
 
     string fileName;                           // Will contain the name of the database file
     string sampleFileName;                     // Will contain the name of the sample file.
-   
-    vector<vector<double> > foldedLeft;        // Will hold the left channel split into folds
-    vector<vector<double> > foldedRight;       // Will hold the right channel split into folds
-    vector<vector<double> > trainSet;          // Will hold the training set
-    vector<vector<double> > testSet;           // Will hold the test set
+
+    vector<Fold> foldedLeft;                   // A vector of folded left channel objects
+    vector<Fold> foldedRight;                  // A vector of folded right channel objects
+    vector<Fold> trainSet;                     // A vector of training objects
+    vector<Fold> testSet;                      // A vector of test sets 
     vector<string> BMUnames;                   // Will hold the names of the training set samples
     vector<string> sampleNames;                // Will hold the names of the samples being analyzed
 
     int alg;                                   // Used to tell the folder which algorithm
-   
+
     switch(channels)
     {
         case 1:
@@ -173,6 +174,11 @@ void lvqHelper(string algorithm, string trainPath, string testPath, string resul
         }
         case 2:
         {
+
+            // Resize the fold vectors
+            foldedLeft.resize(folds);
+            foldedRight.resize(folds);   
+             
             if (algorithm.compare("FFT") == 0)
             {
                 fileName = trainPath + "/Databases/stereoFFT.txt";
@@ -214,7 +220,7 @@ void lvqHelper(string algorithm, string trainPath, string testPath, string resul
                      << folds << " folds..." << endl;
 
             // Prepare left training set
-            prepareFolds(1,folds, alg, 0, channels, fileName, foldedLeft, BMUnames, resultsPath, debug);
+            prepareFolds(0, folds, alg, 0, channels, fileName, foldedLeft, BMUnames, resultsPath, debug);
 
             outFile.open(resultsOutput, ios::app);
             outFile << timeStamp() << ":  Finished preparing left channel." << endl;
@@ -230,7 +236,7 @@ void lvqHelper(string algorithm, string trainPath, string testPath, string resul
             }
 
             // Prepare right training set
-            prepareFolds(1,folds, alg, 1, channels, fileName, foldedRight, BMUnames, resultsPath, debug);
+            prepareFolds(0, folds, alg, 1, channels, fileName, foldedRight, BMUnames, resultsPath, debug);
 
             outFile.open(resultsOutput, ios::app);
             outFile << timeStamp() << ":  Finished preparing right channel." << endl;
@@ -251,13 +257,14 @@ void lvqHelper(string algorithm, string trainPath, string testPath, string resul
 
                 genTrainSet(foldedLeft, trainSet, i);
 
+                for (int z = 0; z < foldedLeft.size(); z++)
+                    cout << "foldedLeft[" << z << "].size = " << foldedLeft[z].getSize() << endl;
+
                 outFile.open(resultsOutput, ios::app);
                 outFile << timeStamp() << ":  Training set created." << endl;
                 outFile << timeStamp() << ":  Creating test set from folded left " << algorithm << "..." << endl;
                 outFile.close();
  
-                cout << "trainSet.size() = " << trainSet.size() << endl;
-
                 if (debug)
                 {
                     cout << timeStamp() << ":  Training set created." << endl;
@@ -266,9 +273,7 @@ void lvqHelper(string algorithm, string trainPath, string testPath, string resul
 
     
                 // Generate the test set
-                prepareFolds(0, folds, alg, 0, channels, sampleFileName, testSet, sampleNames, resultsPath, debug);
-                //cout << "sampleFileName = " << sampleFileName << endl;
-               // cout << "testSet.size() = " << testSet.size() << endl;
+                prepareFolds(1, 1, alg, 0, channels, sampleFileName, testSet, sampleNames, resultsPath, debug);
 
                 outFile.open(resultsOutput, ios::app);
                 outFile << timeStamp() << ":  Test set created." << endl;
@@ -283,7 +288,7 @@ void lvqHelper(string algorithm, string trainPath, string testPath, string resul
                 }
              
                 // Make prediction based on training set
-                learningVectorQuantization(trainSet, testSet, BMUnames, sampleNames, algorithm, 0, codeBooks, learnRate, epochs, resultsOutput, resultsPath, debug);
+                learningVectorQuantization(trainSet, testSet, BMUnames, sampleNames, algorithm, alg,  0, codeBooks, learnRate, epochs, resultsOutput, resultsPath, debug);
 
                 trainSet.clear();
 
@@ -311,8 +316,6 @@ void lvqHelper(string algorithm, string trainPath, string testPath, string resul
                 outFile << timeStamp() << ":  Creating test set from folded right " << algorithm << "..." << endl;
                 outFile.close();
 
-                cout << "trainSet.size() = " << trainSet.size() << endl;
-
                 if (debug)
                 {
                     cout << timeStamp() << ":  Training set created." << endl;
@@ -320,7 +323,7 @@ void lvqHelper(string algorithm, string trainPath, string testPath, string resul
                 }
 
                 // Use prepareFolds to generate a test set from the right channel of the samples
-                prepareFolds(0, folds, alg, 1, channels, sampleFileName, testSet, sampleNames, resultsPath, debug);
+                prepareFolds(1, 1, alg, 1, channels, sampleFileName, testSet, sampleNames, resultsPath, debug);
 
                 outFile.open(resultsOutput, ios::app);
                 outFile << timeStamp() << ":  Test set created." << endl;
@@ -335,7 +338,7 @@ void lvqHelper(string algorithm, string trainPath, string testPath, string resul
                          << " right channel.." << endl;
                 }
 
-                learningVectorQuantization(trainSet, testSet, BMUnames, sampleNames, algorithm, 1, codeBooks, learnRate, epochs, resultsOutput, resultsPath, debug);
+                learningVectorQuantization(trainSet, testSet, BMUnames, sampleNames, algorithm, alg, 1, codeBooks, learnRate, epochs, resultsOutput, resultsPath, debug);
 
                 outFile.open(resultsOutput, ios::app);
                 outFile << timeStamp() << ":  Learning Vector Quantization complete." << endl;
@@ -361,172 +364,163 @@ void lvqHelper(string algorithm, string trainPath, string testPath, string resul
 
 // Function prepareFolds
 // Inputs:
-//       folding -  A boolean flag indicating a fold is being prepared
+//       testSet - A boolean flag to control test set generation.
 //       folds - An integer indicating the number of folds to create.
 //       alg - An integer specifying the algorithm being worked on.
 //       currChan - An integer specifiying the current channel being manipulated.
 //       channels - An integer indicating the total channels in the audio samples
-//       &folded - An n-dimensional vector of doubles that will hold the folded FFT
+//       &folded - A vector of Fold objects
 //       resultsPath - A string indicating the path for data output
 //       debug - A boolean flag that controls debug output
 // Outputs: None
 // Purpose:  Break a given dataset into the correct number of folds for analysis.
-void prepareFolds(bool folding, int folds, int alg, int currChan, int channels, string fileName, vector<vector<double> > &folded, vector<string> &names, string resultsPath, bool debug)
+void prepareFolds(bool testSet, int folds, int alg, int currChan, int channels, string fileName, vector<Fold> &folded, vector<string> &names, string resultsPath, bool debug)
 {
     int foldSize;                         // The size of each fold
     int currIndex;                        // Index to add to fold
-    int currentFold;                      // Current fold to add data
-    bool grabName;                        // Controls whether to grab the name
+    int currFold;                         // Current fold to add data
+    int grabName;                         // Controls whether to grab the name
     vector<double> dataFold;              // A vector to hold the new fold of data
     vector<double> tempVec;               // A vector that will hold the data from the file
     string line;                          // A string to hold line of data.
     string data;                          // Will hold the complex number as a string
     ifstream inFile;                      // A stream pointer for data input.
     ofstream outFile;                     // A stream pointer for data output.
+    int sampleCount;                      // Count the number of samples in the training database
+    double tempDoub;                      // Will hold a temporary double value
+    complex<double> tempComplex;          // Will hold a temporary complex number
+    stringstream convert;                 // Will be used to convert a string to a double
 
 
     currIndex = 0;
-    currentFold = 0;
+    currFold = 0;
     grabName = 1;
+    sampleCount = 0;
 
-    cout << "FileName = " << fileName << endl;
-
-    // Initialize the folded vector
-    if (folding)
-    {
-        for (int i = 0; i < folds; i++)
-        {
-            folded.push_back(dataFold);
-        }
-    }
-
-    // Load the data file into a vector to work with
     inFile.open((fileName).c_str(), ios::in);
 
     while(std::getline(inFile, line))
     {
-        data = "";
+        names.push_back(line);
 
+        std::getline(inFile, line);
+        std::getline(inFile, line);
+
+        if (channels == 2)
+            std::getline(inFile, line); 
+
+        sampleCount++;
+    }
+
+    inFile.close();
+
+    foldSize = sampleCount / folds;
+
+    if (testSet)
+        folded.resize(sampleCount);
+
+    inFile.open((fileName).c_str(), ios::in);
+
+    while (std::getline(inFile, line))
+    {
         if (grabName == 1)
-        {
-            names.push_back(line);
-            grabName = 0;
-        }
+            grabName = -1;
         else
         {
-            if (currChan == 1) // Skip the left channel
+            if (currChan == 1)  // Skip the left channel
                 std::getline(inFile, line);
 
             if (line.size() > 0)
             {
                 if ((alg == 3) || (alg == 5))
                 {
-                   tempVec.push_back(stod(line));
+                    convert << line;
+                    convert >> tempDoub;
+
+                    if (!convert.fail())
+                        tempVec.push_back(tempDoub);
                 }
                 else
                 {
-                    for (int i = 0; i <= line.length(); i++)
+                    for (int i = 0; i < line.length(); i++)
                     {
                         if ((line[i] != ' ') && (line[i] != '\0'))
-                        {
                             data += line[i];
-                        }
-                        else
+                        else if (data.size() > 0)
                         {
-                            if (data.size() > 0)
+                            convert << data;
+
+                            if (alg == 1) // FFT
                             {
-                                if (alg == 1)
-                                    tempVec.push_back(real(stod(data)));
-                                else
-                                    tempVec.push_back(stod(data));
+                                convert >> tempComplex;
+
+                                if (!convert.fail())
+                                    tempVec.push_back(real(tempComplex));
+                            }
+                            else
+                            {
+                                convert >> tempDoub;
+
+                                if (!convert.fail())
+                                    tempVec.push_back(tempDoub);
                             }
 
                             data = "";
+                            convert.str("");
+                            convert.clear();
                         }
                     }
                 }
 
-                if (!folding)
+                // Load the current vector to the fold
+                if (folds == 1)
+                    folded.at(0).pushFold(tempVec);
+                else
                 {
-                    folded.push_back(dataFold);
+                    folded.at(currFold).pushFold(tempVec);
+                    currIndex++;
 
-                    for (int i = 0; i < tempVec.size(); i++)
-                        folded[folded.size()-1].push_back(tempVec[i]);
+                    if (currIndex == foldSize)
+                    {
+                        currIndex = 0;
+                        currFold++;
+                    }
                 }
+
+                std::getline(inFile, line);
             }
             else
-                grabName = 1;  // The next line will be an audio name.
-
-            if ((currChan == 0) && (grabName != 1))
-            {
-                std::getline(inFile, line);
-            }
-            else if ((currChan == 1) && (grabName != 1))
-            {
-                std::getline(inFile, line);
                 grabName = 1;
-            }
+
+            // Skip the channel we're not on
+            if (grabName == 0)
+                std::getline(inFile, line);
+            else if (grabName == -1)
+                grabName = 0;
         }
     }
 
     inFile.close();
-
-    if (folding)
+/*
+    if (currFold < foldSize)
     {
-        // Split the tempVec into folds
-        foldSize = tempVec.size() / folds;
- 
-        if (foldSize <= 0)
-            foldSize = 1;
+        vector<double> empty;
 
-        outFile.open((resultsPath + "/ANNIResults.txt").c_str(), ios::app);
-        outFile << "\tNumber of Folds:  " << folds << endl;
-        outFile << "\tFold Size:  " << foldSize << endl;
-        outFile.close();
-
-        if (debug)
-        {
-            cout << "\tNumber of Folds:  " << folds << endl;
-            cout << "\tFold Size:  " << foldSize << endl;
-        }
-
-        for (int i = 0; i < folds; i++)
-        {
-            for (int k = 0; k < foldSize-1; k++)
-            {
-                if (currIndex < tempVec.size())
-                    folded[i].push_back(tempVec[k]);
-                else
-                {
-                    currIndex = 0;
-                    folded[i].push_back(tempVec[k]);
-                }
-           
-                currIndex++;  
-
-            }
-
-            outFile.open((resultsPath + "/ANNIResults.txt").c_str(), ios::app);
-            outFile << "\tCurrent Fold:  (" << (i+1) << " / " << folds << ")" << endl;
-            outFile << "\tFold Size:  " << folded[i].size() << endl << endl;
-            if (debug)
-            {
-                cout << "\tCurrent Fold:  (" << (i+1) << " / " << folds << ")" << endl;
-                cout << "\tFold Size:  " << folded[i].size() << endl << endl;
-            }
-        
-        }
-    }
+        for (int i = currFold; i < foldSize; i++)
+            folded.at(i).pushFold(empty);          
+    }*/
+    
     return;
 }
 
 // Function learningVectorQuantization
 // Inputs:
-//       trainSet - An n-dimensional vector of doubles representing the training set.
-//       samples - An n-dimenstional vector of doubles representing the sample set
+//       trainSet - A vector of Fold objects representing the training set.
+//       samples - A vector of Fold objects representing the sample set to test.
 //       BMUnames -  A vector of strings containing the names for BMU options.
 //       sampleNames - A vector of strings containing the names of the files being analyzed
 //       algorithm -  A string containing the algorithm being used.
+//       alg - An integer indicating the algorithm being used.
 //       currChan - An integer indicating the current channel.
 //       codeBooks - An integer indicating the number of codebooks used for training/analysis
 //       learnRate - A double indicating the learning rate
@@ -536,10 +530,11 @@ void prepareFolds(bool folding, int folds, int alg, int currChan, int channels, 
 //       debug - A boolean flag that controls debug output.
 // Output: None
 // Purpose:  To determine the effectiveness of a training set 
-void learningVectorQuantization(vector<vector<double> > trainSet, vector<vector<double> > samples, vector<string> BMUnames, vector<string> sampleNames, string algorithm, int currChan, int codeBooks, double learnRate, int epochs, string fileName, string resultsPath, bool debug)
+void learningVectorQuantization(vector<Fold> trainSet, vector<Fold> samples, vector<string> BMUnames, vector<string> sampleNames, string algorithm, int alg, int currChan, int codeBooks, double learnRate, int epochs, string fileName, string resultsPath, bool debug)
 {
     vector<vector<double> > codeBookSet;        // Will hold the set of codebooks for training
     vector<double> set;                         // Represents a code book vector
+    vector<double> tempSample;                  // Will hold a temporary sample
     ofstream outFile;                           // A stream pointer for data output
     int match;                                  // Will contain the BMU for the sample
     string channel;
@@ -563,7 +558,7 @@ void learningVectorQuantization(vector<vector<double> > trainSet, vector<vector<
     if (debug)
         cout << "\t" << timeStamp() << ":  Training codebooks..." << endl << endl;
 
-    trainCodeBooks(trainSet, codeBookSet, codeBooks, learnRate, epochs, fileName, resultsPath, debug); 
+    trainCodeBooks(trainSet, codeBookSet, alg, codeBooks, learnRate, epochs, fileName, resultsPath, debug); 
 
     outFile.open((resultsPath).c_str(), ios::app);
     outFile << endl << "\t" << timeStamp() << ":  Codebooks trained." << endl;
@@ -574,9 +569,11 @@ void learningVectorQuantization(vector<vector<double> > trainSet, vector<vector<
 
     for (int i = 0; i < samples.size(); i++)
     {
-        if (samples[i].size() > 0)
+        tempSample = samples[0].getFold(i);
+
+        if (tempSample.size() > 0)
         {
-            match = getBestMatch(codeBookSet, samples[i], fileName, resultsPath, debug);
+            match = getBestMatch(codeBookSet, tempSample, fileName, resultsPath, debug);
 
             outFile.open("predictions.txt", ios::app);
             outFile << "The best match for " << sampleNames[i] << " using the " << channel << " channel " << algorithm
@@ -608,19 +605,30 @@ double euclideanDistance(vector<double> row1, vector<double> row2, string result
 {
     double distance;     // Will describe the euclidean distance between the row1 and row2
     int control;         // The shortest vector will control the loop
+    double v1;           // Vector 1 index value
+    double v2;           // Vector 2 index value
 
     distance = 0;
+    v1 = 0;
+    v2 = 0;
 
     if (row1.size() < row2.size())
         control = row1.size();
     else
         control = row2.size();
-    
+   
     for (int i = 0; i < control; i++)
     {
-        distance += (row1[i] - row2[i]) * (row1[i] - row2[i]);
-    }
+        v1 = row1[i];
+        v2 = row2[i];
+        
+        if (v1 == 0)
+            v1 = 1;
+        if (v2 == 0)
+            v2 = 1;
 
+        distance += (v1 - v2) * (v1 - v2);
+    }
 
     return sqrt(distance);
 }
@@ -642,15 +650,12 @@ int getBestMatch(vector<vector<double> > knownData, vector<double> testRow, stri
     
     match = 0;
 
-    cout << "knownData.size() = " << knownData.size() << endl;
     // Calculate the euclidean distances between the rows
     for (int i = 0; i < knownData.size(); i++)
     {
-        distances.push_back(euclideanDistance(knownData[i], testRow, resultsPath, debug));
+        if (knownData[i].size() > 0)
+            distances.push_back(euclideanDistance(knownData[i], testRow, resultsPath, debug));
     }
-
-    for (int z = 0; z < distances.size(); z++)
-        cout << "distance[" << z << "] = " << distances[z] << endl;
 
     // Find the shortest euclidean distance
     for (int i = 1; i < distances.size(); i++)
@@ -659,56 +664,83 @@ int getBestMatch(vector<vector<double> > knownData, vector<double> testRow, stri
             match = i;
     }
 
-    cout << "match = " << match << endl;
     return match;
 }
 
 // Function randomDatabase
 // Inputs:
-//       database - An n-D vector of doubles containing known data points for generating training set.
+//       database - A vector of Fold objects representing the known data.
 //       trainSet - An n-D vector of doubles that will contain the subset of training data for comparisons
+//       alg - The algorithm being run
 //       resultsPath - A string containing the path to the output directory.
 //       debug - A flag controlling the debug output.
 // Outputs:  None
 // Purpose: This creates a random database consisting of a subset of known data for use by ANNI.
-void randomDatabase(vector<vector<double> > database, vector<vector<double> > &trainSet,string resultsPath, bool debug)
+void randomDatabase(vector<Fold> database, vector<vector<double> > &trainSet, int alg, string resultsPath, bool debug)
 {
 
     int records;       // Contains the total number of records in the database
     int lowerBound;    // A random number containing the lower boundary of the subset.
     int upperBound;    // A random number containing the upper boundary of the subset.
 
-    for (int i = 0; i < database.size(); i++)
+    int lowerBoundInner;  // The lower boundary of the inner fold
+    int upperBoundInner; // The upper boundary of the inner fold
+
+    records = database.size();
+
+    lowerBound = 0;
+    upperBound = -1;
+    lowerBoundInner = 0;
+    upperBoundInner = -1;
+
+    while (upperBound <= lowerBound)
     {
-        records = database[i].size();
-
-        if (database[i].size() > 0)
+        if (records > 2)
         {
-            if (records > 1)
-            { 
-                lowerBound = (rand() % (records - 1)) + 1;
-                upperBound = (rand() % (records - lowerBound)) + lowerBound;
-            }
-            else
-            {
-                lowerBound = 0;
-                upperBound = 1;
-            }
-
-            for (int j = lowerBound; j < upperBound; j++)
-            {
-                trainSet[i].push_back(database[i][j]);
-            }
+            lowerBound = (rand() % (records - 1)) + 1;
+            upperBound = (rand() % (records - lowerBound)) + lowerBound;
+        }
+        else
+        {
+            lowerBound = 0;
+            upperBound = 1;
         }
     }
 
+    for (int i = lowerBound; i < upperBound; i++)
+    {
+        records = database[i].getSize();
+
+        if (records > 0)
+        {
+            while (upperBoundInner <= lowerBoundInner)
+            {
+                if (records > 1)
+                {
+                    lowerBoundInner = (rand() % (records -1)) + 1;
+                    upperBoundInner = (rand() % (records - lowerBoundInner)) + lowerBoundInner;
+                }
+                else
+                {
+                    lowerBoundInner = 0;
+                    upperBoundInner = 1;
+                }
+            }
+        
+            for (int j = lowerBoundInner; j < upperBoundInner; j++)
+            {
+                trainSet.push_back(database[i].getFold(j));
+            }
+        }
+    }
     return;
 }
 
 // Function trainCodeBooks
 // Inputs:
-//       trainSet - An n-D vector of doubles containing known data points for generating the training set
+//       trainSet - A vector of Fold objects representing the training set.
 //       codeBookSet - An n-D vector that will contain the subset of training data for comparisons
+//       alg - The algorithm being run
 //       nBooks - An integer describing the number of codebooks to generate
 //       lRate - A double describing the learning rate
 //       epochs - An integer describing the number of learning epochs
@@ -717,13 +749,15 @@ void randomDatabase(vector<vector<double> > database, vector<vector<double> > &t
 //       debug - A flag controlling the debug output.
 // Output: None
 // Purpose:  This function is used to generate the number of specified codebooks for running the algorithm.
-void trainCodeBooks(vector<vector<double> > trainSet, vector<vector<double> > &codeBookSet,int nBooks, double lRate, int epochs, string fileName,string resultsPath, bool debug)
+void trainCodeBooks(vector<Fold> trainSet, vector<vector<double> > &codeBookSet, int alg, int nBooks, double lRate, int epochs, string fileName,string resultsPath, bool debug)
 {
     double rate;        // The learning rate of the current epoch
     double error;       // Used to calculate the error rate in the learning
     double sumError;    // The summation of the total errors in the predictions
     int bmu;            // The index of the best matching codebook entry for the current database line
     ofstream outFile;   // A stream pointer for data output.
+
+    vector<double> tempFold;    // Will temporarily hold a fold
 
     // Initialize variables   
     rate = 0;
@@ -741,7 +775,7 @@ void trainCodeBooks(vector<vector<double> > trainSet, vector<vector<double> > &c
     // Generate the codebooks
     for (int i = 0; i < nBooks; i++)
     {
-        randomDatabase(trainSet, codeBookSet, resultsPath, debug);
+        randomDatabase(trainSet, codeBookSet, alg, resultsPath, debug);
     }
 
     outFile.open((resultsPath).c_str(), ios::app);
@@ -764,26 +798,34 @@ void trainCodeBooks(vector<vector<double> > trainSet, vector<vector<double> > &c
 
         for (int j = 0; j < trainSet.size(); j++)
         {
-            bmu = getBestMatch(codeBookSet, trainSet[j], fileName, resultsPath, debug);
-       
-            for (int k = 0; k < trainSet[j].size(); k++)
+            for (int k = 0; k < trainSet[j].getSize(); k++)
             {
-                if (k < codeBookSet[bmu].size() - 1)
+                tempFold = trainSet[j].getFold(k);
+
+                bmu = getBestMatch(codeBookSet, tempFold, fileName, resultsPath, debug);
+      
+                for (int m = 0; m < tempFold.size(); m++)
                 {
-                    error = trainSet[j][k] - codeBookSet[bmu][k];
+                    if (codeBookSet[bmu].size() > 0)
+                    {
+                        if (m < codeBookSet[bmu].size() - 1)
+                        {
+                            error = tempFold[m] - codeBookSet[bmu][m];
 
-                    sumError += error * error;
+                            sumError += error * error;
 
-                    if (codeBookSet[bmu][codeBookSet[bmu].size()-1] == trainSet[j][trainSet[j].size()-1])
-                        codeBookSet[bmu][k] += rate * error;
-                    else
-                        codeBookSet[bmu][k] -= rate * error;
+                            if (codeBookSet[bmu][codeBookSet[bmu].size()-1] == tempFold[tempFold.size() - 1])
+                                codeBookSet[bmu][m] += rate * error;
+                            else
+                                codeBookSet[bmu][m] -= rate * error;
+                        }
+                    }
                 }
             }
         }
 
         outFile.open((resultsPath).c_str(), ios::app);
-        outFile << endl << "\t\t\t" << "Epoch:  " << i << endl << "\t\t\tLearning Rate:  " << rate
+        outFile << endl << "\t\t\tEpoch:  " << i << endl << "\t\t\tLearning Rate:  " << rate
                 << endl << "\t\t\tError:  " << setprecision(3) << sumError << endl;
         outFile.close();
 

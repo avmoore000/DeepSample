@@ -24,6 +24,8 @@
 #include <chrono>
 #include <ctime>
 #include "AudioWave.h"
+#include "Fold.h"
+
 using namespace std;
 
 #ifndef Utilities
@@ -31,7 +33,7 @@ using namespace std;
 
 void graphAlg(AudioWave, string, int, string, string, bool);
 void generateScript(int, string, string, string, double, double, string, string, int);
-void genTrainSet(vector<vector<double> >, vector<vector<double> >&, int);
+void genTrainSet(vector<Fold>, vector<Fold>&, int);
 void normalize(AudioWave, vector<vector<double> >&, string, string, bool);
 void plotter(AudioWave, int, int, string, string, bool);
 void printer(string,vector<string>,int,int,int);

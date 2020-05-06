@@ -179,7 +179,17 @@ Completed Tasks
 	- Fixed a bunch of errors with the databases, they were not formating or saving properly
 	- Added all of the function documentation to the development manual.
 	- Reorganized source code to better reflect the development documentation.
-	
+
+5/3/2020 - 5/9/2020
+
+Completed Tasks
+
+-  Andrew Moore
+	- Finished cleaning up ANN errors
+	- Implemented a Fold object to take care of the ANN seg faulting with multiple samples.
+	- Finished the final draft of the Developers Handbook
+	- Started a powerpoint for the group presentation
+
 TO DO LIST
 
 - Start training ANNI

@@ -270,21 +270,18 @@ void generateScript(int alg, string title, string xlabel, string ylabel, double 
 //       exclude - An integer indicating the index to skip when creating the set.
 // Outputs:
 // Purpose:  Generates a training dataset given a source dataset.
-void genTrainSet(vector<vector<double> > source, vector<vector<double> > &sink, int exclude)
+void genTrainSet(vector<Fold> source, vector<Fold > &sink, int exclude)
 {
-    vector<double> set;                             // Will contain a training set.
-    
-    // Set up the sink with the correct size
-    for (int i = 0; i < source.size(); i++)
-        sink.push_back(set);
+    sink.resize(source.size());
 
-    // Push the training set to the sink.
     for (int i = 0; i < source.size(); i++)
     {
-        for (int j = 0; j < source[i].size(); j++)
+        for (int j = 0; j < source[i].getSize(); j++)
         {
             if (j != exclude)
-                sink[i].push_back(source[i].at(j));
+            {   
+                sink[i].pushFold(source[i].getFold(j));
+            }
         }
     }
 }

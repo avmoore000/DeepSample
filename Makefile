@@ -46,13 +46,13 @@ anni:
 	make DeepSample;
 
 # Just make the test binary
-tests: src/deepSampleTests.o src/FourierTransform.o src/zeroCrossing.o src/spectrumFlux.o src/spectrumCentroid.o src/cepstrum.o src/audioHandler.o src/Utilities.o src/ANN.o src/TestSuite.o src/AudioWave.o
-	$(CC) $(CFLAGS) -o build/DeepSampleTests src/deepSampleTests.o src/FourierTransform.o src/zeroCrossing.o src/spectrumFlux.o src/spectrumCentroid.o src/cepstrum.o src/audioHandler.o src/Utilities.o src/ANN.o src/TestSuite.o src/AudioWave.o $(LIBS)
+tests: src/deepSampleTests.o src/FourierTransform.o src/zeroCrossing.o src/spectrumFlux.o src/spectrumCentroid.o src/cepstrum.o src/audioHandler.o src/Utilities.o src/ANN.o src/TestSuite.o src/AudioWave.o src/Fold.o
+	$(CC) $(CFLAGS) -o build/DeepSampleTests src/deepSampleTests.o src/FourierTransform.o src/zeroCrossing.o src/spectrumFlux.o src/spectrumCentroid.o src/cepstrum.o src/audioHandler.o src/Utilities.o src/ANN.o src/TestSuite.o src/AudioWave.o src/Fold.o $(LIBS)
 	$(RM) src/*.o;
 
 # Just make the sample binary, first making sure the source files aren't stail.
-Samples: src/sampleGenerator.o src/FourierTransform.o src/zeroCrossing.o src/spectrumFlux.o src/spectrumCentroid.o src/cepstrum.o src/audioHandler.o src/Utilities.o src/AudioWave.o 
-	$(CC) $(CFLAGS) -o build/SampleGenerator src/sampleGenerator.o src/FourierTransform.o src/zeroCrossing.o src/spectrumFlux.o src/spectrumCentroid.o src/cepstrum.o src/audioHandler.o src/Utilities.o src/AudioWave.o $(LIBS)
+Samples: src/sampleGenerator.o src/FourierTransform.o src/zeroCrossing.o src/spectrumFlux.o src/spectrumCentroid.o src/cepstrum.o src/audioHandler.o src/Utilities.o src/AudioWave.o src/Fold.o
+	$(CC) $(CFLAGS) -o build/SampleGenerator src/sampleGenerator.o src/FourierTransform.o src/zeroCrossing.o src/spectrumFlux.o src/spectrumCentroid.o src/cepstrum.o src/audioHandler.o src/Utilities.o src/AudioWave.o src/Fold.o $(LIBS)
 	$(RM) src/*.o
 
 # Make driver binary
@@ -60,8 +60,8 @@ driver: src/driver.o
 	$(CC) $(CFLAGS) -o build/genSamples src/driver.o $(LIBS)
 
 # Make ANNI binary
-DeepSample: src/anniDriver.o src/ANN.o src/AudioWave.o src/Utilities.o 
-	$(CC) $(CFLAGS) -o build/DeepSample src/anniDriver.o src/ANN.o src/AudioWave.o src/Utilities.o $(LIBS)
+DeepSample: src/anniDriver.o src/ANN.o src/AudioWave.o src/Fold.o src/Utilities.o 
+	$(CC) $(CFLAGS) -o build/DeepSample src/anniDriver.o src/ANN.o src/AudioWave.o src/Fold.o src/Utilities.o $(LIBS)
 	$(RM) src/*.o
 
 # Clean up the directory
@@ -111,3 +111,6 @@ TestSuite.o: src/TestSuite.cpp include/TestSuite.h
 
 AudioWave.o: src/AudioWave.cpp include/AudioWave.h
 	$(CC) $(CFLAGS) -c src/AudioWave.cpp
+
+Fold.o: src/Fold.cpp include/Fold.h
+	$(CC) $(CFLAGS) -c src/Fold.cpp
