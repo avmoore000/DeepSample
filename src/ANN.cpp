@@ -257,9 +257,6 @@ void lvqHelper(string algorithm, string trainPath, string testPath, string resul
 
                 genTrainSet(foldedLeft, trainSet, i);
 
-                for (int z = 0; z < foldedLeft.size(); z++)
-                    cout << "foldedLeft[" << z << "].size = " << foldedLeft[z].getSize() << endl;
-
                 outFile.open(resultsOutput, ios::app);
                 outFile << timeStamp() << ":  Training set created." << endl;
                 outFile << timeStamp() << ":  Creating test set from folded left " << algorithm << "..." << endl;
@@ -288,6 +285,8 @@ void lvqHelper(string algorithm, string trainPath, string testPath, string resul
                 }
              
                 // Make prediction based on training set
+                cout << "ResultsPath = " << resultsPath << endl;
+                cout << "ResultsOutput = " << resultsOutput << endl;
                 learningVectorQuantization(trainSet, testSet, BMUnames, sampleNames, algorithm, alg,  0, codeBooks, learnRate, epochs, resultsOutput, resultsPath, debug);
 
                 trainSet.clear();
@@ -474,7 +473,9 @@ void prepareFolds(bool testSet, int folds, int alg, int currChan, int channels, 
 
                 // Load the current vector to the fold
                 if (folds == 1)
+                {
                     folded.at(0).pushFold(tempVec);
+                }
                 else
                 {
                     folded.at(currFold).pushFold(tempVec);
@@ -501,15 +502,7 @@ void prepareFolds(bool testSet, int folds, int alg, int currChan, int channels, 
     }
 
     inFile.close();
-/*
-    if (currFold < foldSize)
-    {
-        vector<double> empty;
 
-        for (int i = currFold; i < foldSize; i++)
-            folded.at(i).pushFold(empty);          
-    }*/
-    
     return;
 }
 
@@ -567,10 +560,12 @@ void learningVectorQuantization(vector<Fold> trainSet, vector<Fold> samples, vec
     if (debug)
         cout << endl << "\t" << timeStamp() << ":  Codebooks trained." << endl;
 
+    cout << "samples.size() = " << samples.size() << endl;
+    cout << "samples[0].size() = " << samples[0].getSize() << endl;
     for (int i = 0; i < samples.size(); i++)
     {
         tempSample = samples[0].getFold(i);
-
+      
         if (tempSample.size() > 0)
         {
             match = getBestMatch(codeBookSet, tempSample, fileName, resultsPath, debug);
@@ -765,7 +760,8 @@ void trainCodeBooks(vector<Fold> trainSet, vector<vector<double> > &codeBookSet,
     sumError = 0;
     bmu = 0;
 
-    outFile.open((resultsPath).c_str(), ios::app);
+    cout << "ResultsPath = " << resultsPath << endl;
+    outFile.open((resultsPath + "ANNIResults.txt").c_str(), ios::app);
     outFile << "\t\t" << timeStamp() << ":  Creating " << nBooks << " codebooks from training set..." << endl;
     outFile.close();
 
@@ -778,7 +774,7 @@ void trainCodeBooks(vector<Fold> trainSet, vector<vector<double> > &codeBookSet,
         randomDatabase(trainSet, codeBookSet, alg, resultsPath, debug);
     }
 
-    outFile.open((resultsPath).c_str(), ios::app);
+    outFile.open((resultsPath + "ANNIResults.txt").c_str(), ios::app);
     outFile << "\t\t" << timeStamp() << ":  " << nBooks << " codebooks created." << endl;
     outFile << "\t\t" << timeStamp() << ":  Training codebooks over " << epochs << " epochs..." << endl;
     outFile.close();
@@ -824,7 +820,7 @@ void trainCodeBooks(vector<Fold> trainSet, vector<vector<double> > &codeBookSet,
             }
         }
 
-        outFile.open((resultsPath).c_str(), ios::app);
+        outFile.open((resultsPath + "ANNIResults.txt").c_str(), ios::app);
         outFile << endl << "\t\t\tEpoch:  " << i << endl << "\t\t\tLearning Rate:  " << rate
                 << endl << "\t\t\tError:  " << setprecision(3) << sumError << endl;
         outFile.close();
