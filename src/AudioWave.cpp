@@ -140,6 +140,7 @@ void AudioWave::setYMaximums()
 
     tMax = 0;
 
+/*
     // Set up the max of audio wave channels
     for (int i = 0; i < leftChannel.size(); i++)
     {   
@@ -207,7 +208,7 @@ void AudioWave::setYMaximums()
         max.push_back(tMax);
         tMax = 0;
     }
-
+*/
     // Set up max of Real Cepstrum
     for (int i = 0; i < cepstrumData[0].size(); i++)
     {
@@ -241,7 +242,7 @@ void AudioWave::setYMinimums()
     double tMin;    // Will contain the y minimum
 
     tMin = 0;
-
+/*
     // Set the y-min for the audio waves
 
     for (int i = 0; i < leftChannel.size(); i++)
@@ -317,7 +318,7 @@ void AudioWave::setYMinimums()
         min.push_back(tMin);
         tMin = 0;
     }
-
+*/
     // Set the y-min for Real Cepstrum
 
     for (int i = 0; i < cepstrumData[0].size(); i++)
@@ -353,6 +354,7 @@ void AudioWave::setSourceFiles()
 
     dirName = "temp";
 
+/*
     // Set up the source file for the audio wave
     outFile.open(dirName + "/srcAudioFiles.txt", ios::out);
     sourceFiles.push_back((dirName + "/srcAudioFiles.txt"));
@@ -387,7 +389,8 @@ void AudioWave::setSourceFiles()
 
         outFile << endl;
     }
-
+*/
+/*
     // Set up the source file for the zero cross
     outFile.close();
     outFile.open((dirName + "/srcZeroCross.txt").c_str(), ios::out);
@@ -417,9 +420,9 @@ void AudioWave::setSourceFiles()
         outFile << " " << spectrumFData[1];
 
     outFile << endl;
-
+*/
     // Set up the source file for the cepstrum
-    outFile.close();
+  //  outFile.close();
     outFile.open((dirName + "/srcCepstrum.txt").c_str(), ios::out);
     sourceFiles.push_back((dirName + "/srcCepstrum.txt"));
 
@@ -436,7 +439,7 @@ void AudioWave::setSourceFiles()
 
         outFile << endl;
     }
-
+/*
     // Set up the source file for the spectrum centroid
     outFile.close();
     outFile.open((dirName + "/srcSCentroid.txt").c_str(), ios::out);
@@ -451,7 +454,7 @@ void AudioWave::setSourceFiles()
 
     outFile << endl;
     outFile.close();
-
+*/
     return;
 }
 

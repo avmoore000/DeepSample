@@ -88,13 +88,13 @@ int main(int argc, char** argv)
         cout << "\tfullPrecison" << endl << endl << "\t\tSet the precision for decimal output." << endl << endl;
         cout << "\tdebug" << endl << endl << "\t\tToggle debug output.  Warning: Debug mode causes"
              << " large files and" << endl << "\t\t slows down execution." << endl << endl
-             << "\t\t1 = On" << endl << "\t\t2 = Off" << endl << endl;
+             << "\t\t1 = On" << endl << "\t\t0 = Off" << endl << endl;
         cout << "\tplot" << endl << endl << "\t\tToggle plotting." << endl << endl 
-             << "\t\t1 = Plot" << endl << "\t\t2 = No Plot" << endl << endl;
+             << "\t\t1 = Plot" << endl << "\t\t0 = No Plot" << endl << endl;
         cout << "\tgraphType" << endl << endl << "\t\tSelect the type of graph to plot." << endl << endl;
         cout << "\t\t 1 = Box Graph" << endl << endl;
         cout << "\tsave" << endl << endl << "\t\tToggle Saving" << endl << endl << "\t\t1 = Save"
-             << endl << "\t\t2 = No Save" << endl << endl;
+             << endl << "\t\t0 = No Save" << endl << endl;
 
         startGeneration = false;
     }
@@ -427,7 +427,7 @@ int main(int argc, char** argv)
 
                 outFile.open((path + "/" + fileName).c_str(), ios::app);
                 outFile << timeStamp() << ":  Audio file loaded." << endl;
-                outFile << timeStamp() << ":  Performing FFT..." << endl;
+                /*outFile << timeStamp() << ":  Performing FFT..." << endl;
                 outFile.close();
 
                 if (debug)
@@ -453,7 +453,7 @@ int main(int argc, char** argv)
                 }
 
                 start = high_resolution_clock::now();
-                zeroCross(wave, fileName, path, debug);
+                //zeroCross(wave, fileName, path, debug);
                 stop = high_resolution_clock::now();
                 auto ZeroDuration = duration_cast<microseconds>(stop - start);
 
@@ -474,13 +474,13 @@ int main(int argc, char** argv)
                 auto SFDuration = duration_cast<microseconds>(stop - start);
 
                 outFile.open((path + "/" + fileName).c_str(), ios::app);
-                outFile << timeStamp() << ":  Spectrum Flux complete." << endl;
+                outFile << timeStamp() << ":  Spectrum Flux complete." << endl;*/
                 outFile << timeStamp() << ":  Performing Cepstrum..." << endl;
                 outFile.close();
 
                 if (debug)
                 {
-                    cout << timeStamp() << ":  Spectrum Flux complete." << endl;
+//                    cout << timeStamp() << ":  Spectrum Flux complete." << endl;
                     cout << timeStamp() << ":  Performing Cepstrum..." << endl;
                 }
 
@@ -506,9 +506,9 @@ int main(int argc, char** argv)
 		    }
 		}
 
-                start = high_resolution_clock::now();
+                auto start = high_resolution_clock::now();
                 cepstrumResult = rCepstrum(rawL, 2.0);
-                stop = high_resolution_clock::now();
+                auto stop = high_resolution_clock::now();
                 auto cDuration = duration_cast<microseconds>(stop - start);
 
 		for (int i = 0; i < cepstrumResult.size()-1; i++)
@@ -533,11 +533,11 @@ int main(int argc, char** argv)
                 if (debug)
                 {
                     cout << timeStamp() << ":  Cepstrum complete." << endl;
-                    cout << timeStamp() << ":  Performing Spectrum Centroid..." << endl;
+  //                  cout << timeStamp() << ":  Performing Spectrum Centroid..." << endl;
                 }
-
+/*
                 start = high_resolution_clock::now();
-                spectralCentroid(wave, fileName, path, debug);
+                //spectralCentroid(wave, fileName, path, debug);
                 stop = high_resolution_clock::now();
                 auto SCDuration = duration_cast<microseconds>(stop - start);
 
@@ -547,7 +547,7 @@ int main(int argc, char** argv)
 
                 if (debug)
                     cout << timeStamp() << ":  Spectrum Centroid complete." << endl;
-
+*/
                 // If plotting, plot
                 if (plot)
                 {
@@ -586,7 +586,7 @@ int main(int argc, char** argv)
                     if (debug)
                         cout << timeStamp() << ":  Plotting Data..." << endl << endl;
 
-                    plotter(wave, graphType, 0, fileName, path, debug);
+                    plotter(wave, graphType, 5, fileName, path, debug);
 
                     outFile.open((path + "/" + fileName).c_str(), ios::app);
                     outFile << timeStamp() << ":  Plotting complete." << endl;
@@ -837,11 +837,11 @@ int main(int argc, char** argv)
                 outFile.open((path + "/" + fileName).c_str(), ios::app);
                 outFile << timeStamp() << ":  Audio Algorithms completed for sample " << (i+1) << "." << endl << endl;
                 outFile << "\tTiming Data:" << endl << endl;
-                outFile << "\tFFT:  Completed in " << FFTDuration.count() << " \u03bc" << "s" << endl;
-                outFile << "\tZeroCross:  Completed in " << ZeroDuration.count() << " \u03bc" << "s" << endl;
-                outFile << "\tSpectrumFlux:  Completed in " << SFDuration.count() << " \u03bc" << "s" <<endl;
+                //outFile << "\tFFT:  Completed in " << FFTDuration.count() << " \u03bc" << "s" << endl;
+                //outFile << "\tZeroCross:  Completed in " << ZeroDuration.count() << " \u03bc" << "s" << endl;
+                //outFile << "\tSpectrumFlux:  Completed in " << SFDuration.count() << " \u03bc" << "s" <<endl;
                 outFile << "\tCepstrum:  Completed in " << cDuration.count() << " \u03bc" << "s" << endl;
-                outFile << "\tSpectrumCentroid:  Completed in " << SCDuration.count() << " \u03bc" << "s" << endl << endl;
+                //outFile << "\tSpectrumCentroid:  Completed in " << SCDuration.count() << " \u03bc" << "s" << endl << endl;
                 outFile.close();
 
                 if (debug)
@@ -849,11 +849,11 @@ int main(int argc, char** argv)
                     cout << timeStamp() << ":  Spectrum Centroid complete." << endl;
                     cout << timeStamp() << ":  Audio Algorithms completed for sample " << (i+1) << "." << endl << endl;
                     cout << "\tTiming Data:" << endl << endl;
-                    cout << "\tFFT:  Completed in " << FFTDuration.count() << " \u03bc" << "s" << endl;
-                    cout << "\tZeroCross: Completed in " << ZeroDuration.count() << " \u03bc" << "s" << endl;
-                    cout << "\tSpectrumFlux:  Completed in " << SFDuration.count() << " \u03bc" << "s" << endl;
+                    //cout << "\tFFT:  Completed in " << FFTDuration.count() << " \u03bc" << "s" << endl;
+                  //  cout << "\tZeroCross: Completed in " << ZeroDuration.count() << " \u03bc" << "s" << endl;
+                    //cout << "\tSpectrumFlux:  Completed in " << SFDuration.count() << " \u03bc" << "s" << endl;
                     cout << "\tCepstrum:  Completed in " << cDuration.count() << " \u03bc" << "s" << endl;
-                    cout << "\tSpectrumCentroid:  Completed in " << SCDuration.count() << " \u03bc" << "s" << endl << endl;
+                   // cout << "\tSpectrumCentroid:  Completed in " << SCDuration.count() << " \u03bc" << "s" << endl << endl;
                 }
 
             } // Finished algorithm loop

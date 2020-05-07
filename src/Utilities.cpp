@@ -142,19 +142,21 @@ void graphAlg(AudioWave wave, string filePrefix, int alg, string fileName, strin
         }
         case 4: // Graphing cepstrum
         {
+
             fullTitle[0] = title + " Left Channel Cepstrum";
             fullTitle[1] = title + " Right Channel Cepstrum";
             fullOutFile[0] = tempOutFile + "/LeftCepstrum.png";
             fullOutFile[1] = tempOutFile + "/RightCepstrum.png";
-            sourceFile = wave.getSourceFile(4);
+            sourceFile = wave.getSourceFile(0);
             ylabel = "Cepstrum";
+
 	    yMax.push_back(wave.getYMaximum(4,1));
 	    yMin.push_back(wave.getYMinimum(4,1));
 
 	    if (wave.getChannels() == 2)
             {
-	        yMax.push_back(wave.getYMaximum(4,2));
-		yMin.push_back(wave.getYMinimum(4,2));
+	        yMax.push_back(wave.getYMaximum(1,2));
+		yMin.push_back(wave.getYMinimum(1,2));
             }
 
             break;
@@ -440,7 +442,7 @@ void plotter(AudioWave wave, int graphType, int alg, string fileName, string pat
     ifstream infile;          // Will be used to edit the sourceFile if needed.
      
     string filePrefix;        // The prefix for plot files
- 
+
     /*
     switch(graphType)
     {
