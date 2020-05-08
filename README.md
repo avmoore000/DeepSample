@@ -189,8 +189,14 @@ Completed Tasks
 	- Implemented a Fold object to take care of the ANN seg faulting with multiple samples.
 	- Finished the final draft of the Developers Handbook
 	- Started a powerpoint for the group presentation
+	- Added slides to the power point:
+		- Spectrum flux and zero cross background
+		- Spectrum flux and zero cross methods
+		- Spectrum flux and zero cross results
+		- Deep Sample results
+		- Deep sample match example
+	- Finished Section 1, Section 2.2, Section 2.3, Section 3.2, Section 3.3, Section 3.6 and Section 4 of the research paper.
+	- Regenerated graphs and put them in all sections of the research paper.
+	- Created archive with all data used to create the research paper and placed in the repo, DeepSampleData.zip
+	
 
-TO DO LIST
-
-- Start training ANNI
-- Make a powerpoint deck explaining the process for use in presentations
