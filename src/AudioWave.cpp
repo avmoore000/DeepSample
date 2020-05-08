@@ -354,7 +354,6 @@ void AudioWave::setSourceFiles()
 
     dirName = "temp";
 
-/*
     // Set up the source file for the audio wave
     outFile.open(dirName + "/srcAudioFiles.txt", ios::out);
     sourceFiles.push_back((dirName + "/srcAudioFiles.txt"));
@@ -389,8 +388,7 @@ void AudioWave::setSourceFiles()
 
         outFile << endl;
     }
-*/
-/*
+
     // Set up the source file for the zero cross
     outFile.close();
     outFile.open((dirName + "/srcZeroCross.txt").c_str(), ios::out);
@@ -420,9 +418,9 @@ void AudioWave::setSourceFiles()
         outFile << " " << spectrumFData[1];
 
     outFile << endl;
-*/
+
     // Set up the source file for the cepstrum
-  //  outFile.close();
+    outFile.close();
     outFile.open((dirName + "/srcCepstrum.txt").c_str(), ios::out);
     sourceFiles.push_back((dirName + "/srcCepstrum.txt"));
 
@@ -439,7 +437,7 @@ void AudioWave::setSourceFiles()
 
         outFile << endl;
     }
-/*
+
     // Set up the source file for the spectrum centroid
     outFile.close();
     outFile.open((dirName + "/srcSCentroid.txt").c_str(), ios::out);
@@ -454,7 +452,7 @@ void AudioWave::setSourceFiles()
 
     outFile << endl;
     outFile.close();
-*/
+    
     return;
 }
 

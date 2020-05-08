@@ -147,7 +147,7 @@ void graphAlg(AudioWave wave, string filePrefix, int alg, string fileName, strin
             fullTitle[1] = title + " Right Channel Cepstrum";
             fullOutFile[0] = tempOutFile + "/LeftCepstrum.png";
             fullOutFile[1] = tempOutFile + "/RightCepstrum.png";
-            sourceFile = wave.getSourceFile(0);
+            sourceFile = wave.getSourceFile(4);
             ylabel = "Cepstrum";
 
 	    yMax.push_back(wave.getYMaximum(4,1));
