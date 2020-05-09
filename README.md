@@ -40,7 +40,8 @@ use these as the basis of our research.
 - Andrew Moore
 	- Began the implementation of the spectrum flux and cepstrum algorithms.   
 	- Created a skeleton for the ANN to be completed this week. 
-
+- Hue Truong
+	- Implementation of Fourier Transform algorithm
 02/23/2020 - 02/29/2020
 
 - Andrew Moore
@@ -68,7 +69,7 @@ TO DO:
 	-  Started implementation of ANN, using a naive bayesian algorithm
 	-  Changed audio input to allow vorbis format
 - Hue Truong
-	- Worked on improving efficiency of Fourier transforms
+	- Worked on improving efficiency of Fourier transform
 	- Worked on implementation of cepstrum algorithm.
 
 03/15/2020 - 03/21/2020
@@ -100,7 +101,7 @@ TO DO:
 	- Updated the dev manaul to reflect changes to the codebase.
 
 - Hue Truong
-	- Worked on cepstrum algorithm
+	- Working on hamming window algorithm, a precursor of the cepstrum algorithm
 
 - Alex Reno
 	- Optimizing code
@@ -165,7 +166,7 @@ Completed Tasks
 - Hue Truong
 	- Revised statistical testing procedures for algorithm comparisons.
 	- Revised statistical testing procedures for DeepSample accuracy.
-	- Finished cepstrum part in research paper.
+	- Updated research paper
 
 4/26/2020 - 5/2/2020
 
@@ -179,6 +180,11 @@ Completed Tasks
 	- Fixed a bunch of errors with the databases, they were not formating or saving properly
 	- Added all of the function documentation to the development manual.
 	- Reorganized source code to better reflect the development documentation.
+-  Hue Truong
+	- Research Big-O analysis for analyzing algorithm performance.
+	- Started sample generation with BadPanda library
+	- Started sample generation with FreeMusic 2010 library
+	- Started sample generation with FreeMusic 2011 library
 
 5/3/2020 - 5/9/2020
 
@@ -198,5 +204,11 @@ Completed Tasks
 	- Finished Section 1, Section 2.2, Section 2.3, Section 3.2, Section 3.3, Section 3.6 and Section 4 of the research paper.
 	- Regenerated graphs and put them in all sections of the research paper.
 	- Created archive with all data used to create the research paper and placed in the repo, DeepSampleData.zip
+-  Hue Truong
+	- Due to time constraint, removed BadPanda library out of sample generation
+	- Tested FreeMusic2010 samples against FreeMusic2011 samples (Refer to Training Sample 1 of research paper)
+	- Tested FreeMusic2010 samples against FreeMusic2011 samples (Refer to Training Sample 2 of research paper)
+	- Tested FreeMusic2010 samples against FreeMusic2011 samples (Refer to Training Sample 3 of research paper)
+	- Final changes to research paper and presentation
 	
 
