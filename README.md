@@ -204,6 +204,7 @@ Completed Tasks
 	- Finished Section 1, Section 2.2, Section 2.3, Section 3.2, Section 3.3, Section 3.6 and Section 4 of the research paper.
 	- Regenerated graphs and put them in all sections of the research paper.
 	- Created archive with all data used to create the research paper and placed in the repo, DeepSampleData.zip
+	- Pushed the research paper to the repository, CS212DeepSample.pdf
 -  Hue Truong
 	- Due to time constraint, removed BadPanda library out of sample generation
 	- Tested FreeMusic2010 samples against FreeMusic2011 samples (Refer to Training Sample 1 of research paper)
