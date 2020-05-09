@@ -211,5 +211,8 @@ Completed Tasks
 	- Tested FreeMusic2010 samples against FreeMusic2011 samples (Refer to Training Sample 2 of research paper)
 	- Tested FreeMusic2010 samples against FreeMusic2011 samples (Refer to Training Sample 3 of research paper)
 	- Final changes to research paper and presentation
-	
+-  Alex Reno
+	- Finished Sections 2.4, 3.5, and 4.3 of the research paper
+	- Fixed grammar and formatting errors in the research paper and improved wording in a few places
+	- Added slides to the PowerPoint: Spectrum Centroid Background, Methods, and Results
 
